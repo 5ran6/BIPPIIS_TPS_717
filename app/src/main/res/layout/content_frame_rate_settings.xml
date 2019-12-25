@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.greenbit.MultiscanJNIGuiJavaAndroid.FrameRateSettings"
+    tools:showIn="@layout/activity_frame_rate_settings">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/lFrameRateLogger"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Frame Rate Window"
+            android:layout_gravity="left|top"
+            android:padding="10dp"/>
+
+        <LinearLayout
+            android:id="@+id/layoutFrameRateTop"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".15"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/layoutVerticalFrameRatePreview"
+            >
+
+            <Button
+                android:id="@+id/bFrameRateSet"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:text="SET FRAME RATE"
+                android:padding="10dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutVerticalFrameRatePreview"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".4"
+            app:layout_constraintTop_toBottomOf="@+id/layoutFrameRateTop"
+            app:layout_constraintBottom_toTopOf="@+id/layoutVerticalFrameRateAcq"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/bFrameRatePreviewSetDefault"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Set Default Preview FR"
+                android:layout_gravity="left|top"
+                android:padding="10dp"/>
+
+            <TextView
+                android:id="@+id/lPreviewFrameRate"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Preview Frame Rate"
+                android:layout_gravity="left|top"
+                android:padding="10dp"/>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/lPreviewFrameRate"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:id="@+id/lPreviewFrameRateMin"
+                    android:layout_weight=".15"
+                    android:layout_height="wrap_content"
+                    android:text="Min"
+                    android:layout_gravity="left|top"
+                    android:padding="10dp"
+                    android:layout_width="wrap_content"/>
+
+                <SeekBar
+                    android:id="@+id/scrollBarPreviewFrameRate"
+                    android:layout_weight=".7"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|top"
+                    android:padding="10dp"
+                    android:layout_width="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/lPreviewFrameRateMax"
+                    android:layout_weight=".15"
+                    android:layout_height="wrap_content"
+                    android:text="Max"
+                    android:layout_gravity="left|top"
+                    android:padding="10dp"
+                    android:layout_width="wrap_content"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutVerticalFrameRateAcq"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".4"
+            app:layout_constraintTop_toBottomOf="@+id/layoutVerticalFrameRatePreview"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/bFrameRateAcqSetDefault"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Set Default Acquisition FR"
+                android:layout_gravity="left|top"
+                android:padding="10dp"/>
+
+            <TextView
+                android:id="@+id/lAcqFrameRate"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Acquisition Frame Rate"
+                android:layout_gravity="left|top"
+                android:padding="10dp"/>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/lAcqFrameRate"
+                app:layout_constraintBottom_toBottomOf="parent">
+
+                <TextView
+                    android:id="@+id/lAcqFrameRateMin"
+                    android:layout_weight=".15"
+                    android:layout_height="wrap_content"
+                    android:text="Min"
+                    android:layout_gravity="left|top"
+                    android:padding="10dp"
+                    android:layout_width="wrap_content"/>
+
+                <SeekBar
+                    android:id="@+id/scrollBarAcqFrameRate"
+                    android:layout_weight=".7"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|top"
+                    android:padding="10dp"
+                    android:layout_width="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/lAcqFrameRateMax"
+                    android:layout_weight=".15"
+                    android:layout_height="wrap_content"
+                    android:text="Max"
+                    android:layout_gravity="left|top"
+                    android:padding="10dp"
+                    android:layout_width="wrap_content"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

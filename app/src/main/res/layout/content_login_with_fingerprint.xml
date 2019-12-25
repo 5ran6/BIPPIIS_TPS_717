@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.greenbit.MultiscanJNIGuiJavaAndroid.MainActivity"
+    tools:showIn="@layout/activity_login_with_fingerprint">
+
+    <LinearLayout
+        android:id="@+id/layoutInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/layoutButtons"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/layoutPerson"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/Acquisition_Info"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="8dp">
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".2"
+                android:text="Name of Person: "
+                android:textAlignment="viewStart"
+                android:textSize="10dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@id/tbName" />
+
+            <EditText
+                android:id="@+id/tbName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".8"
+                android:inputType="textCapSentences"
+                android:textSize="10dp"
+                app:layout_constraintLeft_toRightOf="@id/tvName"
+                app:layout_constraintRight_toRightOf="parent" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/Acquisition_Info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Acquisition Info"
+            android:textSize="10dp"
+            app:layout_constraintBottom_toTopOf="@+id/Image_Info"
+            app:layout_constraintTop_toBottomOf="@+id/layoutPerson" />
+
+        <TextView
+            android:id="@+id/Image_Info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Image Info"
+            android:textSize="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Acquisition_Info" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/layoutFingers"
+        app:layout_constraintTop_toBottomOf="@+id/layoutInfo"
+        tools:layout_editor_absoluteX="8dp">
+
+        <Button
+            android:id="@+id/bAttDevList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight=".5"
+            android:textSize="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/bStartStop" />
+
+        <Button
+            android:id="@+id/bStartStop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight=".5"
+            android:textSize="10dp"
+            app:layout_constraintLeft_toRightOf="@+id/bAttDevList"
+            app:layout_constraintRight_toLeftOf="@+id/bEnroll" />
+
+        <Button
+            android:id="@+id/bEnroll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight=".5"
+            android:textSize="10dp"
+            app:layout_constraintLeft_toRightOf="@+id/bStartStop"
+            app:layout_constraintRight_toLeftOf="@+id/bIdentify" />
+
+        <Button
+            android:id="@+id/bIdentify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight=".5"
+            android:textSize="10dp"
+            app:layout_constraintLeft_toRightOf="@+id/bEnroll"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutFingers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/layoutFrame"
+        app:layout_constraintTop_toBottomOf="@+id/layoutButtons">
+
+        <Spinner
+            android:id="@+id/comboObjectsToAcquire"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/processing"
+            android:layout_width="256dp"
+            android:layout_height="256dp"
+            android:background="@color/background"
+
+            android:gravity="center"
+            android:src="@drawable/preview" />
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Wait! Initializing Scanner...."
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#030" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutFrame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/FrameView"
+            android:layout_width="match_parent"
+            android:layout_height="256dp"
+            app:srcCompat="@android:color/background_dark" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.greenbit.MultiscanJNIGuiJavaAndroid.SegmentsInfoWindow"
+    tools:showIn="@layout/activity_segments_info_window">
+
+    <LinearLayout
+        android:id="@+id/layoutSeg1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/layoutSeg2"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/Seg1BoundingBox"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Seg1BoundingBox"
+            app:layout_constraintBottom_toTopOf="@+id/Seg1FingerName"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/Seg1FingerName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Seg1FingerName"
+            app:layout_constraintBottom_toTopOf="@+id/Seg1QualityAndPattern"
+            app:layout_constraintTop_toBottomOf="@+id/Seg1BoundingBox" />
+
+        <TextView
+            android:id="@+id/Seg1QualityAndPattern"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Seg1QualityAndPattern"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Seg1FingerName" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutSeg2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/layoutSeg3"
+        app:layout_constraintTop_toBottomOf="@+id/layoutSeg1">
+
+        <TextView
+            android:id="@+id/Seg2BoundingBox"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Seg2BoundingBox"
+            app:layout_constraintBottom_toTopOf="@+id/Seg2FingerName"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/Seg2FingerName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Seg2FingerName"
+            app:layout_constraintBottom_toTopOf="@+id/Seg2QualityAndPattern"
+            app:layout_constraintTop_toBottomOf="@+id/Seg2BoundingBox" />
+
+        <TextView
+            android:id="@+id/Seg2QualityAndPattern"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Seg2QualityAndPattern"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Seg2FingerName" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutSeg3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/layoutSeg4"
+        app:layout_constraintTop_toBottomOf="@+id/layoutSeg2">
+
+        <TextView
+            android:id="@+id/Seg3BoundingBox"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Seg3BoundingBox"
+            app:layout_constraintBottom_toTopOf="@+id/Seg3FingerName"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/Seg3FingerName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Seg3FingerName"
+            app:layout_constraintBottom_toTopOf="@+id/Seg3QualityAndPattern"
+            app:layout_constraintTop_toBottomOf="@+id/Seg3BoundingBox" />
+
+        <TextView
+            android:id="@+id/Seg3QualityAndPattern"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Seg3QualityAndPattern"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Seg3FingerName" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutSeg4"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layoutSeg3">
+
+        <TextView
+            android:id="@+id/Seg4BoundingBox"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Seg4BoundingBox"
+            app:layout_constraintBottom_toTopOf="@+id/Seg4FingerName"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/Seg4FingerName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Seg4FingerName"
+            app:layout_constraintBottom_toTopOf="@+id/Seg4QualityAndPattern"
+            app:layout_constraintTop_toBottomOf="@+id/Seg4BoundingBox" />
+
+        <TextView
+            android:id="@+id/Seg4QualityAndPattern"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10dp"
+            android:text="Seg4QualityAndPattern"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Seg4FingerName" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

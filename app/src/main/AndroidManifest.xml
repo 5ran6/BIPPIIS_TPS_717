@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.greenbit.MultiscanJNIGuiJavaAndroid">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="com.greenbit.MultiscanJNIGuiJavaAndroid.EnrollFingerprints"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.greenbit.MultiscanJNIGuiJavaAndroid.DeviceFeaturesActivity"
+            android:label="@string/title_activity_device_features"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.greenbit.MultiscanJNIGuiJavaAndroid.FlatSingleFingerAcquisitionOptions"
+            android:label="@string/title_activity_flat_acquisition_options"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.greenbit.MultiscanJNIGuiJavaAndroid.SlapAcquisitionOptions"
+            android:label="@string/title_activity_slap_acquisition_options"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.greenbit.MultiscanJNIGuiJavaAndroid.RollAcquisitonOptions"
+            android:label="@string/title_activity_roll_acquisiton_options"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.greenbit.MultiscanJNIGuiJavaAndroid.FrameRateSettings"
+            android:label="@string/title_activity_frame_rate_settings"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.greenbit.MultiscanJNIGuiJavaAndroid.DactyMatchSettings"
+            android:label="@string/title_activity_dacty_match_settings"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.greenbit.MultiscanJNIGuiJavaAndroid.WsqWindow"
+            android:label="@string/title_activity_wsq_window"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.greenbit.MultiscanJNIGuiJavaAndroid.Jp2Window"
+            android:label="@string/title_activity_jp2_window"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.greenbit.MultiscanJNIGuiJavaAndroid.GbfinimgWindow"
+            android:label="@string/title_activity_gbfinimg_window"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.greenbit.MultiscanJNIGuiJavaAndroid.SegmentsInfoWindow"
+            android:label="@string/title_activity_segments_info_window"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.greenbit.MultiscanJNIGuiJavaAndroid.LogWindow"
+            android:label="@string/title_activity_log_window"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".QuarterlyVerificationWithFingerprint"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".LoginWithFingerprint"
+            android:screenOrientation="landscape" />
+    </application>
+
+</manifest>

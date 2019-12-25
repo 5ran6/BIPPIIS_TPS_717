@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.greenbit.MultiscanJNIGuiJavaAndroid.DactyMatchSettings"
+    tools:showIn="@layout/activity_dacty_match_settings">
+
+    <LinearLayout
+        android:id="@+id/ScoreLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/TradeoffLayout"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MATCHING SCORE"/>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteX="73dp"
+            tools:layout_editor_absoluteY="26dp">
+
+            <RadioButton
+                android:id="@+id/rbFAR_Eminus4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="10000 (FAR = 10^-4)"/>
+
+            <RadioButton
+                android:id="@+id/rbFAR_Eminus5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="100000 (FAR = 10^-5)"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="3dp"/>
+
+            <RadioButton
+                android:id="@+id/rbFAR_Eminus6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="1000000 (FAR = 10^-6)"/>
+
+            <RadioButton
+                android:id="@+id/rbFAR_Custom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Custom"/>
+
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/tbCustomMatchScore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="numberDecimal"
+            android:text="10000"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/TradeoffLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/ScoreLayout"
+        app:layout_constraintBottom_toTopOf="@+id/RotationAngleLayout"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SPEED VS PRECISION TRADEOFF"/>
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RadioButton
+                android:id="@+id/rbSpeedPrecisionROBUST"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="ROBUST"/>
+
+            <RadioButton
+                android:id="@+id/rbSpeedPrecisionNORMAL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="NORMAL"/>
+
+            <RadioButton
+                android:id="@+id/rbSpeedPrecisionFAST"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="FAST"/>
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/RotationAngleLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/TradeoffLayout"
+        app:layout_constraintBottom_toTopOf="@+id/SaveGbfrswSettingsLayout"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MAX ROTATION ANGLE"/>
+
+        <LinearLayout
+            android:layout_width="368dp"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="515dp">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".75"
+                android:text="Rotation angle (20-180)"/>
+
+            <EditText
+                android:id="@+id/tbRotationAngle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight=".25"
+                android:ems="10"
+                android:inputType="number"
+                android:text="50"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/SaveGbfrswSettingsLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/RotationAngleLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/bSaveGbfrswSettings"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:text="SAVE SETTINGS"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
