@@ -3,7 +3,16 @@ package com.greenbit.MultiscanJNIGuiJavaAndroid;
 /*
  * Any comment that starts with "// 5ran6:" is exactly the functions/variables you need to deal with. Really Appreciate. Thanks.
  *
+ * Before this activity is called, the bippiis number is provided in a previous activity and an
+ * API is made to download the persons fingerprints to a directory called
+ * /emulated/0/Greenbit [this is in the root directory of the internal memory...inside the greenbit folder. If folder does
+ * not exists, please let it be created].
+ *
+ * Basically, this activity asks for any finger to be placed, then it captures and compares with the files in the
+ * folder. If true, ret = true on line 232
+ *
  * */
+
 
 import android.Manifest;
 import android.content.Intent;
@@ -11,9 +20,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -28,13 +34,15 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesReturnCodes;
 import com.greenbit.ansinistitl.Gban2000JavaWrapperLibrary;
 import com.greenbit.bozorth.BozorthJavaWrapperLibrary;
 import com.greenbit.gbfinimg.GbfinimgJavaWrapperDefineSegmentImageDescriptor;
-import com.greenbit.gbfinimg.GbfinimgJavaWrapperDefinesInputImageType;
-import com.greenbit.gbfinimg.GbfinimgJavaWrapperDefinesProcessOptions;
 import com.greenbit.gbfinimg.GbfinimgJavaWrapperDefinesReturnCodes;
 import com.greenbit.gbfinimg.GbfinimgJavaWrapperLibrary;
 import com.greenbit.gbfir.GbfirJavaWrapperDefinesReturnCodes;
@@ -67,7 +75,6 @@ import com.greenbit.wsq.WsqJavaWrapperDefinesReturnCodes;
 import com.greenbit.wsq.WsqJavaWrapperLibrary;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import pl.droidsonroids.gif.GifImageView;
@@ -225,6 +232,16 @@ public class QuarterlyVerificationWithFingerprint extends AppCompatActivity impl
                         if (GbBmp.isAcquisitionResult) {
                             GB_AcquisitionOptionsGlobals.acquiredFrame = GbBmp;
                             GB_AcquisitionOptionsGlobals.acquiredFrameValid = true;
+                            //END OF BEEP: then proceed
+                            report.setText("Processing! Please Remove your hands. ");
+                            //               Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_SHORT).show();
+
+                            new Handler().postDelayed(() -> {
+                                Log.d("fingerprint", "acquisition ended bro");
+                                Identify();
+                            }, 2500);
+
+
                         }
                     } else {
                         LogPopup("LogTimer: null bmp");
@@ -626,7 +643,7 @@ public class QuarterlyVerificationWithFingerprint extends AppCompatActivity impl
                 GB_AcquisitionOptionsGlobals.GBMSAPI_Jw.RollStopPreview();
                 bStartStop.setText("Stop Acquisition");
                 report.setText("Place any finger on the scanner");
-                Identify();
+
                 return true;
             } else {
                 String checkGbmsapi = "";
@@ -832,127 +849,10 @@ public class QuarterlyVerificationWithFingerprint extends AppCompatActivity impl
 //        }
 //    }
 
-    // 5ran6: FUNCTION ALREADY CALLED WITHIN ENROLLFINGER(...)
-    public boolean ProcessSlapImage(byte[] frame, int sx, int sy, int ObjType, int ExpectedFingersNum,
-                                    GbfinimgJavaWrapperDefineSegmentImageDescriptor[] descriptors) {
-        try {
-            String funcName = "ProcessSlapImage";
-            int SegmSx = 500, SegmSy = 500;
-
-            if (sx < SegmSx) SegmSx = sx;
-            if (sy < SegmSy) SegmSy = sy;
-            for (int i = 0; i < 4; i++) {
-                descriptors[i] = new GbfinimgJavaWrapperDefineSegmentImageDescriptor();
-                descriptors[i].SegmentImage = new byte[SegmSx * SegmSy];
-            }
-            GBJavaWrapperUtilIntForJavaToCExchange SegmNum = new GBJavaWrapperUtilIntForJavaToCExchange(),
-                    Diag = new GBJavaWrapperUtilIntForJavaToCExchange();
-            int RetVal = GB_AcquisitionOptionsGlobals.GBFINIMG_Jw.ProcessImage(
-                    frame, sx, sy,
-                    ObjType,
-                    GbfinimgJavaWrapperDefinesProcessOptions.GBFINIMG_REFINE_DRY_FINGERPRINT_IMAGE |
-                            GbfinimgJavaWrapperDefinesProcessOptions.GBFINIMG_REFINE_WET_FINGERPRINT_IMAGE |
-                            GbfinimgJavaWrapperDefinesProcessOptions.GBFINIMG_HALO_LATENT_ELIMINATION,
-                    SegmSx, SegmSy,
-                    null, 0,
-                    descriptors,
-                    SegmNum, Diag
-            );
-            if (RetVal != GbfinimgJavaWrapperDefinesReturnCodes.GBFINIMG_NO_ERROR) {
-                ManageGbfinimgErrors("onProcess, ProcessImage", RetVal, true);
-                return false;
-            }
-            if (SegmNum.Value != ExpectedFingersNum) {
-                Log.i(funcName, "SegmNum = " + SegmNum.Value + ", Expected = " + ExpectedFingersNum);
-                return false;
-            }
-            if (Diag.Get() != 0) {
-                Log.i(funcName, "Diag = " + Diag.Value);
-                return false;
-            }
-            LogAsDialog("SegmNum=" + SegmNum.Get() + ",Diag=" + Diag.Get());
-        } catch (Exception ex) {
-            LogAsDialog("onProcess: " + ex.getMessage());
-            return false;
-        }
-        return true;
-    }
-
-    // 5ran6: FUNCTION TO BE CALLED
-    public void EnrollFinger() {
-        // 5ran6: during enrolling, you can create an interface, most preferable with pics so users can select if they have four complete fingers or 3. by defaalt should be 4
-        // 5ran6: if 4, then ExpectedFingers = 4 , else if 3, ExpectedFingers = 3
-
-        // 5ran6: also, this function is used for enrolling two thumbs. so ExpectedFingers = 2, then the UI indicates for the user to provide 2 thumbs
-        int ExpectedFingers = 4;
-
-        if (GB_AcquisitionOptionsGlobals.acquiredFrameValid) {
-            try {
-                if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SINGLE_FINGER) {
-                    GB_AcquisitionOptionsGlobals.acquiredFrame.EncodeToLFSMinutiae(
-                            GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString()),
-                            GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE,
-                            this);
-                } else if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_ROLL_SINGLE_FINGER) {
-                    GB_AcquisitionOptionsGlobals.acquiredFrame.EncodeToLFSMinutiae(
-                            GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString()),
-                            GbfrswJavaWrapperDefinesImageFlags.GBFRSW_ROLLED_IMAGE,
-                            this);
-                } else if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SLAP_4) {
-
-                    GbfinimgJavaWrapperDefineSegmentImageDescriptor[] descriptors = new GbfinimgJavaWrapperDefineSegmentImageDescriptor[4];
-                    boolean ret = ProcessSlapImage(
-                            GB_AcquisitionOptionsGlobals.acquiredFrame.bytes,
-                            GB_AcquisitionOptionsGlobals.acquiredFrame.sx,
-                            GB_AcquisitionOptionsGlobals.acquiredFrame.sy,
-                            GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_RIGHT_HAND_4,  // 5ran6: Very IMPORTANT! you should change this value based on the fingers/hand to be used. For now it is for RIGHT HAND SLAP_4. There is LEFT_HAND  SLAP_4 and THUMBS_2. For 3 fingers, I'll cross check value to be passed here and let you know. Thanks
-                            ExpectedFingers, // 5ran6: once ExpectedFingers value has been set, it will pass smoothly
-                            descriptors
-                    );
-                    Log.i("Check ProcessSlapImage", "ProcessSlapImage ret = " +
-                            ret);
-
-                    Log.i("check", Arrays.toString(descriptors));
-
-
-                    for (int i = 0; i < ExpectedFingers; i++) {
-                        Log.i("Check img size", "Step = " + i + "Expected SizeX = " + (
-                                descriptors[i].BoundingBoxR - descriptors[i].BoundingBoxL));
-                        Log.i("Check img size", "Step = " + i + "BBR = " + (descriptors[i].BoundingBoxR));
-                        Log.i("Check img size", "Step = " + i + "BBL = " + (descriptors[i].BoundingBoxL));
-                        GbExampleGrayScaleBitmapClass bmpCls =
-                                new GbExampleGrayScaleBitmapClass(
-                                        descriptors[i].SegmentImage,
-                                        500, 500,
-                                        //descriptors[i].BoundingBoxR - descriptors[i].BoundingBoxL,
-                                        //descriptors[i].BoundingBoxB - descriptors[i].BoundingBoxT,
-                                        false,
-                                        false,
-                                        this
-                                );
-                        Log.i("Check img size", "Real SizeX = " + (
-                                bmpCls.sx));
-                        bmpCls.EncodeToLFSMinutiae(
-                                GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString() + i),
-                                GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE,
-                                this);
-                    }
-                    if (!ret) {
-                        throw new Exception("ProcessSlapImage error");
-                    }
-                } else {
-                    throw new Exception("object does not support enrolling");
-                }
-            } catch (Exception ex) {
-                LogAsDialog("EnrollFinger: " + ex.getMessage());
-            }
-        } else {
-            LogAsDialog("EnrollFinger: acquiredFrame not valid");
-        }
-    }
 
     // 5ran6: FUNCTION TO BE CALLED
     public void Identify() {
+        GB_AcquisitionOptionsGlobals.ObjTypeToAcquire = GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SINGLE_FINGER;
         if (GB_AcquisitionOptionsGlobals.acquiredFrameValid) {
             try {
                 if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SINGLE_FINGER) {
@@ -966,11 +866,14 @@ public class QuarterlyVerificationWithFingerprint extends AppCompatActivity impl
                             GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE,
                             this);
                     if (ret) {
-                        report.setText("Done");
+                        report.setText("Login Successful");
                         gifImageView.setBackgroundResource(R.drawable.success);
-                        //5ran6: Loading screen animation
-                        //5ran6: Call API to Verify Quarterly with BIPPIIS number
-                        //5ran6: if successful, Intent to next main activity
+                        new Handler().postDelayed(() -> {
+                            // 5ran6: VERIFICATION SUCCESSFUL! Loading screen animation begins
+                            // 5ran6: IF you need to call any API, call here
+                            // 5ran6: then Intent to Main activity and destroy this one by calling finish();
+                            finish();
+                        }, 2000);
                     } else {
                         gifImageView.setBackgroundResource(R.drawable.unsuccessful);
                         report.setText("Identity Not Found. ");
@@ -1027,9 +930,9 @@ public class QuarterlyVerificationWithFingerprint extends AppCompatActivity impl
             GB_AcquisitionOptionsGlobals.BOZORTH_Jw = new BozorthJavaWrapperLibrary();
             setContentView(R.layout.activity_login_with_fingerprint);
 
-            LoggerAcquisitionInfoTv = findViewById(R.id.Acquisition_Info);
-            LoggerImageInfoTv = findViewById(R.id.Image_Info);
-            LoggerView = findViewById(R.id.FrameView);
+            LoggerAcquisitionInfoTv = (TextView) findViewById(R.id.Acquisition_Info);
+            LoggerImageInfoTv = (TextView) findViewById(R.id.Image_Info);
+            LoggerView = (ImageView) findViewById(R.id.FrameView);
             gifImageView = findViewById(R.id.processing);
             report = findViewById(R.id.tv);
 
@@ -1062,7 +965,7 @@ public class QuarterlyVerificationWithFingerprint extends AppCompatActivity impl
             bEnroll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    EnrollFinger();
+
                 }
             });
             bEnroll.setText("Enroll");
@@ -1224,62 +1127,5 @@ public class QuarterlyVerificationWithFingerprint extends AppCompatActivity impl
 
 
     }
-
-    private boolean onProcess() {
-        try {
-            int SegmSx = 500, SegmSy = 500;
-            // String fname = comboFilesList.getSelectedItem().toString();
-            String fname = "Finger";
-            int ObjType = gbfinimgWindow.GbfinimgObjTypesArray[2];
-            GbExampleGrayScaleBitmapClass GbBmp = new GbExampleGrayScaleBitmapClass();
-            if (!GB_AcquisitionOptionsGlobals.GbfinimgLibLoaded) {
-                throw new Exception("Gbfinimg library not loaded");
-            }
-            boolean ret = GbBmp.GbBmpFromRawFileWithSize(fname, this);
-            if (!ret) {
-                throw new Exception("GbBmpFromRawFileWithSize error");
-            }
-            if (GbBmp.sx < SegmSx) SegmSx = GbBmp.sx;
-            if (GbBmp.sy < SegmSy) SegmSy = GbBmp.sy;
-            GbfinimgJavaWrapperDefineSegmentImageDescriptor[] descriptors = new GbfinimgJavaWrapperDefineSegmentImageDescriptor[4];
-            for (int i = 0; i < 4; i++) {
-                descriptors[i] = new GbfinimgJavaWrapperDefineSegmentImageDescriptor();
-                descriptors[i].SegmentImage = new byte[SegmSx * SegmSy];
-            }
-            GBJavaWrapperUtilIntForJavaToCExchange SegmNum = new GBJavaWrapperUtilIntForJavaToCExchange(),
-                    Diag = new GBJavaWrapperUtilIntForJavaToCExchange();
-            int RetVal = GB_AcquisitionOptionsGlobals.GBFINIMG_Jw.ProcessImage(
-                    GbBmp.bytes, GbBmp.sx, GbBmp.sy,
-                    ObjType,
-                    GbfinimgJavaWrapperDefinesProcessOptions.GBFINIMG_REFINE_DRY_FINGERPRINT_IMAGE |
-                            GbfinimgJavaWrapperDefinesProcessOptions.GBFINIMG_REFINE_WET_FINGERPRINT_IMAGE |
-                            GbfinimgJavaWrapperDefinesProcessOptions.GBFINIMG_HALO_LATENT_ELIMINATION,
-                    SegmSx, SegmSy,
-                    null, 0,
-                    descriptors,
-                    SegmNum, Diag
-            );
-            if (RetVal != GbfinimgJavaWrapperDefinesReturnCodes.GBFINIMG_NO_ERROR) {
-                ManageGbfinimgErrors("onProcess, ProcessImage", RetVal, true);
-                return false;
-            }
-            LogAsDialog("SegmNum=" + SegmNum.Get() + ",Diag=" + Diag.Get());
-            gbfinimgWindow.SaveAN2000File(fname, GbBmp, ObjType, descriptors, SegmNum.Get());
-            gbfinimgWindow.SaveAN2011File(fname, GbBmp, ObjType, descriptors, SegmNum.Get());
-            SegmentsInfoWindow.NumOfSegments = SegmNum.Get();
-            SegmentsInfoWindow.Diagnostic = Diag.Get();
-            SegmentsInfoWindow.descriptors = descriptors;
-
-            Intent intent = new Intent(this, SegmentsInfoWindow.class);
-            startActivity(intent);
-            return true;
-        } catch (Exception ex) {
-            LogAsDialog("onProcess: " + ex.getMessage());
-            return false;
-        }
-
-
-    }
-
 
 }

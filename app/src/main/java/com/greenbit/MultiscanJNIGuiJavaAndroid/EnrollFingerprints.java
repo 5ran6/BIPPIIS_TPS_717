@@ -11,10 +11,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -29,6 +25,11 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.ViewAnimation;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesReturnCodes;
@@ -165,6 +166,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                 bStartStop.setText("Stop Acquisition");
                 return true;
             } else {
+                Log.d("fingerpring", "Unfortunately Stopped 1");
                 String checkGbmsapi = "";
                 int RetVal = GB_AcquisitionOptionsGlobals.GBMSAPI_Jw.StopAcquisition();
                 bGetAttDevList.setEnabled(true);
@@ -173,6 +175,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                 //  proceed = true;
                 // hand_to_place(sequence_count);
                 if (RetVal == GBMSAPIJavaWrapperDefinesReturnCodes.GBMSAPI_ERROR_CODE_NO_ERROR) {
+                    Log.d("fingerpring", "Unfortunately Stopped 2");
                     checkGbmsapi = "Stopping...";
                 } else {
                     ManageGbmsapiErrors("Start Button, StopAcquisition", RetVal, true);
@@ -185,6 +188,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             }
         } catch (Exception ex) {
             LogAsDialog("Exception in Start: " + ex.getMessage());
+            ex.printStackTrace();
             return false;
         }
     }
@@ -349,10 +353,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             ActivityCompat.requestPermissions(this,
                     permissions,
                     1);
-        } else {
-            // Permission has already been granted
         }
-
         try {
             super.onCreate(savedInstanceState);
             GB_AcquisitionOptionsGlobals.GBMSAPI_Jw = new GBMSAPIJavaWrapperLibrary();
@@ -802,6 +803,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                             GB_AcquisitionOptionsGlobals.acquiredFrame = GbBmp;
                             GB_AcquisitionOptionsGlobals.acquiredFrameValid = true;
                             //END OF BEEP: then proceed
+
                             report.setText("Processing! Please Remove your hands. ");
                             proceed = true;
                             ended = true;

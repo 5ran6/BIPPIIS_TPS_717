@@ -1185,62 +1185,59 @@ public class GbExampleGrayScaleBitmapClassRough {
         }
     }
 
-    public void EncodeToLFSMinutiae(String fileName, int ImageFlags, IGreenbitLogger act) {
-        try {
-            int RetVal;
+    public void EncodeToLFSMinutiae(String fileName, int ImageFlags, IGreenbitLogger act) throws Exception {
+        int RetVal;
 
-            /******************
-             Get minutiae
-             *****************/
-            LfsJavaWrapperDefinesMinutia[] Probe = new LfsJavaWrapperDefinesMinutia[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+        /******************
+         Get minutiae
+         *****************/
+        LfsJavaWrapperDefinesMinutia[] Probe = new LfsJavaWrapperDefinesMinutia[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
 
-            for (int i = 0; i < BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE; i++)
-                Probe[i] = new LfsJavaWrapperDefinesMinutia();
+        for (int i = 0; i < BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE; i++)
+            Probe[i] = new LfsJavaWrapperDefinesMinutia();
 
-            GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNum = new GBJavaWrapperUtilIntForJavaToCExchange();
+        GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNum = new GBJavaWrapperUtilIntForJavaToCExchange();
 
-            RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe, MinutiaeNum);
+        RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe, MinutiaeNum);
 
-            if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
-                throw new Exception("EncodeToLfsMinutiae" +
-                        ", EncodeToLfsMinutiae: " + GB_AcquisitionOptionsGlobals.LFS_Jw.GetLastErrorString());
-            }
-
-
-            /*******************
-             * Save To File
-             ******************/
-            act.LogOnScreen("Saving image as ANSI 378 template; Storage dir: " + GetGreenbitDirectoryName() +
-                    ", len = " + bytes.length);
-            File file = new File(GetGreenbitDirectoryName(),
-                    fileName + ".lfs");
-            OutputStream fOut = new FileOutputStream(file);
-            Log.d("Fingerprint", "Probe size = " + String.valueOf(Probe.length));
-            fOut.write(SerializeMinutiaeBuffer(Probe)); // check this line out
-            fOut.close(); // do not forget to close the stream
-
-            Log.d("Fingerprint", "Closed successfully");
-        } catch (Exception e) {
-            e.printStackTrace();
-            act.LogAsDialog("EncodeToLFSMinutiae exception: " + e.getMessage());
+        if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
+            throw new Exception("EncodeToLfsMinutiae" +
+                    ", EncodeToLfsMinutiae: " + GB_AcquisitionOptionsGlobals.LFS_Jw.GetLastErrorString());
         }
+
+
+        /*******************
+         * Save To File
+         ******************/
+        act.LogOnScreen("Saving image as ANSI 378 template; Storage dir: " + GetGreenbitDirectoryName() +
+                ", len = " + bytes.length);
+        File file = new File(GetGreenbitDirectoryName(),
+                fileName + ".lfs");
+        OutputStream fOut = new FileOutputStream(file);
+        Log.d("Fingerprint", "Probe size = " + String.valueOf(Probe.length));
+        fOut.write(serializeMinutiaeBuffer(Probe)); // check this line out
+        fOut.flush();
+        fOut.close(); // do not forget to close the stream
+
+        Log.d("Fingerprint", "Closed successfully");
     }
 
-    private byte[] serializeMinutiaeBuffer(LfsJavaWrapperDefinesMinutia[] MinutiaeArrayToSerialize) {
+    private byte[] serializeMinutiaeBuffer(LfsJavaWrapperDefinesMinutia[] MinutiaeArrayToSerialize) throws IOException, ClassNotFoundException {
 
 
-        byte[] serializedMBuffer = new byte[0];
-        byte[] deSerializedMBuffer = new byte[0];
+        byte[] serializedMBuffer;
+        byte[] deSerializedMBuffer = new byte[1024];
         ObjectOutputStream out = null;
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             out = new ObjectOutputStream(bos);
 
             for (LfsJavaWrapperDefinesMinutia lfsJavaWrapperDefinesMinutia : MinutiaeArrayToSerialize) {
-
                 out.writeObject(lfsJavaWrapperDefinesMinutia);
             }
             //out.flush();
             serializedMBuffer = bos.toByteArray();
+//            serializedMBuffer = bos.toByteArray();
+            bos.write(serializedMBuffer);
 
             //deserialize
             //LfsJavaWrapperDefinesMinutia lfsJavaWrapperDefinesMinutia = new LfsJavaWrapperDefinesMinutia();
@@ -1265,8 +1262,6 @@ public class GbExampleGrayScaleBitmapClassRough {
 
             }
 
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
         }
         return serializedMBuffer;
     }
