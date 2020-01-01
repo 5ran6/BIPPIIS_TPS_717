@@ -160,9 +160,9 @@ public class PrinterActivity extends AppCompatActivity {
         }
     }
 
-    private static URL getResources(String name) {
-        return PrinterActivity.class.getResource(name);
-    }
+//    private static URL getResources(String name) {
+//        return PrinterActivity.class.getResource(name);
+//    }
 
     private void printPDF() {
         PrintManager printManager = (PrintManager) getSystemService(Context.PRINT_SERVICE);
