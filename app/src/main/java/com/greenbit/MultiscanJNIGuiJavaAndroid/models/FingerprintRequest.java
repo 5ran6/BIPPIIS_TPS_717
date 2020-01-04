@@ -1,16 +1,18 @@
 package com.greenbit.MultiscanJNIGuiJavaAndroid.models;
 
+import java.util.ArrayList;
+
 public class FingerprintRequest {
 
 
-    private Object[] fingerprints;
+    private ArrayList fingerprints;
     private String bippiis_number;
 
-    public Object[] getFingerprints() {
+    public ArrayList getFingerprints() {
         return fingerprints;
     }
 
-    public void setFingerprints(Object[] fingerprints) {
+    public void setFingerprints(ArrayList fingerprints) {
         this.fingerprints = fingerprints;
     }
 

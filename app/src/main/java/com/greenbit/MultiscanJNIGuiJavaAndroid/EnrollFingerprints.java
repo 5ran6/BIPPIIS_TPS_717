@@ -30,9 +30,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.interfaces.BIPPIIS;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintRequest;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintResponse;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFile;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.ViewAnimation;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesReturnCodes;
@@ -558,6 +560,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
 
             report.setText("Uploading.....");
             gifImageView.setImageResource(R.drawable.processing);
+            fingerprints_array = storageFile.fingerPrint.getAllFingerprints();
             Log.d("fingerprint", "Number of fingerprints = " + fingerprints_array.size());
             //retrofit
 
@@ -578,30 +581,61 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
 
             FingerprintRequest fingerprintRequest = new FingerprintRequest();
             fingerprintRequest.setBippiis_number(bippiis_number);
-            fingerprintRequest.setFingerprints(fingerprints_array.toArray());
+            fingerprintRequest.setFingerprints(fingerprints_array);
 
             Call<FingerprintResponse> fingerprintResponseCall = service.getFingerprintResponse(fingerprintRequest);
             fingerprintResponseCall.enqueue(new Callback<FingerprintResponse>() {
                 @Override
                 public void onResponse(Call<FingerprintResponse> call, Response<FingerprintResponse> response) {
+                    FingerprintResponse fingerPrintResponse = response.body();
+                    Log.d("fingerprint", "fingerPrintResponse code: " + fingerPrintResponse.toString());
 
-                    uploaded = true; //end of retrofit
-                    report.setText("All Done.");
-                    Log.d("fingerprint", "Uploaded successfully " + response);
-                    startActivity(new Intent(getApplicationContext(), CameraCapture.class).putExtra("token", token));
+                    //validate response
+                    try {
+                        if (fingerPrintResponse.getStatus().equalsIgnoreCase("success")) {
+                            //    uploaded = true; //end of retrofit
+                            report.setText("All Done.");
+                            Log.d("fingerprint", "Uploaded successfully " + response);
+
+                            Log.d("fingerprint", "Response: " + response.body().getData().toString());
+                            String access_token = "";
+
+                            String js = new Gson().toJson(fingerPrintResponse.getData()).trim();
+                            String json = js.substring(1, js.length() - 1);
+                            Log.d("fingerprint", "Response: JSON " + json);
+
+                            String[] values = json.split(",");
+                            String[] enroll_value = values[7].split(":");
+                            access_token = enroll_value[1];
+                            Log.d("fingerprint", "access token: " + access_token);
+                            token = access_token;
+                            uploaded = true;
+                            startActivity(new Intent(getApplicationContext(), CameraCapture.class).putExtra("token", token));
+                        } else {
+                            // go to login then camera
+                            gifImageView.setImageResource(R.drawable.unsuccessful);
+                            report.setTextColor(getResources().getColor(R.color.colorAccent));
+                            report.setText("Something went wrong. Click on retry");
+                        }
+                    } catch (NullPointerException n) {
+                        n.printStackTrace();
+                        gifImageView.setImageResource(R.drawable.unsuccessful);
+                        report.setTextColor(getResources().getColor(R.color.colorAccent));
+                        report.setText("Upload Failed. Click on retry");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 @Override
                 public void onFailure(Call<FingerprintResponse> call, Throwable t) {
-                    report.setText("Upload Fialed. Click on retry");
+                    report.setTextColor(getResources().getColor(R.color.colorAccent));
+                    report.setText("Upload Failed. Click on retry");
                     gifImageView.setImageResource(R.drawable.unsuccessful);
                     uploaded = false;
                     Log.d("fingerprint", "Failed to Upload");
-
                 }
             });
-
-
         }
         if (sequence == 5) {
             text = "LEFT HAND: Place the four fingers on the scanner as shown above";
@@ -1402,8 +1436,8 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     private long exitTime = 0;
 
     public void doExitApp() {
-        if ((System.currentTimeMillis() - exitTime) > 2000) {
-            Tools.toast("Done enrollment?", EnrollFingerprints.this);
+        if ((System.currentTimeMillis() - exitTime) > 1500) {
+            Tools.toast("Press again to CANCEL enrollment", EnrollFingerprints.this);
             exitTime = System.currentTimeMillis();
         } else {
             finishAffinity();
@@ -1412,12 +1446,13 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
 
     @Override
     public void onBackPressed() {
-        //  doExitApp();
+        doExitApp();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        storageFile.fingerPrint.allFingerprints = null;
         finish();
     }
 

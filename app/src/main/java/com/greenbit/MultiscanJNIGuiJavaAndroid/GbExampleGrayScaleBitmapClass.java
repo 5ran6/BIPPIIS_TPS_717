@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
 
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFile;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesANStruct;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesAnsinistVersions;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesCompressionAlgorithmsStrings;
@@ -63,7 +64,6 @@ public class GbExampleGrayScaleBitmapClass {
     public int sy;
     public boolean hasToBeSaved;
     public boolean isAcquisitionResult;
-    private EnrollFingerprints enrollFingerprints = new EnrollFingerprints();
 
 
     //-------------------------------------------------------------
@@ -634,8 +634,7 @@ public class GbExampleGrayScaleBitmapClass {
             /*******************
              * Save To ArrayList
              ******************/
-            enrollFingerprints.fingerprints_array.add(TemplateCode);
-
+            storageFile.fingerPrint.addFingerints(TemplateCode);
             /*******************
              * Save To File
              ******************/

@@ -4,9 +4,10 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class FingerprintResponse {
+
     @SerializedName("data")
     @Expose
-    private String data;
+    private Object data;
 
     @SerializedName("status")
     @Expose
@@ -16,21 +17,6 @@ public class FingerprintResponse {
     @Expose
     private String status_code;
 
-    @SerializedName("code")
-    @Expose
-    private String code;
-
-    @SerializedName("message")
-    @Expose
-    private String message;
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
 
     public String getStatus() {
         return status;
@@ -48,20 +34,13 @@ public class FingerprintResponse {
         this.status_code = status_code;
     }
 
-    public String getCode() {
-        return code;
+    public Object getData() {
+
+        return data;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
+    public void setData(Object data) {
+        this.data = data;
     }
 
 
