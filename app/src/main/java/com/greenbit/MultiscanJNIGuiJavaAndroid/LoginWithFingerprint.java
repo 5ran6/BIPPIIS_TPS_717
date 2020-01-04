@@ -43,7 +43,6 @@ import com.greenbit.ansinistitl.GBANJavaWrapperDefinesReturnCodes;
 import com.greenbit.ansinistitl.Gban2000JavaWrapperLibrary;
 import com.greenbit.bozorth.BozorthJavaWrapperLibrary;
 import com.greenbit.gbfinimg.GbfinimgJavaWrapperDefineSegmentImageDescriptor;
-import com.greenbit.gbfinimg.GbfinimgJavaWrapperDefinesProcessOptions;
 import com.greenbit.gbfinimg.GbfinimgJavaWrapperDefinesReturnCodes;
 import com.greenbit.gbfinimg.GbfinimgJavaWrapperLibrary;
 import com.greenbit.gbfir.GbfirJavaWrapperDefinesReturnCodes;
@@ -87,7 +86,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
     private Button bGetAttDevList;
     private Button bStartStop;
     private EditText tbName;
-    private boolean AcquisitionStarted = false;
+    private boolean AcquisitionStarted = false, proceed = false;
     public static boolean firstStart = false;
 
     private ArrayList<String> LoggerPopupList;
@@ -116,6 +115,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
     public static GbfinimgJavaWrapperDefineSegmentImageDescriptor[] segments;
     private GbExampleGrayScaleBitmapClass gbExampleGrayScaleBitmapClass =
             new GbExampleGrayScaleBitmapClass();
+    private int sequence_count = 0;
 
     private void StartChronometer() {
         ChronometerStarted = true;
@@ -234,16 +234,20 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                             GB_AcquisitionOptionsGlobals.acquiredFrame = GbBmp;
                             GB_AcquisitionOptionsGlobals.acquiredFrameValid = true;
                             //END OF BEEP: then proceed
-                            report.setText("Processing! Please Remove your hands. ");
-                            //               Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_SHORT).show();
+                            sequence_count++;
+                            if (sequence_count > 1) {
+                                report.setText("Processing! Please Remove your finger. ");
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Log.d("fingerprint", "acquisition ended bro");
+                                        Identify();
+                                    }
+                                }, 2500);
+                            }
+                            report.setText("Initializing ");
 
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.d("fingerprint", "acquisition ended bro");
-                                    Identify();
-                                }
-                            }, 2500);
+                            //               Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_SHORT).show();
 
 
                         }
@@ -505,7 +509,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
         }
         LogImageInfoOnScreen(checkGbmsapi);
 
-        comboObjectsToAcquire = (Spinner) findViewById(R.id.comboObjectsToAcquire);
+        comboObjectsToAcquire = findViewById(R.id.comboObjectsToAcquire);
         GBJavaWrapperUtilIntForJavaToCExchange objTypesMask = new GBJavaWrapperUtilIntForJavaToCExchange();
         RetVal = GB_AcquisitionOptionsGlobals.GBMSAPI_Jw.GetScannableTypes(objTypesMask);
         if (RetVal == GBMSAPIJavaWrapperDefinesReturnCodes.GBMSAPI_ERROR_CODE_NO_ERROR) {
@@ -565,47 +569,6 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
         return objToAcquire;
     }
 
-//    private int GetGbfinimgTypeFromString(String objToAcquireString) {
-//        int GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_NO_TYPE;
-//        if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_FLAT_SINGLE_FINGER) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_SINGLE_FINGER_FLAT;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_ROLL_SINGLE_FINGER) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_SINGLE_FINGER;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_FLAT_INDEXES_2) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_THUMBS_2;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_FLAT_LOWER_HALF_PALM) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_LEFT_HAND_HALF_PALM;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_FLAT_SLAP_2) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_LEFT_HAND_2;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_FLAT_SLAP_4) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_LEFT_HAND_4;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_FLAT_THUMBS_2) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_THUMBS_2;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_FLAT_UPPER_HALF_PALM) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_LEFT_HAND_HALF_PALM_UPPER;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_FLAT_WRITER_PALM) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_LEFT_HAND_WRITER_PALM;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_PLAIN_JOINT_LEFT_SIDE) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_FLAT_JOINT_FINGER_FV2;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_PLAIN_JOINT_RIGHT_SIDE) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_FLAT_JOINT_FINGER_FV4;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_ROLLED_DOWN) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_SINGLE_FINGER_FLAT;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_ROLLED_HYPOTHENAR) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_LEFT_HAND_ROLLED_THENAR;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_ROLLED_JOINT) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_ROLLED_JOINT_FINGER_FV1;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_ROLLED_JOINT_CENTER) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_ROLLED_JOINT_FINGER_FV1;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_ROLLED_THENAR) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_LEFT_HAND_ROLLED_THENAR;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_ROLLED_TIP) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_ROLLED_TIP;
-//        } else if (objToAcquireString == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_STRING_ROLLED_UP) {
-//            GbfinimgType = GbfinimgJavaWrapperDefinesInputImageType.GBFINIMG_INPUT_IMAGE_TYPE_SINGLE_FINGER_FLAT;
-//        }
-//        return GbfinimgType;
-//    }
 
     // 5ran6: FUNCTION TO BE CALLED : This function runs to put on the scanner and wait for fingers to be placed on it. Then it acquires. Remembe, acquiring is automated. After the beep sound, user fingerprint has been acquired. So he/she can remove it
     private boolean StartStopAcquisition() {
@@ -627,6 +590,8 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                         this, null,
                         0, 0, 0
                 );
+
+
                 if (RetVal == GBMSAPIJavaWrapperDefinesReturnCodes.GBMSAPI_ERROR_CODE_NO_ERROR) {
                     checkGbmsapi = "Don't place finger on the scanner";
                     AcquisitionStarted = true;
@@ -664,7 +629,9 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                 return true;
             }
         } catch (Exception ex) {
-            LogAsDialog("Exception in Start: " + ex.getMessage());
+            // LogAsDialog("Exception in Start: " + ex.getMessage());
+
+            ex.printStackTrace();
             return false;
         }
     }
@@ -821,42 +788,10 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
         for (int i = 0; i < size; i++) valToRet[i] = val;
         return valToRet;
     }
-//
-//    public void LogOnLogcat(String funcName, String message) {
-//        Log.d("GbAndroidExample", funcName + ": " + message);
-//    }
-//
-//    public void SaveWsq() {
-//        if (GB_AcquisitionOptionsGlobals.acquiredFrameValid) {
-//            try {
-//                GB_AcquisitionOptionsGlobals.acquiredFrame.SaveToWsq(GB_AcquisitionOptionsGlobals.WsqFileName, this);
-//            } catch (Exception ex) {
-//                LogAsDialog("SaveWsq: " + ex.getMessage());
-//            }
-//        } else {
-//            LogAsDialog("SaveWsq: acquiredFrame not valid");
-//        }
-//    }
-//
-//    public void LoadWsq() {
-//        try {
-//            GbExampleGrayScaleBitmapClass bmpToShow = new GbExampleGrayScaleBitmapClass();
-//            boolean loaded = bmpToShow.GbBmpFromWsqFile(GB_AcquisitionOptionsGlobals.WsqFileName, true, true, this);
-//            if (loaded) {
-//                LogBitmap(bmpToShow);
-//                LogPopup("Loaded from wsq");
-//            } else {
-//                LogAsDialog("LoadWsq: Failure in open Wsq");
-//            }
-//        } catch (Exception ex) {
-//            LogAsDialog("LoadWsq: " + ex.getMessage());
-//        }
-//    }
-
 
     // 5ran6: FUNCTION TO BE CALLED
     public void Identify() {
-        GB_AcquisitionOptionsGlobals.ObjTypeToAcquire = GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SINGLE_FINGER;
+        // GB_AcquisitionOptionsGlobals.ObjTypeToAcquire = GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SINGLE_FINGER;
         if (GB_AcquisitionOptionsGlobals.acquiredFrameValid) {
             try {
                 if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SINGLE_FINGER) {
@@ -934,9 +869,9 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             GB_AcquisitionOptionsGlobals.BOZORTH_Jw = new BozorthJavaWrapperLibrary();
             setContentView(R.layout.activity_login_with_fingerprint);
 
-            LoggerAcquisitionInfoTv = (TextView) findViewById(R.id.Acquisition_Info);
-            LoggerImageInfoTv = (TextView) findViewById(R.id.Image_Info);
-            LoggerView = (ImageView) findViewById(R.id.FrameView);
+            LoggerAcquisitionInfoTv = findViewById(R.id.Acquisition_Info);
+            LoggerImageInfoTv = findViewById(R.id.Image_Info);
+            LoggerView = findViewById(R.id.FrameView);
             gifImageView = findViewById(R.id.processing);
             report = findViewById(R.id.tv);
 
@@ -945,7 +880,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             LoggerPopupList = new ArrayList<String>();
             LoggerBitmapList = new ArrayList<GbExampleGrayScaleBitmapClass>();
 
-            bGetAttDevList = (Button) findViewById(R.id.bAttDevList);
+            bGetAttDevList = findViewById(R.id.bAttDevList);
             bGetAttDevList.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -954,7 +889,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             });
             bGetAttDevList.setText("Refresh");
 
-            bStartStop = (Button) findViewById(R.id.bStartStop);
+            bStartStop = findViewById(R.id.bStartStop);
             bStartStop.setEnabled(false);
             bStartStop.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -964,7 +899,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             });
             bStartStop.setText("Start Acquisition");
 
-            Button bEnroll = (Button) findViewById(R.id.bEnroll);
+            Button bEnroll = findViewById(R.id.bEnroll);
             bEnroll.setEnabled(true);
             bEnroll.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -974,7 +909,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             });
             bEnroll.setText("Enroll");
 
-            Button bIdentify = (Button) findViewById(R.id.bIdentify);
+            Button bIdentify = findViewById(R.id.bIdentify);
             bIdentify.setEnabled(true);
             bIdentify.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -984,7 +919,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             });
             bIdentify.setText("Identify");
 
-            tbName = (EditText) findViewById(R.id.tbName);
+            tbName = findViewById(R.id.tbName);
             tbName.setEnabled(true);
 
             GB_AcquisitionOptionsGlobals.acquiredFrameValid = false;
@@ -1017,12 +952,21 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             onRefresh();
             StartLogTimer();
             //starts scanner
-            StartStopAcquisition();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    bStartStop.performClick();
+                }
+            }, 5000);
         } catch (Exception ex) {
-            LogAsDialog("OnCreate exc:" + ex.getMessage());
+//            LogAsDialog("OnCreate exc:" + ex.getMessage());
+            ex.printStackTrace();
             throw ex;
         }
     }
+
+
 
 
     @Override

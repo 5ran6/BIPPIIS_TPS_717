@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    tools:context="com.greenbit.MultiscanJNIGuiJavaAndroid.CameraCapture">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:src="@drawable/logo" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="250dp"
+
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_rounded_green_300"
+        android:backgroundTint="#0a5"
+        android:onClick="capture"
+        android:text="Snap"
+        android:textColor="#fff" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/home"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_rounded_green_300"
+        android:backgroundTint="#08a"
+        android:enabled="false"
+        android:onClick="home"
+        android:text="Done"
+        android:textColor="#fff" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+</androidx.appcompat.widget.LinearLayoutCompat>

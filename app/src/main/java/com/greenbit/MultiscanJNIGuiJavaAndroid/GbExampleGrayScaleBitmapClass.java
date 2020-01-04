@@ -63,6 +63,8 @@ public class GbExampleGrayScaleBitmapClass {
     public int sy;
     public boolean hasToBeSaved;
     public boolean isAcquisitionResult;
+    private EnrollFingerprints enrollFingerprints = new EnrollFingerprints();
+
 
     //-------------------------------------------------------------
     // CONSTRUCTORS
@@ -107,7 +109,7 @@ public class GbExampleGrayScaleBitmapClass {
             for (int i = 0; i < bytes.length; i++) {
                 pixels[i * 4] =
                         pixels[i * 4 + 1] =
-                                pixels[i * 4 + 2] = (byte) (bytes[i]); //Invert the source bits
+                                pixels[i * 4 + 2] = bytes[i]; //Invert the source bits
                 pixels[i * 4 + 3] = (byte) 0xff; // the alpha.
             }
             ValToRet = Bitmap.createBitmap(sx, sy, Bitmap.Config.ARGB_8888);
@@ -155,7 +157,7 @@ public class GbExampleGrayScaleBitmapClass {
 
         for (String fname :
                 paths) {
-            String filenameArray[] = fname.split("\\.");
+            String[] filenameArray = fname.split("\\.");
             String extension = filenameArray[filenameArray.length - 1];
             if (extension.equals(extensionVal)) {
                 if (includeExtensionInName) ValToRet.add(fname);
@@ -187,7 +189,7 @@ public class GbExampleGrayScaleBitmapClass {
     }
 
     public static int[] GbBmpGetSizeFromRawFileName(String rawFName) {
-        String filenameArray[] = rawFName.split("_");
+        String[] filenameArray = rawFName.split("_");
         if (filenameArray.length >= 3) {
             String imgWS = filenameArray[filenameArray.length - 2], imgHS = filenameArray[filenameArray.length - 1];
             try {
@@ -630,10 +632,16 @@ public class GbExampleGrayScaleBitmapClass {
                 throw new Exception("Gbfrswlib Enroll Error : " + GB_AcquisitionOptionsGlobals.GBFRSW_Jw.GetLastErrorString());
             }
             /*******************
+             * Save To ArrayList
+             ******************/
+            enrollFingerprints.fingerprints_array.add(TemplateCode);
+
+            /*******************
              * Save To File
              ******************/
             act.LogOnScreen("Saving image as gbfrsw template; Storage dir: " + GetGreenbitDirectoryName() +
                     ", len = " + bytes.length);
+
             File file = new File(GetGreenbitDirectoryName(),
                     fileName + ".gbfrsw");
             OutputStream fOut = null;
@@ -714,7 +722,7 @@ public class GbExampleGrayScaleBitmapClass {
         String[] paths = file.list();
         for (String fname :
                 paths) {
-            String filenameArray[] = fname.split("\\.");
+            String[] filenameArray = fname.split("\\.");
             String extension = filenameArray[filenameArray.length - 1];
             if (extension.equals("gbfrsw")) {
                 boolean res = MatchWithTemplate(fname, ImageFlagsForCoding,
@@ -1032,7 +1040,7 @@ public class GbExampleGrayScaleBitmapClass {
             GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNumber = new GBJavaWrapperUtilIntForJavaToCExchange();
 
             // if needed, allocate minutiae array; otherwise, pass null
-            GbNfiqJavaWrapperDefineMinutiaeDescriptor MinutiaeList[] = new GbNfiqJavaWrapperDefineMinutiaeDescriptor[GbNfiqJavaWrapperLibrary.GBNFIQ_MAX_MINUTIAE];
+            GbNfiqJavaWrapperDefineMinutiaeDescriptor[] MinutiaeList = new GbNfiqJavaWrapperDefineMinutiaeDescriptor[GbNfiqJavaWrapperLibrary.GBNFIQ_MAX_MINUTIAE];
             for (int i = 0; i < GbNfiqJavaWrapperLibrary.GBNFIQ_MAX_MINUTIAE; i++)
                 MinutiaeList[i] = new GbNfiqJavaWrapperDefineMinutiaeDescriptor();
 
@@ -1104,8 +1112,6 @@ public class GbExampleGrayScaleBitmapClass {
             e.printStackTrace();
         }
     }
-
-
 
 
     public void EncodeToAnsi378Template(String fileName, int ImageFlags, IGreenbitLogger act) {
@@ -1217,7 +1223,7 @@ public class GbExampleGrayScaleBitmapClass {
             File file = new File(GetGreenbitDirectoryName(),
                     fileName + ".lfs");
             OutputStream fOut = new FileOutputStream(file);
-            Log.d("Fingerprint", "Probe size = " + String.valueOf(Probe.length));
+            Log.d("Fingerprint", "Probe size = " + Probe.length);
             fOut.write(SerializeMinutiaeBuffer(Probe)); // check this line out
             fOut.close(); // do not forget to close the stream
 

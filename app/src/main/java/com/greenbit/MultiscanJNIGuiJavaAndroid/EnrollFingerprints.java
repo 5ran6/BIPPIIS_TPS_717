@@ -30,6 +30,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.interfaces.BIPPIIS;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintRequest;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintResponse;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.ViewAnimation;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesReturnCodes;
@@ -61,13 +64,21 @@ import com.greenbit.lfs.LfsJavaWrapperLibrary;
 import com.greenbit.usbPermission.IGreenbitLogger;
 import com.greenbit.usbPermission.UsbPermission;
 import com.greenbit.utils.GBJavaWrapperUtilIntForJavaToCExchange;
-import com.greenbit.wsq.WsqJavaWrapperDefinesReturnCodes;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import pl.droidsonroids.gif.GifImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLogger, IGbmsapiAcquisitionManagerCallback {
     private int[] OpenedFD = new int[10];
@@ -79,6 +90,8 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     private View lyt_parent;
     private View lyt_student;
     private TextView report;
+    private boolean uploaded = false;
+
 
     private int sequence_count = 0;
     private Button bGetAttDevList;
@@ -98,6 +111,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     private boolean LoggerBitmapChanged = false;
     private int LoggerBitmapFileSaveCounter = 0;
     private Spinner comboObjectsToAcquire;
+    private String token = "";
 
     private String bippiis_number = "";
     private ImageView LoggerView;
@@ -110,6 +124,11 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     private boolean ChronometerStarted;
     private GifImageView gifImageView;
 
+
+    //    public byte[] fingerprints_array = new byte[20];
+    public ArrayList fingerprints_array = new ArrayList();
+
+
     public static GbfinimgJavaWrapperDefineSegmentImageDescriptor[] segments;
     private GbExampleGrayScaleBitmapClass gbExampleGrayScaleBitmapClass =
             new GbExampleGrayScaleBitmapClass();
@@ -120,7 +139,6 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     private boolean StartStopAcquisition(String finger_type) {
         //finger can be ROLL_SINGLE_FINGER : FLAT_SLAP_4 : FLAT_THUMBS_2
         proceed = false;
-
         try {
             int objToAcquire = GetObjToAcquireFromString(finger_type);
             GB_AcquisitionOptionsGlobals.ObjTypeToAcquire =
@@ -310,7 +328,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                                 );
                         Log.i("Check img size", "Real SizeX = " + (
                                 bmpCls.sx));
-                        bmpCls.EncodeToAnsi378Template(
+                        bmpCls.EncodeToTemplate(
                                 GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString() + i),
                                 GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE,
                                 this);
@@ -336,8 +354,6 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //   bippiis_number = getIntent().getStringExtra("bippiis_number");
-        //  tbName.setText(bippiis_number);
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -365,6 +381,8 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             GB_AcquisitionOptionsGlobals.BOZORTH_Jw = new BozorthJavaWrapperLibrary();
             setContentView(R.layout.activity_enroll_fingerprints);
 
+            bippiis_number = getIntent().getStringExtra("bippiis_number");
+            token = getIntent().getStringExtra("token");
 
             LoggerAcquisitionInfoTv = findViewById(R.id.Acquisition_Info);
             LoggerImageInfoTv = findViewById(R.id.Image_Info);
@@ -408,6 +426,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             bIdentify.setText("Identify");
 
             tbName = findViewById(R.id.tbName);
+            tbName.setText(bippiis_number);
             tbName.setEnabled(true);
 
             GB_AcquisitionOptionsGlobals.acquiredFrameValid = false;
@@ -455,7 +474,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
         handler1.postDelayed(() -> {
             sequence_count = 1;
             report.setText(hand_to_place(sequence_count, false));
-        }, 6500); // 8000 milliseconds delay
+        }, 6000); // 8000 milliseconds delay
 
     }
 
@@ -464,7 +483,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
         Log.d("fingerprint", "TOP Sequence:" + sequence);
 
         if (sequence == 1) {
-            Log.d("fingerprint", "Sequence: " + sequence);
+            Log.d("fingerprint", "Sequence: " + sequence + " bippiis = " + tbName.getText());
             text = "LEFT HAND: Place the four fingers on the scanner as shown above";
             gifImageView.setImageResource(R.drawable.slap_4_left);
             if (!ended)
@@ -517,20 +536,72 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             if (proceed) {
                 proceed = false;
                 ended = false;
-                if (!EnrollFinger(2, 3)) {
+                if (EnrollFinger(2, 3)) {
 
+                    sequence = 4;
+                    sequence_count = 4;
+
+
+                } else {
                     sequence = 3;
                     sequence_count = 3;
 
-                    report.setText("All Done.");
+
                 }
             }
         }
 
         ///////////////////////////////////
         if (sequence == 4) {
-            text = "LEFT HAND: Place the four fingers on the scanner as shown above";
-            gifImageView.setImageResource(R.drawable.slap_4_left);
+//            text = "LEFT HAND: Place the four fingers on the scanner as shown above";
+//            gifImageView.setImageResource(R.drawable.slap_4_left);
+
+            report.setText("Uploading.....");
+            gifImageView.setImageResource(R.drawable.processing);
+            Log.d("fingerprint", "Number of fingerprints = " + fingerprints_array.size());
+            //retrofit
+
+            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(Chain chain) throws IOException {
+                    Request newRequest = chain.request().newBuilder()
+                            .addHeader("Authorization", "Bearer " + token)
+                            .build();
+                    return chain.proceed(newRequest);
+                }
+            }).build();
+
+            Retrofit retrofit = new Retrofit.Builder().client(client)
+                    .baseUrl(getString(R.string.base_url))
+                    .addConverterFactory(GsonConverterFactory.create()).build();
+            BIPPIIS service = retrofit.create(BIPPIIS.class);
+
+            FingerprintRequest fingerprintRequest = new FingerprintRequest();
+            fingerprintRequest.setBippiis_number(bippiis_number);
+            fingerprintRequest.setFingerprints(fingerprints_array.toArray());
+
+            Call<FingerprintResponse> fingerprintResponseCall = service.getFingerprintResponse(fingerprintRequest);
+            fingerprintResponseCall.enqueue(new Callback<FingerprintResponse>() {
+                @Override
+                public void onResponse(Call<FingerprintResponse> call, Response<FingerprintResponse> response) {
+
+                    uploaded = true; //end of retrofit
+                    report.setText("All Done.");
+                    Log.d("fingerprint", "Uploaded successfully " + response);
+                    startActivity(new Intent(getApplicationContext(), CameraCapture.class).putExtra("token", token));
+                }
+
+                @Override
+                public void onFailure(Call<FingerprintResponse> call, Throwable t) {
+                    report.setText("Upload Fialed. Click on retry");
+                    gifImageView.setImageResource(R.drawable.unsuccessful);
+                    uploaded = false;
+                    Log.d("fingerprint", "Failed to Upload");
+
+                }
+            });
+
+
         }
         if (sequence == 5) {
             text = "LEFT HAND: Place the four fingers on the scanner as shown above";
@@ -1083,7 +1154,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
         }
         LogImageInfoOnScreen(checkGbmsapi);
 
-        comboObjectsToAcquire = (Spinner) findViewById(R.id.comboObjectsToAcquire);
+        comboObjectsToAcquire = findViewById(R.id.comboObjectsToAcquire);
         GBJavaWrapperUtilIntForJavaToCExchange objTypesMask = new GBJavaWrapperUtilIntForJavaToCExchange();
         RetVal = GB_AcquisitionOptionsGlobals.GBMSAPI_Jw.GetScannableTypes(objTypesMask);
         if (RetVal == GBMSAPIJavaWrapperDefinesReturnCodes.GBMSAPI_ERROR_CODE_NO_ERROR) {
@@ -1328,17 +1399,28 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
         }
     }
 
+    private long exitTime = 0;
+
+    public void doExitApp() {
+        if ((System.currentTimeMillis() - exitTime) > 2000) {
+            Tools.toast("Done enrollment?", EnrollFingerprints.this);
+            exitTime = System.currentTimeMillis();
+        } else {
+            finishAffinity();
+        }
+    }
+
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        //  onRefresh();
+        //  doExitApp();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        //    finish();
+        finish();
     }
+
 
     class MyAsyncTask extends android.os.AsyncTask {
         @Override

@@ -1,0 +1,213 @@
+package com.greenbit.MultiscanJNIGuiJavaAndroid;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.transition.Transition;
+import androidx.transition.TransitionValues;
+
+import com.google.gson.Gson;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.interfaces.BIPPIIS;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.LoginRequest;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.LoginResponse;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
+
+import java.io.IOException;
+import java.util.Objects;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+public class Login extends AppCompatActivity {
+    private AppCompatEditText bip;
+    private String token = "";
+    private String bippiis;
+    private ProgressBar progressBar;
+    private AppCompatImageView img;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+        bip = findViewById(R.id.bippiis_no);
+        progressBar = findViewById(R.id.progress);
+        img = findViewById(R.id.img);
+        final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+        final Transition transition = new Transition() {
+            @Override
+            public void captureEndValues(@NonNull TransitionValues transitionValues) {
+
+            }
+
+            @Override
+            public void captureStartValues(@NonNull TransitionValues transitionValues) {
+
+            }
+        };
+        animation.setDuration(2000); // duration - 2 seconds
+        animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+        animation.setRepeatCount(3); // Repeat animation infinitely
+        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
+        img.startAnimation(animation);
+
+
+    }
+
+    public void proceed(View view) {
+        bippiis = Objects.requireNonNull(bip.getText()).toString().trim();
+        //   Toast.makeText(getApplicationContext(), bippiis, Toast.LENGTH_SHORT).show();
+
+        if (bippiis.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "BIPPIIS NO CANNOT BE EMPTY!", Toast.LENGTH_SHORT).show();
+        } else {
+            //retrofit_auth and get token
+            progressBar.setVisibility(View.VISIBLE);
+
+            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(Chain chain) throws IOException {
+                    Request newRequest = chain.request().newBuilder()
+                            .addHeader("Authorization", "Bearer " + token)
+                            .build();
+                    return chain.proceed(newRequest);
+                }
+            }).build();
+
+            Retrofit retrofit = new Retrofit.Builder().client(client)
+                    .baseUrl(getString(R.string.base_url))
+                    .addConverterFactory(GsonConverterFactory.create()).build();
+            BIPPIIS service = retrofit.create(BIPPIIS.class);
+
+            LoginRequest loginRequest = new LoginRequest();
+            loginRequest.setBippiis_number(Objects.requireNonNull(bip.getText()).toString().trim());
+
+            Call<LoginResponse> loginResponseCall = service.getLoginResponse(loginRequest);
+            loginResponseCall.enqueue(new Callback<LoginResponse>() {
+
+
+                @Override
+                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                    progressBar.setVisibility(View.GONE);
+                    //       Log.d("fingerprint", "Verified successfully " + response.body().toString());
+
+                    LoginResponse loginResponse = response.body();
+
+
+                    //validate response
+                    try {
+                        if (loginResponse.getStatus().equalsIgnoreCase("success")) {
+
+                            Log.d("fingerprint", "Response: " + response.body().getData().toString());
+//                        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+//                        String json = null;
+//                        try {
+//                            json = ow.writeValueAsString(loginResponse.getData());
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+                            String has_enrolled = "";
+
+                            String js = new Gson().toJson(loginResponse.getData()).trim();
+                            String json = js.substring(1, js.length() - 1);
+                            Log.d("fingerprint", "Response: JSON " + json);
+
+                            //                       try {
+                            //JSONObject jsonObject = JSONConverter.toJSON(loginResponse.getData().toString());
+
+//                        json.substring(0, json.length() - 1);
+
+                            //     has_enrolled = jsonObject.getString("has_enrolled");
+                            //      Log.d("fingerprint", "substring: " + json);
+
+//                        } catch (JSONException | IllegalAccessException e) {
+//                            e.printStackTrace();
+//                        }
+
+                            String[] values = json.split(",");
+                            String[] enroll_value = values[7].split(":");
+                            has_enrolled = enroll_value[1];
+                            Log.d("fingerprint", "has enroll: " + has_enrolled);
+
+                            boolean enrolled = false;
+                            if (has_enrolled.trim().equalsIgnoreCase("false")) {
+                                enrolled = false;
+                            } else if (has_enrolled.trim().equalsIgnoreCase("true")) {
+                                enrolled = true;
+                            }
+                            //   try {
+                            if (!enrolled) {
+                                bippiis = bippiis.replace("/", "_");
+                                bippiis = bippiis.replace(" ", "_").toUpperCase();
+
+                                //   Toast.makeText(getApplicationContext(), bippiis, Toast.LENGTH_SHORT).show();
+
+                                startActivity(new Intent(getApplicationContext(), EnrollFingerprints.class).putExtra("bippiis_number", bippiis).putExtra("token", token));
+                            } else {
+                                // go to camera capture
+                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+                        } else {
+                            Log.d("fingerprint", "Response RAW: " + response.raw());
+
+                            Toast.makeText(getApplicationContext(), "INVALID BIPPIIS NUMBER", Toast.LENGTH_SHORT).show();
+                        }
+
+                    } catch (NullPointerException n) {
+                        n.printStackTrace();
+
+                        Toast.makeText(getApplicationContext(), "INVALID BIPPIIS NUMBER", Toast.LENGTH_SHORT).show();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<LoginResponse> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+
+                    Log.d("fingerprint", "Failed to Verify: " + t.getLocalizedMessage());
+
+                }
+            });
+
+
+        }
+
+    }
+
+    private long exitTime = 0;
+
+    public void doExitApp() {
+        if ((System.currentTimeMillis() - exitTime) > 2000) {
+            Tools.toast("Press again to exit app", Login.this);
+            exitTime = System.currentTimeMillis();
+        } else {
+            finishAffinity();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        doExitApp();
+    }
+}

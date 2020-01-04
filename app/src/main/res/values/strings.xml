@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidAcquisitionMatchingExample</string>
+    <string name="app_name">Biometrics Capture</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_device_settings">Settings</string>
     <string name="title_activity_acquisition_settings">AcquisitionSettings</string>
@@ -15,4 +15,5 @@
     <string name="title_activity_segments_info_window">SegmentsInfoWindow</string>
     <string name="title_activity_gb_an2000_settings">GbAn2000Settings</string>
     <string name="title_activity_log_window">LogWindow</string>
+    <string name="base_url">https://bippiis.com/api/v1/</string>
 </resources>

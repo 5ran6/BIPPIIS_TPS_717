@@ -11,10 +11,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +24,11 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesReturnCodes;
@@ -482,7 +483,7 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
         }
         LogImageInfoOnScreen(checkGbmsapi);
 
-        comboObjectsToAcquire = (Spinner) findViewById(R.id.comboObjectsToAcquire);
+        comboObjectsToAcquire = findViewById(R.id.comboObjectsToAcquire);
         GBJavaWrapperUtilIntForJavaToCExchange objTypesMask = new GBJavaWrapperUtilIntForJavaToCExchange();
         RetVal = GB_AcquisitionOptionsGlobals.GBMSAPI_Jw.GetScannableTypes(objTypesMask);
         if (RetVal == GBMSAPIJavaWrapperDefinesReturnCodes.GBMSAPI_ERROR_CODE_NO_ERROR) {
@@ -1011,18 +1012,18 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
             GB_AcquisitionOptionsGlobals.BOZORTH_Jw = new BozorthJavaWrapperLibrary();
 
             setContentView(R.layout.activity_main);
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            Toolbar toolbar = findViewById(R.id.toolbar);
             setSupportActionBar(toolbar);
 
-            LoggerAcquisitionInfoTv = (TextView) findViewById(R.id.Acquisition_Info);
-            LoggerImageInfoTv = (TextView) findViewById(R.id.Image_Info);
-            LoggerView = (ImageView) findViewById(R.id.FrameView);
+            LoggerAcquisitionInfoTv = findViewById(R.id.Acquisition_Info);
+            LoggerImageInfoTv = findViewById(R.id.Image_Info);
+            LoggerView = findViewById(R.id.FrameView);
             LoggerAcqInfoList = new ArrayList<String>();
             LoggerImageInfoList = new ArrayList<String>();
             LoggerPopupList = new ArrayList<String>();
             LoggerBitmapList = new ArrayList<GbExampleGrayScaleBitmapClass>();
 
-            bGetAttDevList = (Button) findViewById(R.id.bAttDevList);
+            bGetAttDevList = findViewById(R.id.bAttDevList);
             bGetAttDevList.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -1031,7 +1032,7 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
             });
             bGetAttDevList.setText("Refresh");
 
-            bStartStop = (Button) findViewById(R.id.bStartStop);
+            bStartStop = findViewById(R.id.bStartStop);
             bStartStop.setEnabled(false);
             bStartStop.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1040,8 +1041,7 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
                 }
             });
             bStartStop.setText("Start Acquisition");
-
-            Button bEnroll = (Button) findViewById(R.id.bEnroll);
+            Button bEnroll = findViewById(R.id.bEnroll);
             bEnroll.setEnabled(true);
             bEnroll.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1051,7 +1051,7 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
             });
             bEnroll.setText("Enroll");
 
-            Button bIdentify = (Button) findViewById(R.id.bIdentify);
+            Button bIdentify = findViewById(R.id.bIdentify);
             bIdentify.setEnabled(true);
             bIdentify.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1061,7 +1061,7 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
             });
             bIdentify.setText("Identify");
 
-            tbName = (EditText) findViewById(R.id.tbName);
+            tbName = findViewById(R.id.tbName);
             tbName.setEnabled(true);
 
             GB_AcquisitionOptionsGlobals.acquiredFrameValid = false;
@@ -1093,6 +1093,14 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
 
             onRefresh();
             StartLogTimer();
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    bStartStop.performClick();
+//                }
+//            }, 5000);
+
+
         } catch (Exception ex) {
             LogAsDialog("OnCreate exc:" + ex.getMessage());
             throw ex;
