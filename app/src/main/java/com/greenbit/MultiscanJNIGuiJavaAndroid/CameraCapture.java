@@ -18,6 +18,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.interfaces.BIPPIIS;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.PassportRequest;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.PassportResponse;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFile;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
@@ -62,13 +63,13 @@ public class CameraCapture extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
 
             if (resultCode == RESULT_OK) {
-             //   Uri imageUri = data.getData();
+                //   Uri imageUri = data.getData();
                 imageViewCompat.setImageURI(result.getUri());
                 home.setEnabled(true);
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), result.getUri());
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 30, stream);
                     byte[] byteArray = stream.toByteArray();
                     imageString = Base64.encodeToString(byteArray, Base64.DEFAULT);
                     bitmap.recycle();
@@ -127,14 +128,12 @@ public class CameraCapture extends AppCompatActivity {
         passportResponseCall.enqueue(new Callback<PassportResponse>() {
             @Override
             public void onResponse(Call<PassportResponse> call, Response<PassportResponse> response) {
-
-
                 progressBar.setVisibility(View.GONE);
                 home.setBackgroundColor(getResources().getColor(R.color.green_400));
                 home.setEnabled(true);
                 success = true;
                 home.setText("Done");
-                Log.d("fingerprint", "Uploaded successfully "+ response);
+                Log.d("fingerprint", "Uploaded successfully " + response);
                 //validate response
 
 
@@ -155,4 +154,9 @@ public class CameraCapture extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        storageFile.fingerPrint.allFingerprints.clear();
+    }
 }

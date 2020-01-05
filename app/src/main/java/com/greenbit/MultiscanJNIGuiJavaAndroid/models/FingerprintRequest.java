@@ -1,18 +1,22 @@
 package com.greenbit.MultiscanJNIGuiJavaAndroid.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
+
 
 public class FingerprintRequest {
 
-
-    private ArrayList fingerprints;
+    @SerializedName("fingerprints")
+    private ArrayList<String> fingerprints;
+    @SerializedName("bippiis_number")
     private String bippiis_number;
 
-    public ArrayList getFingerprints() {
+    public ArrayList<String> getFingerprints() {
         return fingerprints;
     }
 
-    public void setFingerprints(ArrayList fingerprints) {
+    public void setFingerprints(ArrayList<String> fingerprints) {
         this.fingerprints = fingerprints;
     }
 

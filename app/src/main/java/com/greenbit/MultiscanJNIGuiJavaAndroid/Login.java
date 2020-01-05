@@ -49,6 +49,10 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         bip = findViewById(R.id.bippiis_no);
+
+//        //to be removed
+//        bip.setText("BNS-6057284");
+
         progressBar = findViewById(R.id.progress);
         img = findViewById(R.id.img);
         final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
@@ -153,6 +157,7 @@ public class Login extends AppCompatActivity {
                                 startActivity(new Intent(getApplicationContext(), EnrollFingerprints.class).putExtra("bippiis_number", bippiis).putExtra("token", token));
                             } else {
                                 // go to login then camera
+                                Toast.makeText(getApplicationContext(), "Has been enrolled", Toast.LENGTH_LONG).show();
                             }
                         } else {
                             Log.d("fingerprint", "Response RAW: " + response.raw());

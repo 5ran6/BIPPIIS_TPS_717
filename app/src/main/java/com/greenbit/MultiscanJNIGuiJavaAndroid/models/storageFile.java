@@ -19,15 +19,15 @@ import java.util.ArrayList;
 public class storageFile implements Serializable {
 
     public static class fingerPrint {
-        public static ArrayList<byte[]> allFingerprints = new ArrayList<byte[]>();
+        public static ArrayList<String> allFingerprints = new ArrayList<String>();
 
 
-        public static void addFingerints(byte[] imageFile) {
+        public static void addFingerints(String imageFile) {
             allFingerprints.add(imageFile);
         }
 
 
-        public static ArrayList<byte[]> getAllFingerprints() {
+        public static ArrayList<String> getAllFingerprints() {
             return allFingerprints;
         }
 

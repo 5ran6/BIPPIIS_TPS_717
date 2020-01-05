@@ -30,7 +30,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.interfaces.BIPPIIS;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintRequest;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintResponse;
@@ -66,6 +65,8 @@ import com.greenbit.lfs.LfsJavaWrapperLibrary;
 import com.greenbit.usbPermission.IGreenbitLogger;
 import com.greenbit.usbPermission.UsbPermission;
 import com.greenbit.utils.GBJavaWrapperUtilIntForJavaToCExchange;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -475,12 +476,16 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
         Handler handler1 = new Handler();
         handler1.postDelayed(() -> {
             sequence_count = 1;
-            report.setText(hand_to_place(sequence_count, false));
+            try {
+                report.setText(hand_to_place(sequence_count, false));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }, 6000); // 8000 milliseconds delay
 
     }
 
-    private String hand_to_place(int sequence, boolean ended) {
+    private String hand_to_place(int sequence, boolean ended) throws JSONException {
         String text = "";
         Log.d("fingerprint", "TOP Sequence:" + sequence);
 
@@ -581,33 +586,45 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
 
             FingerprintRequest fingerprintRequest = new FingerprintRequest();
             fingerprintRequest.setBippiis_number(bippiis_number);
-            fingerprintRequest.setFingerprints(fingerprints_array);
+
+//            Gson gson = new Gson();
+//            String json = gson.toJson(storageFile.fingerPrint.allFingerprints);
+//            // to reverse it when am getting back from server
+///*
+//*           Gson gson = new Gson();
+//
+//            ArrayList<String> allFingerPrints = gson.fromJson(json, ArrayList.class); //json is string from server
+//
+//* */
+
+
+            fingerprintRequest.setFingerprints(storageFile.fingerPrint.allFingerprints);
+            Log.d("fingerprint", "fingerPrintResponse ArrayListString: " + storageFile.fingerPrint.allFingerprints.toArray().toString());
+            Log.d("fingerprint", "fingerPrintResponse Number of fingers: " + storageFile.fingerPrint.allFingerprints.size());
 
             Call<FingerprintResponse> fingerprintResponseCall = service.getFingerprintResponse(fingerprintRequest);
             fingerprintResponseCall.enqueue(new Callback<FingerprintResponse>() {
                 @Override
                 public void onResponse(Call<FingerprintResponse> call, Response<FingerprintResponse> response) {
                     FingerprintResponse fingerPrintResponse = response.body();
-                    Log.d("fingerprint", "fingerPrintResponse code: " + fingerPrintResponse.toString());
+                    Log.d("fingerprint", "fingerPrintResponse success: " + response.isSuccessful());
 
                     //validate response
                     try {
                         if (fingerPrintResponse.getStatus().equalsIgnoreCase("success")) {
                             //    uploaded = true; //end of retrofit
                             report.setText("All Done.");
+
+
                             Log.d("fingerprint", "Uploaded successfully " + response);
 
                             Log.d("fingerprint", "Response: " + response.body().getData().toString());
                             String access_token = "";
 
-                            String js = new Gson().toJson(fingerPrintResponse.getData()).trim();
-                            String json = js.substring(1, js.length() - 1);
-                            Log.d("fingerprint", "Response: JSON " + json);
+                            access_token = fingerPrintResponse.getToken();
 
-                            String[] values = json.split(",");
-                            String[] enroll_value = values[7].split(":");
-                            access_token = enroll_value[1];
-                            Log.d("fingerprint", "access token: " + access_token);
+                            Log.d("fingerprint", "Response: token " + access_token);
+
                             token = access_token;
                             uploaded = true;
                             startActivity(new Intent(getApplicationContext(), CameraCapture.class).putExtra("token", token));
@@ -781,7 +798,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     public void incompleteSequence(View view) {
     }
 
-    public void refresh(View view) {
+    public void refresh(View view) throws JSONException {
         // restarts the current sequence
         hand_to_place(sequence_count, false);
     }
@@ -920,7 +937,11 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                                 @Override
                                 public void run() {
                                     Log.d("fingerprint", "acquisition ended bro");
-                                    hand_to_place(sequence_count, ended);
+                                    try {
+                                        hand_to_place(sequence_count, ended);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }, 2500);
                         }
@@ -1452,10 +1473,16 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     @Override
     protected void onPause() {
         super.onPause();
-        storageFile.fingerPrint.allFingerprints = null;
+        storageFile.fingerPrint.allFingerprints.clear();
         finish();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // storageFile.fingerPrint.allFingerprints = null;
+
+    }
 
     class MyAsyncTask extends android.os.AsyncTask {
         @Override

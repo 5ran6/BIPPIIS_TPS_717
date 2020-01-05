@@ -2,6 +2,7 @@ package com.greenbit.MultiscanJNIGuiJavaAndroid;
 
 import android.graphics.Bitmap;
 import android.os.Environment;
+import android.util.Base64;
 import android.util.Log;
 
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFile;
@@ -632,9 +633,14 @@ public class GbExampleGrayScaleBitmapClass {
                 throw new Exception("Gbfrswlib Enroll Error : " + GB_AcquisitionOptionsGlobals.GBFRSW_Jw.GetLastErrorString());
             }
             /*******************
-             * Save To ArrayList
+             * Perform some operations
              ******************/
-            storageFile.fingerPrint.addFingerints(TemplateCode);
+            //storageFile.fingerPrint.allFingerprints.add(Base64.encodeToString(TemplateCode, Base64.DEFAULT));
+            String string = Base64.encodeToString(TemplateCode, Base64.DEFAULT);
+//            byte[] Temp = Base64.decode(string, Base64.DEFAULT);
+
+            storageFile.fingerPrint.addFingerints(string);
+
             /*******************
              * Save To File
              ******************/
@@ -646,6 +652,7 @@ public class GbExampleGrayScaleBitmapClass {
             OutputStream fOut = null;
             fOut = new FileOutputStream(file);
             fOut.write(TemplateCode);
+//            fOut.write(Temp);
             fOut.close(); // do not forget to close the stream
         } catch (Exception e) {
             e.printStackTrace();
@@ -728,7 +735,7 @@ public class GbExampleGrayScaleBitmapClass {
                         GbfrswJavaWrapperDefinesUnmatchedDataFactorInfluenceRecommended.RECOMMENDED_FOR_IDENTIFICATION,
                         false, act);
                 if (res) {
-                    // act.LogAsDialog("Identify found with file: " + fname);
+                    act.LogAsDialog("Identify found with file: " + fname);
                     return true;
                 }
             }

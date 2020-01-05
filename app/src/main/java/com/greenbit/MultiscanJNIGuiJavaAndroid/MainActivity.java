@@ -209,8 +209,8 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
                             GbBmp.SaveToJpeg2("Image_" + LoggerBitmapFileSaveCounter, this);
                             GbBmp.SaveToWsq("Image_" + LoggerBitmapFileSaveCounter, this);
                             GbBmp.SaveToFIR("Image_" + LoggerBitmapFileSaveCounter, this);
-                            GbBmp.GetNFIQQuality(this);
-                            GbBmp.GetNFIQ2Quality(this);
+//                            GbBmp.GetNFIQQuality(this);
+//                            GbBmp.GetNFIQ2Quality(this);
 
 //                            try {
 //                                GbBmp.TestLfsBozorth(this);
@@ -886,12 +886,12 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
         if (GB_AcquisitionOptionsGlobals.acquiredFrameValid) {
             try {
                 if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SINGLE_FINGER) {
-                    GB_AcquisitionOptionsGlobals.acquiredFrame.EncodeToLFSMinutiae(
+                    GB_AcquisitionOptionsGlobals.acquiredFrame.EncodeToTemplate(
                             GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString()),
                             GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE,
                             this);
                 } else if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_ROLL_SINGLE_FINGER) {
-                    GB_AcquisitionOptionsGlobals.acquiredFrame.EncodeToLFSMinutiae(
+                    GB_AcquisitionOptionsGlobals.acquiredFrame.EncodeToTemplate(
                             GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString()),
                             GbfrswJavaWrapperDefinesImageFlags.GBFRSW_ROLLED_IMAGE,
                             this);
@@ -929,7 +929,7 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
                                 );
                         Log.i("Check img size", "Real SizeX = " + (
                                 bmpCls.sx));
-                        bmpCls.EncodeToLFSMinutiae(
+                        bmpCls.EncodeToTemplate(
                                 GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString() + i),
                                 GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE,
                                 this);

@@ -15,10 +15,10 @@ public interface BIPPIIS {
 //    POST ->  https://bippiis.com/api/v1/user/uploadPassport
 //    data -> passport, type base64 string
 //
-//    POST -> https://bippiis.com/api/v1//enroll
+//    POST -> https://bippiis.com/api/v1/enroll
 //    data{ fingerprints, type array, bippiis_number, type string}
 
-    @POST("/enroll")
+    @POST("enroll")
     Call<FingerprintResponse> getFingerprintResponse(@Body FingerprintRequest fingerprintRequest);
 
     @POST("user/uploadPassport")
