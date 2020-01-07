@@ -39,8 +39,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Login extends AppCompatActivity {
     private AppCompatEditText bip;
-    private String token = "";
-    private String bippiis;
+    private String token = "demo_token";
+    private String bippiis, getBippiis;
     private ProgressBar progressBar;
     private AppCompatImageView img;
 
@@ -50,8 +50,8 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         bip = findViewById(R.id.bippiis_no);
 
-//        //to be removed
-//        bip.setText("BNS-6057284");
+        //to be removed
+        bip.setText("O/S 2243");
 
         progressBar = findViewById(R.id.progress);
         img = findViewById(R.id.img);
@@ -77,6 +77,7 @@ public class Login extends AppCompatActivity {
             boolean handled = false;
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 hideSoftKeyboard();
+                Toast.makeText(getApplicationContext(), "Logging in..", Toast.LENGTH_SHORT).show();
                 login();
                 handled = true;
             }
@@ -92,110 +93,17 @@ public class Login extends AppCompatActivity {
     }
 
     public void proceed(View view) {
-        bippiis = Objects.requireNonNull(bip.getText()).toString().trim();
-        //   Toast.makeText(getApplicationContext(), bippiis, Toast.LENGTH_SHORT).show();
-
-        if (bippiis.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "BIPPIIS NO CANNOT BE EMPTY!", Toast.LENGTH_SHORT).show();
-        } else {
-            //retrofit_auth and get token
-            progressBar.setVisibility(View.VISIBLE);
-
-            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
-                @Override
-                public okhttp3.Response intercept(Chain chain) throws IOException {
-                    Request newRequest = chain.request().newBuilder()
-                            .addHeader("Authorization", "Bearer " + token)
-                            .build();
-                    return chain.proceed(newRequest);
-                }
-            }).build();
-
-            Retrofit retrofit = new Retrofit.Builder().client(client)
-                    .baseUrl(getString(R.string.base_url))
-                    .addConverterFactory(GsonConverterFactory.create()).build();
-            BIPPIIS service = retrofit.create(BIPPIIS.class);
-
-            LoginRequest loginRequest = new LoginRequest();
-            loginRequest.setBippiis_number(Objects.requireNonNull(bip.getText()).toString().trim());
-
-            Call<LoginResponse> loginResponseCall = service.getLoginResponse(loginRequest);
-            loginResponseCall.enqueue(new Callback<LoginResponse>() {
-                @Override
-                public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                    progressBar.setVisibility(View.GONE);
-
-                    LoginResponse loginResponse = response.body();
-
-
-                    //validate response
-                    try {
-                        if (loginResponse.getStatus().equalsIgnoreCase("success")) {
-
-                            Log.d("fingerprint", "Response: " + response.body().getData().toString());
-                            String has_enrolled = "";
-
-                            String js = new Gson().toJson(loginResponse.getData()).trim();
-                            String json = js.substring(1, js.length() - 1);
-                            Log.d("fingerprint", "Response: JSON " + json);
-
-                            String[] values = json.split(",");
-                            String[] enroll_value = values[7].split(":");
-                            has_enrolled = enroll_value[1];
-                            Log.d("fingerprint", "has enroll: " + has_enrolled);
-
-                            boolean enrolled = false;
-                            if (has_enrolled.trim().equalsIgnoreCase("false")) {
-                                enrolled = false;
-                            } else if (has_enrolled.trim().equalsIgnoreCase("true")) {
-                                enrolled = true;
-                            }
-                            if (!enrolled) {
-                                bippiis = bippiis.replace("/", "_");
-                                bippiis = bippiis.replace(" ", "_").toUpperCase();
-
-                                startActivity(new Intent(getApplicationContext(), EnrollFingerprints.class).putExtra("bippiis_number", bippiis).putExtra("token", token));
-                            } else {
-                                // go to login then camera
-                                Toast.makeText(getApplicationContext(), "Has been enrolled", Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            Log.d("fingerprint", "Response RAW: " + response.raw());
-
-                            Toast.makeText(getApplicationContext(), "INVALID BIPPIIS NUMBER", Toast.LENGTH_SHORT).show();
-                        }
-
-                    } catch (NullPointerException n) {
-                        n.printStackTrace();
-
-                        Toast.makeText(getApplicationContext(), "INVALID BIPPIIS NUMBER", Toast.LENGTH_SHORT).show();
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<LoginResponse> call, Throwable t) {
-                    progressBar.setVisibility(View.GONE);
-
-                    Log.d("fingerprint", "Failed to Verify: " + t.getLocalizedMessage());
-
-                }
-            });
-
-
-        }
-
+        login();
     }
 
     private void login() {
-        bippiis = Objects.requireNonNull(bip.getText()).toString().trim();
-        Toast.makeText(getApplicationContext(), "Logging in..", Toast.LENGTH_SHORT).show();
+        bippiis = bip.getText().toString().trim();
 
         if (bippiis.isEmpty()) {
             Toast.makeText(getApplicationContext(), "BIPPIIS NO CANNOT BE EMPTY!", Toast.LENGTH_SHORT).show();
         } else {
+            getBippiis = bip.getText().toString().trim();
+
             //retrofit_auth and get token
             progressBar.setVisibility(View.VISIBLE);
 
@@ -219,8 +127,6 @@ public class Login extends AppCompatActivity {
 
             Call<LoginResponse> loginResponseCall = service.getLoginResponse(loginRequest);
             loginResponseCall.enqueue(new Callback<LoginResponse>() {
-
-
                 @Override
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                     progressBar.setVisibility(View.GONE);
@@ -235,6 +141,16 @@ public class Login extends AppCompatActivity {
                             Log.d("fingerprint", "Response: " + response.body().getData().toString());
                             String has_enrolled = "";
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                            String js = new Gson().toJson(loginResponse.getData()).trim();
+//                            String json = js.substring(1, js.length() - 1);
+//                            Log.d("fingerprint", "Response: JSON " + json);
+//
+//                            String[] values = json.split(",");
+//                            String[] enroll_value = values[7].split(":");
+//                            has_enrolled = enroll_value[1];
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
                             String js = new Gson().toJson(loginResponse.getData()).trim();
                             String json = js.substring(1, js.length() - 1);
                             Log.d("fingerprint", "Response: JSON " + json);
@@ -242,6 +158,8 @@ public class Login extends AppCompatActivity {
                             String[] values = json.split(",");
                             String[] enroll_value = values[7].split(":");
                             has_enrolled = enroll_value[1];
+
+
                             Log.d("fingerprint", "has enroll: " + has_enrolled);
 
                             boolean enrolled = false;
@@ -252,11 +170,14 @@ public class Login extends AppCompatActivity {
                             }
                             if (!enrolled) {
                                 bippiis = bippiis.replace("/", "_");
+                                bippiis = bippiis.replace("-", "_");
                                 bippiis = bippiis.replace(" ", "_").toUpperCase();
+                                Log.d("fingerprint", "Coming from Original BIPPIIS : " + getBippiis + " edited BIPPIIS: " + bippiis + " token : " + token);
 
-                                startActivity(new Intent(getApplicationContext(), EnrollFingerprints.class).putExtra("bippiis_number", bippiis).putExtra("token", token));
+                                startActivity(new Intent(getApplicationContext(), EnrollFingerprints.class).putExtra("bippiis_number", getBippiis).putExtra("bippiis_number_edited", bippiis).putExtra("token", token));
                             } else {
                                 // go to login then camera
+                                Toast.makeText(getApplicationContext(), "Has been enrolled", Toast.LENGTH_LONG).show();
                             }
                         } else {
                             Log.d("fingerprint", "Response RAW: " + response.raw());
@@ -297,6 +218,7 @@ public class Login extends AppCompatActivity {
             finishAffinity();
         }
     }
+
 
     @Override
     public void onBackPressed() {

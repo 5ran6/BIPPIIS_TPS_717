@@ -17,6 +17,11 @@ public class FingerprintResponse {
     @Expose
     private String status_code;
 
+
+    @SerializedName("token")
+    @Expose
+    private String token;
+
     public String getToken() {
         return token;
     }
@@ -24,11 +29,6 @@ public class FingerprintResponse {
     public void setToken(String token) {
         this.token = token;
     }
-
-    @SerializedName("token")
-    @Expose
-    private String token;
-
 
     public String getStatus() {
         return status;

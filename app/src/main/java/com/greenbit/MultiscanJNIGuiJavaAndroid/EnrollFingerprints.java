@@ -91,7 +91,6 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     private View back_drop;
     private View lyt_staff;
     private View lyt_parent;
-    private View lyt_student;
     private TextView report;
     private boolean uploaded = false;
 
@@ -117,6 +116,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     private String token = "";
 
     private String bippiis_number = "";
+    private String bippiis_number_edited = "";
     private ImageView LoggerView;
     private boolean FirstFrameAcquired = false, PreviewEnded = false, AcquisitionEnded = false, isFirstStart = true;
 
@@ -385,7 +385,10 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             setContentView(R.layout.activity_enroll_fingerprints);
 
             bippiis_number = getIntent().getStringExtra("bippiis_number");
+            bippiis_number_edited = getIntent().getStringExtra("bippiis_number_edited");
             token = getIntent().getStringExtra("token");
+
+            Log.d("fingerprint", "Original BIPPIIS + " + bippiis_number + " edited BIPPIIS: " + bippiis_number_edited);
 
             LoggerAcquisitionInfoTv = findViewById(R.id.Acquisition_Info);
             LoggerImageInfoTv = findViewById(R.id.Image_Info);
@@ -403,9 +406,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             back_drop = findViewById(R.id.back_drop);
             lyt_staff = findViewById(R.id.lyt_staff);
             lyt_parent = findViewById(R.id.lyt_parent);
-            lyt_student = findViewById(R.id.lyt_student);
             ViewAnimation.showOut(lyt_staff);
-            ViewAnimation.showOut(lyt_student);
             ViewAnimation.showOut(lyt_parent);
             back_drop.setVisibility(View.GONE);
 
@@ -429,7 +430,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             bIdentify.setText("Identify");
 
             tbName = findViewById(R.id.tbName);
-            tbName.setText(bippiis_number);
+            tbName.setText(bippiis_number_edited);
             tbName.setEnabled(true);
 
             GB_AcquisitionOptionsGlobals.acquiredFrameValid = false;
@@ -584,6 +585,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                     .addConverterFactory(GsonConverterFactory.create()).build();
             BIPPIIS service = retrofit.create(BIPPIIS.class);
 
+            Log.d("fingerprint", "BIPPIIS NUMBER: " + bippiis_number);
             FingerprintRequest fingerprintRequest = new FingerprintRequest();
             fingerprintRequest.setBippiis_number(bippiis_number);
 
@@ -597,7 +599,6 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
 //
 //* */
 
-
             fingerprintRequest.setFingerprints(storageFile.fingerPrint.allFingerprints);
             Log.d("fingerprint", "fingerPrintResponse ArrayListString: " + storageFile.fingerPrint.allFingerprints.toArray().toString());
             Log.d("fingerprint", "fingerPrintResponse Number of fingers: " + storageFile.fingerPrint.allFingerprints.size());
@@ -607,7 +608,27 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                 @Override
                 public void onResponse(Call<FingerprintResponse> call, Response<FingerprintResponse> response) {
                     FingerprintResponse fingerPrintResponse = response.body();
-                    Log.d("fingerprint", "fingerPrintResponse success: " + response.isSuccessful());
+                    try {
+                        Log.d("fingerprint", "fingerPrintResponse success: " + response.isSuccessful());
+                        Log.d("fingerprint", "fingerPrintResponse RESPONSE: " + response.toString());
+                        Log.d("fingerprint", "fingerPrintResponse TOKEN: " + response.body().getToken());
+                        Log.d("fingerprint", "fingerPrintResponse BODY: " + response.body().toString());
+//                        Log.d("fingerprint", "fingerPrintResponse RESPONSE Error Body: " + response.errorBody().toString());
+                        //           Log.d("fingerprint", "fingerPrintResponse RESPONSE Error Body: " + response.errorBody().source().readUtf8());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+//                    try {
+//                        Log.d("fingerprint", "fingerPrintResponse RESPONSE Error Body: " + Arrays.toString(response.errorBody().bytes()));
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    Log.d("fingerprint", "fingerPrintResponse RESPONSE Error Body: " + response.errorBody().toString());
+//                    Log.d("fingerprint", "fingerPrintResponse HEADER: " + response.headers());
+//                    Log.d("fingerprint", "fingerPrintResponse RAW: " + response.raw());
+//                    Log.d("fingerprint", "fingerPrintResponse RESPONSE BODY: " + response.body());
+//                    Log.d("fingerprint", "fingerPrintResponse RESPONSE MESSAGE: " + response.message());
+
 
                     //validate response
                     try {
@@ -671,12 +692,10 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
         rotate = ViewAnimation.rotateFab(v, !rotate);
         if (rotate) {
             ViewAnimation.showIn(lyt_staff);
-            ViewAnimation.showIn(lyt_student);
             ViewAnimation.showIn(lyt_parent);
             back_drop.setVisibility(View.VISIBLE);
         } else {
             ViewAnimation.showOut(lyt_staff);
-            ViewAnimation.showOut(lyt_student);
             ViewAnimation.showOut(lyt_parent);
             back_drop.setVisibility(View.GONE);
         }
@@ -789,10 +808,8 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
 
     }
 
-    public void thumbSequence(View view) {
-    }
-
     public void slap4Sequence(View view) {
+        begin_sequence();
     }
 
     public void incompleteSequence(View view) {

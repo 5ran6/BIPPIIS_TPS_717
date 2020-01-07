@@ -39,7 +39,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import pl.droidsonroids.gif.GifImageView;
 
@@ -59,8 +58,11 @@ public class PrinterActivity extends AppCompatActivity {
     private BaseFont fontName;
     private Document document;
 
-    private String[] titles = {"BIPPIIS NUMBER", "FULL NAME", "PHONE", "CATEGORY", "PERMANENT HOUSE ADDRESS", "NEXT OF KIN NAME", "NEXT OF KIN NUMBER",
-            "RELATIONSHIP WITH NEXT OF KIN", "NEXT OF KIN ADDRESS", "DATE OF FIRST APPOINTMENT", "RETIREMENT DATE",
+    private String[] titles = {"BIPPIIS NUMBER", "FULL NAME",
+            "PHONE", "CATEGORY", "PERMANENT HOUSE ADDRESS", "NEXT OF KIN NAME",
+            "NEXT OF KIN NUMBER",
+            "RELATIONSHIP WITH NEXT OF KIN", "NEXT OF KIN ADDRESS",
+            "DATE OF FIRST APPOINTMENT", "RETIREMENT DATE",
             "YEARS SERVED", "CLASSIFICATION", "RANK", "GRADE LEVEL STOPPED", "DATE OF LAST PROMOTION",
             "LOCAL GOVERNMENT OF RETIREMENT", "LOCAL GOVERNMENT OF ORIGIN"
     };

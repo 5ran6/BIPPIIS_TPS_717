@@ -285,7 +285,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="Slap 4 Sequence"
+                    android:text="First Sequence"
                     android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
             </androidx.cardview.widget.CardView>
@@ -305,7 +305,7 @@
                 app:backgroundTint="@android:color/white"
                 app:fabSize="mini"
                 app:rippleColor="@android:color/black"
-                app:srcCompat="@drawable/ic_pan_tool_black_24dp" />
+                app:srcCompat="@drawable/ic_refresh_black_24dp" />
 
             <View
                 android:layout_width="@dimen/spacing_xmedium"
@@ -313,56 +313,6 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/lyt_student"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/card_student"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|end|right"
-                android:layout_margin="@dimen/spacing_middle"
-                android:onClick="thumbSequence"
-                app:cardBackgroundColor="@android:color/white"
-                app:cardCornerRadius="3dp"
-                app:cardElevation="2dp"
-                app:contentPadding="@dimen/spacing_medium">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="Thumbs sequence"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
-
-            </androidx.cardview.widget.CardView>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab_student"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/spacing_smlarge"
-                android:layout_marginTop="@dimen/spacing_middle"
-                android:layout_marginRight="@dimen/spacing_smlarge"
-                android:layout_marginBottom="@dimen/spacing_middle"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="thumbSequence"
-                android:tint="#37474F"
-                app:backgroundTint="@android:color/white"
-                app:fabSize="mini"
-                app:rippleColor="@android:color/black"
-                app:srcCompat="@drawable/ic_thumbs_up_down_black_24dp" />
-
-            <View
-                android:layout_width="@dimen/spacing_xmedium"
-                android:layout_height="0dp" />
-
-        </LinearLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/options"

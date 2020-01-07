@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -22,6 +23,7 @@ import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFile;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -51,7 +53,7 @@ public class CameraCapture extends AppCompatActivity {
         home = findViewById(R.id.home);
         progressBar = findViewById(R.id.progress);
         token = getIntent().getStringExtra("token");
-
+        Log.d("fingerprint", "Token: " + token);
 
     }
 
@@ -69,7 +71,7 @@ public class CameraCapture extends AppCompatActivity {
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), result.getUri());
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 30, stream);
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream);
                     byte[] byteArray = stream.toByteArray();
                     imageString = Base64.encodeToString(byteArray, Base64.DEFAULT);
                     bitmap.recycle();
@@ -92,14 +94,37 @@ public class CameraCapture extends AppCompatActivity {
 
 
     public void capture(View view) {
+        success = false;
         CropImage.activity().start(CameraCapture.this);
     }
 
     public void home(View view) {
-        if (success)
+        if (success) {
+            //delete directory
+//            File dir = new File(Environment.getExternalStorageDirectory()+"Dir_name_here");
+            File dir = new File(GetGreenbitDirectoryName());
+            if (dir.isDirectory()) {
+                String[] children = dir.list();
+                for (String child : children) {
+                    new File(dir, child).delete();
+                }
+                Log.d("fingerprint", "Deleted Greenbit folder successfully");
+            }
             startActivity(new Intent(getApplicationContext(), Login.class));
-        else
+
+        } else
             uploadImage();
+    }
+
+    public static String GetGreenbitDirectoryName() {
+        String path = Environment.getExternalStorageDirectory().toString();
+        File file = new File(path, "Greenbit");
+        boolean success = true;
+        if (!file.exists()) {
+            success = file.mkdir();
+        }
+        path = file.getPath();
+        return path;
     }
 
     private void uploadImage() {
@@ -122,12 +147,20 @@ public class CameraCapture extends AppCompatActivity {
         BIPPIIS service = retrofit.create(BIPPIIS.class);
 
         PassportRequest passportRequest = new PassportRequest();
-        passportRequest.setPassport(imageString);
+        passportRequest.setPassport("data:image/jpeg;base64," + imageString);
 
         Call<PassportResponse> passportResponseCall = service.getPassportResponse(passportRequest);
         passportResponseCall.enqueue(new Callback<PassportResponse>() {
             @Override
             public void onResponse(Call<PassportResponse> call, Response<PassportResponse> response) {
+
+                Log.d("fingerprint", "Uploaded successfully message " + response.message());
+                Log.d("fingerprint", "Uploaded successfully body " + response.body());
+                Log.d("fingerprint", "Uploaded successfully toString " + response.toString());
+                Log.d("fingerprint", "Uploaded successfully raw " + response.raw());
+                Log.d("fingerprint", "Uploaded successfully BASE64 IMG:  " + imageString);
+
+
                 progressBar.setVisibility(View.GONE);
                 home.setBackgroundColor(getResources().getColor(R.color.green_400));
                 home.setEnabled(true);
@@ -135,8 +168,6 @@ public class CameraCapture extends AppCompatActivity {
                 home.setText("Done");
                 Log.d("fingerprint", "Uploaded successfully " + response);
                 //validate response
-
-
             }
 
             @Override
@@ -147,10 +178,8 @@ public class CameraCapture extends AppCompatActivity {
                 home.setText("Retry");
                 home.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 Log.d("fingerprint", "Failed to Upload");
-
             }
         });
-
 
     }
 

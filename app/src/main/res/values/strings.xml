@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Biometrics Capture</string>
+    <string name="app_name">BIPPIIS Enrollment</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_device_settings">Settings</string>
     <string name="title_activity_acquisition_settings">AcquisitionSettings</string>
