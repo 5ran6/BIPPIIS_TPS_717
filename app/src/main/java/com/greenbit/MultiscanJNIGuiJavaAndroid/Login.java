@@ -50,8 +50,8 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         bip = findViewById(R.id.bippiis_no);
 
-        //to be removed
-        bip.setText("O/S 2243");
+//        //to be removed
+//        bip.setText("O/S 2243");
 
         progressBar = findViewById(R.id.progress);
         img = findViewById(R.id.img);
@@ -129,6 +129,7 @@ public class Login extends AppCompatActivity {
             loginResponseCall.enqueue(new Callback<LoginResponse>() {
                 @Override
                 public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                    // TODO: still need to catch errors properly from accurate response filters
                     progressBar.setVisibility(View.GONE);
 
                     LoginResponse loginResponse = response.body();
@@ -156,7 +157,8 @@ public class Login extends AppCompatActivity {
                             Log.d("fingerprint", "Response: JSON " + json);
 
                             String[] values = json.split(",");
-                            String[] enroll_value = values[7].split(":");
+                            //String[] enroll_value = values[7].split(":"); //for civil servants
+                            String[] enroll_value = values[7-1].split(":");
                             has_enrolled = enroll_value[1];
 
 

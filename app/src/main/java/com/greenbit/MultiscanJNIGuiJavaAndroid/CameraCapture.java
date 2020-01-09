@@ -44,6 +44,8 @@ public class CameraCapture extends AppCompatActivity {
     private Uri mImageUri;
     private String imageString;
     private boolean success = false;
+    private byte[] byteArray;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +74,7 @@ public class CameraCapture extends AppCompatActivity {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), result.getUri());
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 10, stream);
-                    byte[] byteArray = stream.toByteArray();
+                    byteArray = stream.toByteArray();
                     imageString = Base64.encodeToString(byteArray, Base64.DEFAULT);
                     bitmap.recycle();
 
@@ -110,7 +112,7 @@ public class CameraCapture extends AppCompatActivity {
                 }
                 Log.d("fingerprint", "Deleted Greenbit folder successfully");
             }
-            startActivity(new Intent(getApplicationContext(), Login.class));
+            startActivity(new Intent(getApplicationContext(), PrinterActivity.class).putExtra("image", byteArray).putExtra("token", token));
 
         } else
             uploadImage();
@@ -153,6 +155,9 @@ public class CameraCapture extends AppCompatActivity {
         passportResponseCall.enqueue(new Callback<PassportResponse>() {
             @Override
             public void onResponse(Call<PassportResponse> call, Response<PassportResponse> response) {
+
+                // TODO: still need to catch errors properly from accurate response filters
+
 
                 Log.d("fingerprint", "Uploaded successfully message " + response.message());
                 Log.d("fingerprint", "Uploaded successfully body " + response.body());

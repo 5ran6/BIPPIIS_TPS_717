@@ -39,4 +39,10 @@
         android:paddingRight="@dimen/spacing_mlarge"
         android:text="Click to print"
         android:textColor="@android:color/white" />
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 </LinearLayout>

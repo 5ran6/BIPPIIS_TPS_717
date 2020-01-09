@@ -7,6 +7,7 @@ import com.greenbit.MultiscanJNIGuiJavaAndroid.models.LoginResponse;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.PassportRequest;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.PassportResponse;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -33,6 +34,5 @@ public interface BIPPIIS {
     Call<LoginResponse> getLoginResponse(@Body LoginRequest loginRequest);
 
     @GET("user")
-    Call<LoginResponse> getUserInformation(@Body LoginRequest loginRequest);
-
+    Call<ResponseBody> getUserResponse();
 }

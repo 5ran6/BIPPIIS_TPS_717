@@ -607,6 +607,8 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             fingerprintResponseCall.enqueue(new Callback<FingerprintResponse>() {
                 @Override
                 public void onResponse(Call<FingerprintResponse> call, Response<FingerprintResponse> response) {
+                    // TODO: still need to catch errors properly from accurate response filters
+
                     FingerprintResponse fingerPrintResponse = response.body();
                     try {
                         Log.d("fingerprint", "fingerPrintResponse success: " + response.isSuccessful());
