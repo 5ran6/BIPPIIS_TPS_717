@@ -91,7 +91,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     private View back_drop;
     private View lyt_staff;
     private View lyt_parent;
-    private TextView report;
+    private TextView report, name;
     private boolean uploaded = false;
 
 
@@ -113,7 +113,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     private boolean LoggerBitmapChanged = false;
     private int LoggerBitmapFileSaveCounter = 0;
     private Spinner comboObjectsToAcquire;
-    private String token = "";
+    private String token = "", fullname = "";
 
     private String bippiis_number = "";
     private String bippiis_number_edited = "";
@@ -250,7 +250,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                 Log.i(funcName, "Diag = " + Diag.Value);
                 return false;
             }
-            LogAsDialog("SegmNum=" + SegmNum.Get() + ",Diag=" + Diag.Get());
+            //     LogAsDialog("SegmNum=" + SegmNum.Get() + ",Diag=" + Diag.Get());
         } catch (Exception ex) {
             LogAsDialog("onProcess: " + ex.getMessage());
             return false;
@@ -293,7 +293,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
         if (GB_AcquisitionOptionsGlobals.acquiredFrameValid) {
             try {
                 if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_ROLL_SINGLE_FINGER) {
-                    GB_AcquisitionOptionsGlobals.acquiredFrame.EncodeToTemplate(
+                    GB_AcquisitionOptionsGlobals.acquiredFrame.EncodeToLFSMinutiae(
                             GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString()),
                             GbfrswJavaWrapperDefinesImageFlags.GBFRSW_ROLLED_IMAGE,
                             this);
@@ -331,7 +331,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                                 );
                         Log.i("Check img size", "Real SizeX = " + (
                                 bmpCls.sx));
-                        bmpCls.EncodeToTemplate(
+                        bmpCls.EncodeToLFSMinutiae(
                                 GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString() + i),
                                 GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE,
                                 this);
@@ -387,6 +387,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             bippiis_number = getIntent().getStringExtra("bippiis_number");
             bippiis_number_edited = getIntent().getStringExtra("bippiis_number_edited");
             token = getIntent().getStringExtra("token");
+            fullname = getIntent().getStringExtra("fullname");
 
             Log.d("fingerprint", "Original BIPPIIS + " + bippiis_number + " edited BIPPIIS: " + bippiis_number_edited);
 
@@ -401,6 +402,9 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             gifImageView = findViewById(R.id.processing);
 
             report = findViewById(R.id.tv);
+            name = findViewById(R.id.fullname);
+            name.setText("Welcome, " + fullname.toUpperCase().trim());
+
             FloatingActionButton fab_done = findViewById(R.id.options);
             fab_done.setOnClickListener(v -> toggleFabMode(v));
             back_drop = findViewById(R.id.back_drop);
@@ -441,24 +445,6 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             GbExampleGrayScaleBitmapClass GbBmp = new GbExampleGrayScaleBitmapClass(
                     whiteImage, 16, 16, false, true, this);
             LogBitmap(GbBmp);
-
-//            int RetVal = GB_AcquisitionOptionsGlobals.WSQ_Jw.Load();
-//            String checkGbmsapi;
-//            if (RetVal == WsqJavaWrapperDefinesReturnCodes.WSQPACK_OK) {
-//                checkGbmsapi = "Wsq Load Ok";
-//                LogAcquisitionInfoOnScreen(checkGbmsapi);
-//            } else {
-//                checkGbmsapi = "Wsq Load Failure: " + GB_AcquisitionOptionsGlobals.WSQ_Jw.GetLastErrorString();
-//                LogAcquisitionInfoOnScreen(checkGbmsapi);
-//            }
-//            RetVal = GB_AcquisitionOptionsGlobals.Jpeg_Jw.Load();
-//            if (RetVal == GbjpegJavaWrapperDefinesReturnCodes.GBJPEG_OK) {
-//                checkGbmsapi = "Jpeg Load Ok";
-//                LogAcquisitionInfoOnScreen(checkGbmsapi);
-//            } else {
-//                checkGbmsapi = "Jpeg Load Failure: " + GB_AcquisitionOptionsGlobals.Jpeg_Jw.GetLastErrorString();
-//                LogAcquisitionInfoOnScreen(checkGbmsapi);
-//            }
 
             onRefresh();
             StartLogTimer();
@@ -1237,8 +1223,8 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             return;
         }
         List<String> objTypes = GBMSAPIJavaWrapperDefinesScannableBiometricType.ScannableTypesToStringList(objTypesMask.Get());
-        ArrayAdapter<String> objectsToAcquireAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, objTypes);
-        objectsToAcquireAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> objectsToAcquireAdapter = new ArrayAdapter<String>(this, R.layout.simple_spinner_item, objTypes);
+        objectsToAcquireAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         comboObjectsToAcquire.setAdapter(objectsToAcquireAdapter);
 
         bStartStop.setEnabled(true);

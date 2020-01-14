@@ -166,6 +166,18 @@
             android:src="@drawable/preview" />
 
         <TextView
+            android:id="@+id/fullname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:padding="@dimen/spacing_xsmall"
+            android:text="Welcome, Gabriel Solo"
+            android:textAllCaps="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="#000"
+            android:textStyle="italic" />
+
+        <TextView
             android:id="@+id/tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

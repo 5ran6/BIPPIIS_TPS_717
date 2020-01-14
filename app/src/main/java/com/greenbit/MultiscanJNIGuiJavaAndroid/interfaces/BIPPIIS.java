@@ -3,7 +3,6 @@ package com.greenbit.MultiscanJNIGuiJavaAndroid.interfaces;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintRequest;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintResponse;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.LoginRequest;
-import com.greenbit.MultiscanJNIGuiJavaAndroid.models.LoginResponse;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.PassportRequest;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.PassportResponse;
 
@@ -31,7 +30,7 @@ public interface BIPPIIS {
 //    Call<PassportResponse> getPassportResponse(@Body PassportRequest passportRequest, @Header("Authorization") String token);
 
     @POST("auth")
-    Call<LoginResponse> getLoginResponse(@Body LoginRequest loginRequest);
+    Call<ResponseBody> getLoginResponse(@Body LoginRequest loginRequest);
 
     @GET("user")
     Call<ResponseBody> getUserResponse();

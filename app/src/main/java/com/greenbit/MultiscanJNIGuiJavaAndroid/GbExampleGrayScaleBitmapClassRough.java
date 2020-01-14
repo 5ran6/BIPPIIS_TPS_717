@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
 
+import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.LfsJavaWrapperDefinesMinutiaN;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesANStruct;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesAnsinistVersions;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesCompressionAlgorithmsStrings;
@@ -107,7 +108,7 @@ public class GbExampleGrayScaleBitmapClassRough {
             for (int i = 0; i < bytes.length; i++) {
                 pixels[i * 4] =
                         pixels[i * 4 + 1] =
-                                pixels[i * 4 + 2] = (byte) (bytes[i]); //Invert the source bits
+                                pixels[i * 4 + 2] = bytes[i]; //Invert the source bits
                 pixels[i * 4 + 3] = (byte) 0xff; // the alpha.
             }
             ValToRet = Bitmap.createBitmap(sx, sy, Bitmap.Config.ARGB_8888);
@@ -155,7 +156,7 @@ public class GbExampleGrayScaleBitmapClassRough {
 
         for (String fname :
                 paths) {
-            String filenameArray[] = fname.split("\\.");
+            String[] filenameArray = fname.split("\\.");
             String extension = filenameArray[filenameArray.length - 1];
             if (extension.equals(extensionVal)) {
                 if (includeExtensionInName) ValToRet.add(fname);
@@ -187,7 +188,7 @@ public class GbExampleGrayScaleBitmapClassRough {
     }
 
     public static int[] GbBmpGetSizeFromRawFileName(String rawFName) {
-        String filenameArray[] = rawFName.split("_");
+        String[] filenameArray = rawFName.split("_");
         if (filenameArray.length >= 3) {
             String imgWS = filenameArray[filenameArray.length - 2], imgHS = filenameArray[filenameArray.length - 1];
             try {
@@ -714,7 +715,7 @@ public class GbExampleGrayScaleBitmapClassRough {
         String[] paths = file.list();
         for (String fname :
                 paths) {
-            String filenameArray[] = fname.split("\\.");
+            String[] filenameArray = fname.split("\\.");
             String extension = filenameArray[filenameArray.length - 1];
             if (extension.equals("gbfrsw")) {
                 boolean res = MatchWithTemplate(fname, ImageFlagsForCoding,
@@ -1032,7 +1033,7 @@ public class GbExampleGrayScaleBitmapClassRough {
             GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNumber = new GBJavaWrapperUtilIntForJavaToCExchange();
 
             // if needed, allocate minutiae array; otherwise, pass null
-            GbNfiqJavaWrapperDefineMinutiaeDescriptor MinutiaeList[] = new GbNfiqJavaWrapperDefineMinutiaeDescriptor[GbNfiqJavaWrapperLibrary.GBNFIQ_MAX_MINUTIAE];
+            GbNfiqJavaWrapperDefineMinutiaeDescriptor[] MinutiaeList = new GbNfiqJavaWrapperDefineMinutiaeDescriptor[GbNfiqJavaWrapperLibrary.GBNFIQ_MAX_MINUTIAE];
             for (int i = 0; i < GbNfiqJavaWrapperLibrary.GBNFIQ_MAX_MINUTIAE; i++)
                 MinutiaeList[i] = new GbNfiqJavaWrapperDefineMinutiaeDescriptor();
 
@@ -1070,40 +1071,40 @@ public class GbExampleGrayScaleBitmapClassRough {
         }
     }
 
-    // Lfs Bozorth
-    public void TestLfsBozorth(IGreenbitLogger act) {
-        try {
-
-            int RetVal;
-
-            LfsJavaWrapperDefinesMinutia[] Probe = new LfsJavaWrapperDefinesMinutia[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
-
-            for (int i = 0; i < BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE; i++)
-                Probe[i] = new LfsJavaWrapperDefinesMinutia();
-
-            GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNum = new GBJavaWrapperUtilIntForJavaToCExchange();
-
-            RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe, MinutiaeNum);
-
-            if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
-                throw new Exception("TestLfs" +
-                        ", TestLfsBozorth: " + GB_AcquisitionOptionsGlobals.LFS_Jw.GetLastErrorString());
-            }
-
-            GBJavaWrapperUtilIntForJavaToCExchange score = new GBJavaWrapperUtilIntForJavaToCExchange();
-
-            RetVal = GB_AcquisitionOptionsGlobals.BOZORTH_Jw.bozDirectCall(200, Probe, MinutiaeNum.Value, Probe, MinutiaeNum.Value, score);
-
-            if (RetVal != BozorthJavaWrapperLibrary.BOZORTH_NO_ERROR) {
-                throw new Exception("TestBozorth" +
-                        ", TestLfsBozorth: " + GB_AcquisitionOptionsGlobals.BOZORTH_Jw.GetLastErrorString());
-            }
-
-            act.LogOnScreen("TestLfsBozorth: " + score.Value + " fine->RetVal: " + RetVal);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    // Lfs Bozorth
+//    public void TestLfsBozorth(IGreenbitLogger act) {
+//        try {
+//
+//            int RetVal;
+//
+//            LfsJavaWrapperDefinesMinutiaN[] Probe = new LfsJavaWrapperDefinesMinutiaN[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+//
+//            for (int i = 0; i < BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE; i++)
+//                Probe[i] = new LfsJavaWrapperDefinesMinutiaN();
+//
+//            GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNum = new GBJavaWrapperUtilIntForJavaToCExchange();
+//
+//            RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe, MinutiaeNum);
+//
+//            if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
+//                throw new Exception("TestLfs" +
+//                        ", TestLfsBozorth: " + GB_AcquisitionOptionsGlobals.LFS_Jw.GetLastErrorString());
+//            }
+//
+//            GBJavaWrapperUtilIntForJavaToCExchange score = new GBJavaWrapperUtilIntForJavaToCExchange();
+//
+//            RetVal = GB_AcquisitionOptionsGlobals.BOZORTH_Jw.bozDirectCall(200, Probe, MinutiaeNum.Value, Probe, MinutiaeNum.Value, score);
+//
+//            if (RetVal != BozorthJavaWrapperLibrary.BOZORTH_NO_ERROR) {
+//                throw new Exception("TestBozorth" +
+//                        ", TestLfsBozorth: " + GB_AcquisitionOptionsGlobals.BOZORTH_Jw.GetLastErrorString());
+//            }
+//
+//            act.LogOnScreen("TestLfsBozorth: " + score.Value + " fine->RetVal: " + RetVal);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
     public void EncodeToAnsi378Template(String fileName, int ImageFlags, IGreenbitLogger act) {
@@ -1191,14 +1192,15 @@ public class GbExampleGrayScaleBitmapClassRough {
         /******************
          Get minutiae
          *****************/
-        LfsJavaWrapperDefinesMinutia[] Probe = new LfsJavaWrapperDefinesMinutia[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+        LfsJavaWrapperDefinesMinutiaN[] Probe = new LfsJavaWrapperDefinesMinutiaN[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+        LfsJavaWrapperDefinesMinutia[] Probe1 = new LfsJavaWrapperDefinesMinutia[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
 
         for (int i = 0; i < BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE; i++)
-            Probe[i] = new LfsJavaWrapperDefinesMinutia();
+            Probe[i] = new LfsJavaWrapperDefinesMinutiaN();
 
         GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNum = new GBJavaWrapperUtilIntForJavaToCExchange();
 
-        RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe, MinutiaeNum);
+        RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe1, MinutiaeNum);
 
         if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
             throw new Exception("EncodeToLfsMinutiae" +
@@ -1214,7 +1216,8 @@ public class GbExampleGrayScaleBitmapClassRough {
         File file = new File(GetGreenbitDirectoryName(),
                 fileName + ".lfs");
         OutputStream fOut = new FileOutputStream(file);
-        Log.d("Fingerprint", "Probe size = " + String.valueOf(Probe.length));
+        Log.d("Fingerprint", "Probe size = " + Probe.length);
+//        fOut.write(serializeMinutiaeBuffer(Probe)); // check this line out
         fOut.write(serializeMinutiaeBuffer(Probe)); // check this line out
         fOut.flush();
         fOut.close(); // do not forget to close the stream
@@ -1222,7 +1225,7 @@ public class GbExampleGrayScaleBitmapClassRough {
         Log.d("Fingerprint", "Closed successfully");
     }
 
-    private byte[] serializeMinutiaeBuffer(LfsJavaWrapperDefinesMinutia[] MinutiaeArrayToSerialize) throws IOException, ClassNotFoundException {
+    private byte[] serializeMinutiaeBuffer(LfsJavaWrapperDefinesMinutiaN[] MinutiaeArrayToSerialize) throws IOException, ClassNotFoundException {
 
 
         byte[] serializedMBuffer;
@@ -1231,8 +1234,8 @@ public class GbExampleGrayScaleBitmapClassRough {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             out = new ObjectOutputStream(bos);
 
-            for (LfsJavaWrapperDefinesMinutia lfsJavaWrapperDefinesMinutia : MinutiaeArrayToSerialize) {
-                out.writeObject(lfsJavaWrapperDefinesMinutia);
+            for (LfsJavaWrapperDefinesMinutiaN lfsJavaWrapperDefinesMinutiaN : MinutiaeArrayToSerialize) {
+                out.writeObject(lfsJavaWrapperDefinesMinutiaN);
             }
             //out.flush();
             serializedMBuffer = bos.toByteArray();
@@ -1240,7 +1243,7 @@ public class GbExampleGrayScaleBitmapClassRough {
             bos.write(serializedMBuffer);
 
             //deserialize
-            //LfsJavaWrapperDefinesMinutia lfsJavaWrapperDefinesMinutia = new LfsJavaWrapperDefinesMinutia();
+            //LfsJavaWrapperDefinesMinutiaN lfsJavaWrapperDefinesMinutiaN = new LfsJavaWrapperDefinesMinutiaN();
             Object obj;
             // Reading the object from a file
             FileInputStream file = new FileInputStream("Template_a0_0.lfs");
@@ -1267,12 +1270,12 @@ public class GbExampleGrayScaleBitmapClassRough {
     }
 
 
-    private byte[] SerializeMinutiaeBuffer(LfsJavaWrapperDefinesMinutia[] MinutiaeArrayToSerialize) {
+    private byte[] SerializeMinutiaeBuffer(LfsJavaWrapperDefinesMinutiaN[] MinutiaeArrayToSerialize) {
 
 //        //deserialize
         Log.d("Fingerprint", "Starts here");
 
-        LfsJavaWrapperDefinesMinutia[] minutiaeArrayToSerialize = SerializationUtils.deserialize(SerializationUtils.serialize(MinutiaeArrayToSerialize));
+        LfsJavaWrapperDefinesMinutiaN[] minutiaeArrayToSerialize = SerializationUtils.deserialize(SerializationUtils.serialize(MinutiaeArrayToSerialize));
         Log.d("Fingerprint", "Reached here");
 //
 //        // compare

@@ -2,6 +2,7 @@ package com.greenbit.MultiscanJNIGuiJavaAndroid;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -9,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintManager;
@@ -40,7 +42,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -54,7 +55,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -75,9 +75,6 @@ public class PrinterActivity extends AppCompatActivity {
     float sectionHeaderSize = 10.0f;
     float titleSize = 5.0f;
     float valueFontSize = 8.0f;
-    //    float sectionHeaderSize = 30.0f;
-//    float titleSize = 20.0f;
-//    float valueFontSize = 26.0f;
     String jsonResponse = "";
 
 
@@ -92,11 +89,6 @@ public class PrinterActivity extends AppCompatActivity {
     private ArrayList values3 = new ArrayList();
     private ArrayList values4 = new ArrayList();
 
-//    private String[] values1 = {};
-//    private String[] values2 = {};
-//    private String[] values3 = {};
-//    private String[] values4 = {};
-
     private String[] titles1 = {"FILE NUMBER", "BIPPIIS NUMBER", "FULL NAME", "GENDER", "DATE OF BIRTH",
             "PHONE NUMBER", "PENSIONER CATEGORY", "PAYROLL STATUS", "PERMANENT ADDRESS", "LOCAL GOVERNMENT OF ORIGIN"
     };
@@ -108,9 +100,8 @@ public class PrinterActivity extends AppCompatActivity {
             "LOCAL GOVERNMENT OF RETIREMENT"};
     private String[] titles4 = {"BANK", "ACCOUNT NUMBER", "BANK VERIFICATION NUMBER BVN"};
 
-    private String[] values = {};
-    // TODO: remove token value
-    private String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYmlwcGlpcy5jb21cL2FwaVwvdjFcL2Vucm9sbCIsImlhdCI6MTU3ODMxNDQzOSwiZXhwIjoxNTc5NjEwNDM5LCJuYmYiOjE1NzgzMTQ0MzksImp0aSI6ImFISGpMYjRadENjcERDT04iLCJzdWIiOjksInBydiI6IjczOWJhZTk4ZmZlZWNjNGE0ZmNkNTkxNDRmMDVlY2Q3MzA0ODg5ZGUifQ.9n5051vwV4PZf1B2bigW9c_vgbRUnkaf1lTv6cOEP1E";
+    //  private String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczpcL1wvYmlwcGlpcy5jb21cL2FwaVwvdjFcL2Vucm9sbCIsImlhdCI6MTU3ODMxNDQzOSwiZXhwIjoxNTc5NjEwNDM5LCJuYmYiOjE1NzgzMTQ0MzksImp0aSI6ImFISGpMYjRadENjcERDT04iLCJzdWIiOjksInBydiI6IjczOWJhZTk4ZmZlZWNjNGE0ZmNkNTkxNDRmMDVlY2Q3MzA0ODg5ZGUifQ.9n5051vwV4PZf1B2bigW9c_vgbRUnkaf1lTv6cOEP1E";
+    private String token = "";
     private boolean isPrintoutCreated = false;
     private String year = "";
     private String headerString;
@@ -138,72 +129,48 @@ public class PrinterActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progress);
 
 
-        try {
-            year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-            headerString = "BENUE STATE LOCAL GOVERNMENT PENSIONS BOARD \n PENSIONER BIOMETRICS CAPTURE " + year;
-            imageBytes = getIntent().getByteArrayExtra("image");
-            // TODO:
-            //  token = getIntent().getStringExtra("token");
-            print.setVisibility(View.GONE);
-            getDetails();
-
-            //custom font
-            fontName = BaseFont.createFont("assets/fonts/HVD Fonts - BrandonText-Regular.otf", "UTF-8", BaseFont.EMBEDDED);
-
-        } catch (DocumentException e) {
-            e.printStackTrace();
-            Log.d("fingerprint", e.getMessage());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        print.setOnClickListener(v -> {
-            //Toast.makeText(PrinterActivity.this, "createPDFFile almost called", Toast.LENGTH_SHORT).show();
-            if (isPrintoutCreated)
-                createPDFFile(Common.getAppPath(PrinterActivity.this) + "test_pdf.pdf");
-            else {
-                try {
-                    getDetails();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-    }
-
-
-    private void getPrintDetails() throws IOException, ParseException, JSONException {
-        progressBar.setVisibility(View.VISIBLE);
-
-//        new MyAsyncTask().execute();
-        //  new initialLoad().execute(token);
-//        jsonResponse = getResponseFromJsonURL(getResources().getString(R.string.base_url), token);
-
-
-        //            JSONArray jsonarr_2 = (JSONArray) (String) jsonobj_1.get("lga_pensioners");
-//                System.out.println("Elements under results array");
-//                System.out.println("\nPlace id: " + (String) jsonobj_1.get("place_id"));
-//                System.out.println("Types: " + (String) jsonobj_1.get("types"));
-//                //Get data for the Address Components array
-//                System.out.println("Elements under address_components array");
-//                System.out.println("The long names, short names and types are:");
-
-
-//                for (int j = 0; j < jsonarr_2.size(); j++) {
-        //Same just store the JSON objects in an array
-        //Get the index of the JSON objects and print the values as per the index
-//  //          JSONObject jsonobj_2 = (JSONObject) jsonarr_2.get(j);
-//            //Store the data as String objects
+//        try {
+//            year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+//            headerString = "BENUE STATE LOCAL GOVERNMENT PENSIONS BOARD \n PENSIONER BIOMETRICS CAPTURE " + year;
+//            imageBytes = getIntent().getByteArrayExtra("image");
+//            token = getIntent().getStringExtra("token");
+        print.setVisibility(View.GONE);
+//            //  getDetails();
 //
-//            String str_data1 = (String) jsonobj_2.get("long_name");
-//            System.out.println(str_data1);
-//            String str_data2 = (String) jsonobzj_2.get("short_name");
-//            System.out.println(str_data2);
-//            System.out.println(jsonobj_2.get("types"));
-//            System.out.println("\n");
-//            //              }
-        //        }
+//            //custom font
+//            fontName = BaseFont.createFont("assets/fonts/HVD Fonts - BrandonText-Regular.otf", "UTF-8", BaseFont.EMBEDDED);
+//
+//        } catch (DocumentException e) {
+//            e.printStackTrace();
+//            Log.d("fingerprint", e.getMessage());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+//        print.setOnClickListener(v -> {
+//
+//            //Toast.makeText(PrinterActivity.this, "createPDFFile almost called", Toast.LENGTH_SHORT).show();
+////            if (isPrintoutCreated)
+////                createPDFFile(Common.getAppPath(PrinterActivity.this) + "test_pdf.pdf");
+////            else {
+////                try {
+////                    getDetails();
+////                } catch (IOException e) {
+////                    e.printStackTrace();
+////                }
+//            //   }
+//            print.setText("Capture Next Person");
+//            finish();
+//            startActivity(new Intent(this, Login.class));
+//        });
+
+
+//timer
+        Handler handler1 = new Handler();
+        handler1.postDelayed(() -> {
+            finish();
+            startActivity(new Intent(this, Login.class));
+        }, 4000); // 4000 milliseconds delay
 
 
     }
@@ -290,14 +257,13 @@ public class PrinterActivity extends AppCompatActivity {
                             values3.add(jsonobj_1.get("d_o_p"));
                             values3.add(jsonobj_1.get("lga_r"));
 
-
                             values4.add(jsonobj_1.get("bank"));
                             values4.add(jsonobj_1.get("account_number"));
                             values4.add(jsonobj_1.get("bvn"));
 
 
                             // send gotten data to appropriate array
-                        } catch (ParseException e) {
+                        } catch (ParseException | NullPointerException e) {
                             e.printStackTrace();
                         }
 

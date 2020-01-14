@@ -1,6 +1,9 @@
 package com.greenbit.MultiscanJNIGuiJavaAndroid.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class LoginRequest {
+    @SerializedName("bippiis_number")
     private String bippiis_number;
 
     public String getBippiis_number() {

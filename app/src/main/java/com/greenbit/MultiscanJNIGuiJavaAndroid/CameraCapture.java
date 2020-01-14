@@ -172,6 +172,7 @@ public class CameraCapture extends AppCompatActivity {
                 success = true;
                 home.setText("Done");
                 Log.d("fingerprint", "Uploaded successfully " + response);
+                home.performClick(); //to take you to next activity
                 //validate response
             }
 
