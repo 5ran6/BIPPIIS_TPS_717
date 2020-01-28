@@ -1223,8 +1223,8 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             return;
         }
         List<String> objTypes = GBMSAPIJavaWrapperDefinesScannableBiometricType.ScannableTypesToStringList(objTypesMask.Get());
-        ArrayAdapter<String> objectsToAcquireAdapter = new ArrayAdapter<String>(this, R.layout.simple_spinner_item, objTypes);
-        objectsToAcquireAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> objectsToAcquireAdapter = new ArrayAdapter<String>(this, R.layout.support_simple_spinner_dropdown_item, objTypes);
+        objectsToAcquireAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         comboObjectsToAcquire.setAdapter(objectsToAcquireAdapter);
 
         bStartStop.setEnabled(true);

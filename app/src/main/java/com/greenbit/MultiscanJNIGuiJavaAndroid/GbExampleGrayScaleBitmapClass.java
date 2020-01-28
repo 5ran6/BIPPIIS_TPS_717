@@ -762,13 +762,12 @@ public class GbExampleGrayScaleBitmapClass {
         File file = new File(GetGreenbitDirectoryName(),
                 fileName + ".lfs");
         OutputStream fOut = new FileOutputStream(file);
-      //  Log.d("Fingerprint", "Probe size = " + Probe.length);
+        //  Log.d("Fingerprint", "Probe size = " + Probe.length);
 //        fOut.write(serializeMinutiaeBuffer(Probe)); // check this line out
         fOut.write(SerializeMinutiaeBuffer(Probe)); // check this line out
         //   fOut.write(SerializeMinutiaeBuffer(Probe)); // check this line out
         //     fOut.flush();
         fOut.close(); // do not forget to close the stream
-
         Log.d("Fingerprint", "Closed successfully");
     }
 
@@ -791,8 +790,113 @@ public class GbExampleGrayScaleBitmapClass {
         }
         act.LogAsDialog("Identify not found");
         return false;
+
+
     }
 
+    /*
+    *
+             MinutiaeToBeVerified = GetMinutiae(CitizenFingerprint);
+            boolean found = false;
+            foreach (MinutiaeItem in CitizenStoredArray)
+            {
+                     score = Compare(MinutiaeToBeVerified, MinutiaeItem);
+                     if (score >= threshold) found = true;
+                     if (found) break;
+            }
+            return found;
+    *
+    * */
+
+
+    public LfsJavaWrapperDefinesMinutiaN[] getMinutiaeFromDb(byte[] templateCode) {
+
+        LfsJavaWrapperDefinesMinutiaN[] ValToRet = null;
+
+        ValToRet = deserialize(templateCode);
+
+        return ValToRet;
+    }
+
+
+    public boolean Verify(int ImageFlagsForCoding, IGreenbitLogger act) throws Exception {
+        int RetVal;
+
+//        MinutiaeToBeVerified = GetMinutiae(CitizenFingerprint); //done
+//        boolean found = false;
+//        foreach (MinutiaeItem in CitizenStoredArray)
+//        {
+//            score = Compare(MinutiaeToBeVerified, MinutiaeItem);
+//            if (score >= threshold) found = true;
+//            if (found) break;
+//        }
+//        return found;
+
+
+        File file = new File(GetGreenbitDirectoryName());
+        String[] paths = file.list();
+
+
+        for (String fname :
+                paths) {
+
+
+            String[] filenameArray = fname.split("\\.");
+            String extension = filenameArray[filenameArray.length - 1];
+            if (extension.equals("lfs")) {
+
+                //   boolean res = MatchMinutiae(fname);
+
+                /*******************
+                 * Getting Minutiae operations
+                 ******************/
+                //from scanner
+                LfsJavaWrapperDefinesMinutia[] Probe1 = new LfsJavaWrapperDefinesMinutia[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+                GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNum = new GBJavaWrapperUtilIntForJavaToCExchange();
+                RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe1, MinutiaeNum);
+
+                if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
+                    throw new Exception("EncodeToLfsMinutiae" +
+                            ", EncodeToLfsMinutiae: " + GB_AcquisitionOptionsGlobals.LFS_Jw.GetLastErrorString());
+                }
+
+
+                /*******************
+                 * Matching operations
+                 ******************/
+                //from db
+
+                //load file
+                String fileName = fname += ".lfs";
+//                act.LogOnScreen("Storage dir: " + GetGreenbitDirectoryName());
+                File f = new File(GetGreenbitDirectoryName(),
+                        fileName);
+                InputStream fIn = null;
+                fIn = new FileInputStream(f);
+                byte[] templateStream = new byte[fIn.available()];
+                fIn.read(templateStream);
+                fIn.close(); // do not forget to close the stream
+
+
+                LfsJavaWrapperDefinesMinutiaN[] Probe = new LfsJavaWrapperDefinesMinutiaN[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+                Probe = getMinutiaeFromDb(templateStream);
+
+
+                // compare
+                boolean found = false;
+//                GB_AcquisitionOptionsGlobals.BOZORTH_Jw
+                GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Load();
+
+//found = .......  //from here
+
+
+                if (found) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     //-------------------------------------------------------------
     // PNG
@@ -1334,5 +1438,9 @@ public class GbExampleGrayScaleBitmapClass {
 //            Log.d("Fingerprint", "NOT the same");
 //        }
         return SerializationUtils.serialize(MinutiaeArrayToSerialize);
+    }
+
+    private LfsJavaWrapperDefinesMinutiaN[] deserialize(byte[] templateCode) {
+        return SerializationUtils.deserialize(templateCode);
     }
 }

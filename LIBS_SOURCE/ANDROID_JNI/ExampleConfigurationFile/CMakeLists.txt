@@ -84,6 +84,16 @@ add_library( # Sets the name of the library.
              ../../../LIBS_SOURCE/ANDROID_JNI/AN2000_JNI.cpp
              ../../../LIBS_SOURCE/ANDROID_JNI/GB_JNI_Utils.cpp)
 
+add_library( # Sets the name of the library.
+             BOZORTH_JNI
+
+             # Sets the library as a shared library.
+             SHARED
+
+             # Provides a relative path to your source file(s).
+             ../../../LIBS_SOURCE/ANDROID_JNI/BOZORTH_JNI.cpp
+             ../../../LIBS_SOURCE/ANDROID_JNI/GB_JNI_Utils.cpp )
+
 # Searches for a specified prebuilt library and stores the path as a
 # variable. Because CMake includes system libraries in the search path by
 # default, you only need to specify the name of the public NDK library
@@ -145,6 +155,13 @@ target_link_libraries( # Specifies the target library.
 
 target_link_libraries( # Specifies the target library.
                       AN2000_JNI
+
+                       # Links the target library to the log library
+                       # included in the NDK.
+                       ${log-lib} )
+
+target_link_libraries( # Specifies the target library.
+                      BOZORTH_JNI
 
                        # Links the target library to the log library
                        # included in the NDK.
