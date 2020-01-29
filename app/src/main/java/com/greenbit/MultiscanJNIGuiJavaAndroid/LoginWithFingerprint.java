@@ -33,6 +33,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -801,8 +802,9 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                             == 0) {
                         throw new Exception("flat single finger on roll area must be set");
                     }
-                    boolean ret = GB_AcquisitionOptionsGlobals.acquiredFrame.Identify(
-                            GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE,
+
+
+                    boolean ret = GB_AcquisitionOptionsGlobals.acquiredFrame.Verify(
                             this);
                     if (ret) {
                         report.setText("Login Successful");
@@ -811,7 +813,9 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                             // 5ran6: VERIFICATION SUCCESSFUL! Loading screen animation begins
                             // 5ran6: IF you need to call any API, call here
                             // 5ran6: then Intent to Main activity and destroy this one by calling finish();
-                            finish();
+
+                            Toast.makeText(getApplicationContext(), "DONE DONE DONE", Toast.LENGTH_SHORT).show();
+                            //                           finish();
                         }, 2000);
                     } else {
                         gifImageView.setBackgroundResource(R.drawable.unsuccessful);
@@ -965,8 +969,6 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             throw ex;
         }
     }
-
-
 
 
     @Override

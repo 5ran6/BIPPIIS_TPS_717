@@ -3,20 +3,60 @@ package com.greenbit.MultiscanJNIGuiJavaAndroid.utils;
 import java.io.Serializable;
 
 public class LfsJavaWrapperDefinesMinutiaN implements Serializable {
-    int XCoord;
-    int YCoord;
-    int Direction;
-    double Reliability;
-    int Type;
+    private int XCoord;
+    private int YCoord;
+    private int Direction;
+    private double Reliability;
+    private int Type;
 
     public LfsJavaWrapperDefinesMinutiaN() {
     }
 
-    void SetFields(int x, int y, int direct, double reliab, int type) {
-        this.XCoord = x;
-        this.YCoord = y;
-        this.Direction = direct;
-        this.Reliability = reliab;
-        this.Type = type;
+    public void SetFields(int x, int y, int direct, double reliab, int type) {
+        this.setXCoord(x);
+        this.setYCoord(y);
+        this.setDirection(direct);
+        this.setReliability(reliab);
+        this.setType(type);
+    }
+
+    public int getXCoord() {
+        return XCoord;
+    }
+
+    public void setXCoord(int XCoord) {
+        this.XCoord = XCoord;
+    }
+
+    public int getYCoord() {
+        return YCoord;
+    }
+
+    public void setYCoord(int YCoord) {
+        this.YCoord = YCoord;
+    }
+
+    public int getDirection() {
+        return Direction;
+    }
+
+    public void setDirection(int direction) {
+        Direction = direction;
+    }
+
+    public double getReliability() {
+        return Reliability;
+    }
+
+    public void setReliability(double reliability) {
+        Reliability = reliability;
+    }
+
+    public int getType() {
+        return Type;
+    }
+
+    public void setType(int type) {
+        Type = type;
     }
 }

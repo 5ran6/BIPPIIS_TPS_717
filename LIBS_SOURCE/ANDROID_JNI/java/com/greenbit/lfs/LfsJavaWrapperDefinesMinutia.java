@@ -6,7 +6,7 @@ public class LfsJavaWrapperDefinesMinutia {
     int Direction;
     double Reliability;
     int Type;
-    void SetFields(int x, int y, int direct, double reliab, int type)
+    public void SetFields(int x, int y, int direct, double reliab, int type)
     {
         XCoord = x;
         YCoord = y;

@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFile;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.LfsJavaWrapperDefinesMinutiaN;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesANStruct;
@@ -42,11 +43,15 @@ import com.greenbit.utils.GBJavaWrapperUtilIntForJavaToCExchange;
 import com.greenbit.wsq.WsqJavaWrapperDefinesReturnCodes;
 
 import org.apache.commons.lang3.SerializationUtils;
+import org.json.JSONArray;
+import org.json.simple.parser.JSONParser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
@@ -66,6 +71,8 @@ public class GbExampleGrayScaleBitmapClass {
     public boolean hasToBeSaved;
     public boolean isAcquisitionResult;
 
+
+    byte[] T = null;
 
     //-------------------------------------------------------------
     // CONSTRUCTORS
@@ -608,6 +615,7 @@ public class GbExampleGrayScaleBitmapClass {
             GBJavaWrapperUtilIntForJavaToCExchange PackedSampleCodeSize = new GBJavaWrapperUtilIntForJavaToCExchange();
             GBJavaWrapperUtilIntForJavaToCExchange TemplateCodeSize = new GBJavaWrapperUtilIntForJavaToCExchange();
             GBJavaWrapperUtilIntForJavaToCExchange CompactTemplateCodeSize = new GBJavaWrapperUtilIntForJavaToCExchange();
+
             if (!InitGbfrswLibraryAndGetCodeSizeForCurrentBmp(SampleCodeSize, PackedSampleCodeSize, TemplateCodeSize, CompactTemplateCodeSize, act)) {
                 throw new Exception("EncodeToTemplate Error: InitGbfrswLibraryAndGetCodeSizeForCurrentBmp returned false");
             }
@@ -632,6 +640,8 @@ public class GbExampleGrayScaleBitmapClass {
             if (RetVal == GbfrswJavaWrapperDefinesReturnCodes.GBFRSW_ERROR) {
                 throw new Exception("Gbfrswlib Enroll Error : " + GB_AcquisitionOptionsGlobals.GBFRSW_Jw.GetLastErrorString());
             }
+
+
             /*******************
              * Perform some operations
              ******************/
@@ -724,6 +734,8 @@ public class GbExampleGrayScaleBitmapClass {
 
     public void EncodeToLFSMinutiae(String fileName, int ImageFlags, IGreenbitLogger act) throws Exception {
         int RetVal;
+        GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Load();
+        GBJavaWrapperUtilIntForJavaToCExchange TemplateCodeSize = new GBJavaWrapperUtilIntForJavaToCExchange();
 
         /******************
          Get minutiae
@@ -749,26 +761,220 @@ public class GbExampleGrayScaleBitmapClass {
          * Perform some operations
          ******************/
         //storageFile.fingerPrint.allFingerprints.add(Base64.encodeToString(TemplateCode, Base64.DEFAULT));
+        byte[] TemplateCode = new byte[TemplateCodeSize.Get()];
+        //String string = Base64.encodeToString(TemplateCode, Base64.DEFAULT);
+//            byte[] Temp = Base64.decode(string, Base64.DEFAULT);  //when I get back from server, I will use this to convert string to byte[]
+
+
         String string = Base64.encodeToString(SerializeMinutiaeBuffer(Probe), Base64.DEFAULT);
-//            byte[] Temp = Base64.decode(string, Base64.DEFAULT);
         storageFile.fingerPrint.addFingerints(string);
         Log.d("fingerprint", "Number of fingerprints: " + storageFile.fingerPrint.getAllFingerprints().size());
 
         /*******************
          * Save To File
          ******************/
-//        act.LogOnScreen("Saving image as LFS template; Storage dir: " + GetGreenbitDirectoryName() +
-//                ", len = " + bytes.length);
+////        act.LogOnScreen("Saving image as LFS template; Storage dir: " + GetGreenbitDirectoryName() +
+////                ", len = " + bytes.length);
+//        File file = new File(GetGreenbitDirectoryName(),
+//                fileName + ".lfs");
+//        OutputStream fOut = new FileOutputStream(file);
+//        //  Log.d("Fingerprint", "Probe size = " + Probe.length);
+////        fOut.write(serializeMinutiaeBuffer(Probe)); // check this line out
+//        // used for enrollment //   fOut.write(SerializeMinutiaeBuffer(Probe)); // check this line out
+//
+//        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+//            oos.writeObject(Probe);
+//            TemplateCode = baos.toByteArray();
+//            T = baos.toByteArray();
+//
+//        } catch (IOException e) {
+//            // Error in serialization
+//            e.printStackTrace();
+//        }
+//
+//        fOut.write(TemplateCode); // check this line out
+//        //   fOut.write(SerializeMinutiaeBuffer(Probe)); // check this line out
+//        //     fOut.flush();
+//        fOut.close(); // do not forget to close the stream
+
+
+        ObjectMapper mapper = new ObjectMapper();
+
+
         File file = new File(GetGreenbitDirectoryName(),
-                fileName + ".lfs");
-        OutputStream fOut = new FileOutputStream(file);
-        //  Log.d("Fingerprint", "Probe size = " + Probe.length);
-//        fOut.write(serializeMinutiaeBuffer(Probe)); // check this line out
-        fOut.write(SerializeMinutiaeBuffer(Probe)); // check this line out
-        //   fOut.write(SerializeMinutiaeBuffer(Probe)); // check this line out
-        //     fOut.flush();
-        fOut.close(); // do not forget to close the stream
+                fileName + ".json");
+        try {
+            // Serialize Java object into JSON file.
+            mapper.writeValue(file, Probe);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
         Log.d("Fingerprint", "Closed successfully");
+    }
+
+    public boolean Verify(IGreenbitLogger act) throws Exception {
+        int RetVal;
+        GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Load();
+
+//        MinutiaeToBeVerified = GetMinutiae(CitizenFingerprint); //done
+//        boolean found = false;
+//        foreach (MinutiaeItem in CitizenStoredArray)
+//        {
+//            score = Compare(MinutiaeToBeVerified, MinutiaeItem);
+//            if (score >= threshold) found = true;
+//            if (found) break;
+//        }
+//        return found;
+
+
+        File file = new File(GetGreenbitDirectoryName());
+        String[] paths = file.list();
+
+        /*******************
+         * Getting Minutiae operations
+         ******************/
+        //from scanner
+
+
+        LfsJavaWrapperDefinesMinutiaN[] Probe = new LfsJavaWrapperDefinesMinutiaN[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+        LfsJavaWrapperDefinesMinutia[] Probe1 = new LfsJavaWrapperDefinesMinutia[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+
+        for (int i = 0; i < BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE; i++) {
+            Probe[i] = new LfsJavaWrapperDefinesMinutiaN();
+            Probe1[i] = new LfsJavaWrapperDefinesMinutia();
+        }
+
+        GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNum = new GBJavaWrapperUtilIntForJavaToCExchange();
+        RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe1, MinutiaeNum);
+        Log.d("fingerprint", "Return Value = " + RetVal);
+
+        for (String fname :
+                paths) {
+
+            String[] filenameArray = fname.split("\\.");
+            String extension = filenameArray[filenameArray.length - 1];
+            if (extension.equals("json")) {
+
+                //   boolean res = MatchMinutiae(fname);
+
+                if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
+                    throw new Exception("DecodeFromLfsMinutiae" +
+                            ": " + GB_AcquisitionOptionsGlobals.LFS_Jw.GetLastErrorString());
+                }
+
+
+                /*******************
+                 * Matching operations
+                 ******************/
+                //from db
+
+                //load file
+                String fileName = fname;
+                Log.d("fingerprint", "Current File: " + fileName);
+                //                act.LogOnScreen("Storage dir: " + GetGreenbitDirectoryName());
+                File f = new File(GetGreenbitDirectoryName(),
+                        fileName);
+                InputStream fIn = null;
+                fIn = new FileInputStream(f);
+                byte[] templateStream = new byte[fIn.available()];
+                fIn.read(templateStream);
+                //  Probe = SerializationUtils.deserialize(fIn);
+
+
+//                try (ByteArrayInputStream bais = new ByteArrayInputStream(templateStream);
+//                     ObjectInputStream ois = new ObjectInputStream(bais)) {
+//                    Probe = (LfsJavaWrapperDefinesMinutiaN[]) ois.readObject();
+//                } catch (IOException | ClassNotFoundException e) {
+//                    // Error in de-serialization
+//                    e.printStackTrace();
+//                } // You are converting an invalid stream to Student
+                JSONParser jsonParser = new JSONParser();
+
+                try (FileReader reader = new FileReader(fname)) {
+                    //Read JSON file
+                    Object obj = jsonParser.parse(reader);
+
+                    JSONArray fingerprint = (JSONArray) obj;
+//                    System.out.println(employeeList);
+                    Log.d("json", "" + fingerprint);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                fIn.close(); // do not forget to close the stream
+
+
+//                if (Arrays.equals(templateStream, T)) {
+//                    act.LogAsDialog("The same");
+//                } else {
+//                    act.LogAsDialog("UnEqual");
+//                }
+
+                Log.d("fingerprint", "Template Length = " + templateStream.length);
+//                Probe = SerializationUtils.deserialize(templateStream);
+                Log.d("fingerprint", "Probe Length = " + Probe.length + " , Probe = " + Probe);
+                Log.d("fingerprint", "Probe1 Length = " + Probe1.length);
+                // i think this is the problem. You reinitialised it so it is empty
+                LfsJavaWrapperDefinesMinutia[] Gallery = new LfsJavaWrapperDefinesMinutia[Probe.length];
+
+                for (int i = 0; i < Probe.length; i++) {
+                    Gallery[i] = new LfsJavaWrapperDefinesMinutia();
+                    Gallery[i].SetFields(Probe[i].getXCoord(),
+                            Probe[i].getYCoord(),
+                            Probe[i].getDirection(),
+                            Probe[i].getReliability(),
+                            Probe[i].getType());
+                }
+
+
+                String text = "\"minutiae_Probe\": [";
+
+                for (int i = 0; i < Probe.length; i++) {
+                    text += "\n" +
+                            "XCoord: " + Probe[i].getXCoord() +
+                            ", YCoord: " + Probe[i].getYCoord() +
+                            ", Direction: " + Probe[i].getDirection() +
+                            ", Reliability: " + Probe[i].getReliability() +
+                            ", Type: " + Probe[i].getType() +
+                            ", Direction: " + Probe[i].getDirection();
+                }
+
+                Log.d("json", text);
+
+
+                Log.d("fingerprint", "Gallery Length = "
+                        + Gallery.length + "\n MinutiaeNum Value " + MinutiaeNum.Value
+                );
+
+
+//                Log.d("fingerprint", "JSON from File: " + string + " JSON from Gallery: " + string1);
+
+                // compare
+                boolean found = false;
+                GBJavaWrapperUtilIntForJavaToCExchange score = new GBJavaWrapperUtilIntForJavaToCExchange();
+                RetVal = GB_AcquisitionOptionsGlobals.BOZORTH_Jw.bozDirectCall(
+                        200, Gallery, MinutiaeNum.Value, Gallery, MinutiaeNum.Value,
+                        score
+                );
+                if (RetVal != BozorthJavaWrapperLibrary.BOZORTH_NO_ERROR) {
+                    // here error management...
+                    throw new Exception("Verify LFS: Bozorth Library Exception");
+                }
+                if (score.Get() >= 24) // decision threshold to say whether the fingerprints match (0-500)
+                    found = true;
+                if (found) {
+                    GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Unload();
+                    return true;
+                }
+            }
+        }
+        GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Unload();
+        return false;
     }
 
     public boolean Identify(int ImageFlagsForCoding, IGreenbitLogger act) {
@@ -811,92 +1017,9 @@ public class GbExampleGrayScaleBitmapClass {
 
     public LfsJavaWrapperDefinesMinutiaN[] getMinutiaeFromDb(byte[] templateCode) {
 
-        LfsJavaWrapperDefinesMinutiaN[] ValToRet = null;
-
-        ValToRet = deserialize(templateCode);
-
-        return ValToRet;
+        return deserialize(templateCode);
     }
 
-
-    public boolean Verify(int ImageFlagsForCoding, IGreenbitLogger act) throws Exception {
-        int RetVal;
-
-//        MinutiaeToBeVerified = GetMinutiae(CitizenFingerprint); //done
-//        boolean found = false;
-//        foreach (MinutiaeItem in CitizenStoredArray)
-//        {
-//            score = Compare(MinutiaeToBeVerified, MinutiaeItem);
-//            if (score >= threshold) found = true;
-//            if (found) break;
-//        }
-//        return found;
-
-
-        File file = new File(GetGreenbitDirectoryName());
-        String[] paths = file.list();
-
-
-        for (String fname :
-                paths) {
-
-
-            String[] filenameArray = fname.split("\\.");
-            String extension = filenameArray[filenameArray.length - 1];
-            if (extension.equals("lfs")) {
-
-                //   boolean res = MatchMinutiae(fname);
-
-                /*******************
-                 * Getting Minutiae operations
-                 ******************/
-                //from scanner
-                LfsJavaWrapperDefinesMinutia[] Probe1 = new LfsJavaWrapperDefinesMinutia[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
-                GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNum = new GBJavaWrapperUtilIntForJavaToCExchange();
-                RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe1, MinutiaeNum);
-
-                if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
-                    throw new Exception("EncodeToLfsMinutiae" +
-                            ", EncodeToLfsMinutiae: " + GB_AcquisitionOptionsGlobals.LFS_Jw.GetLastErrorString());
-                }
-
-
-                /*******************
-                 * Matching operations
-                 ******************/
-                //from db
-
-                //load file
-                String fileName = fname += ".lfs";
-//                act.LogOnScreen("Storage dir: " + GetGreenbitDirectoryName());
-                File f = new File(GetGreenbitDirectoryName(),
-                        fileName);
-                InputStream fIn = null;
-                fIn = new FileInputStream(f);
-                byte[] templateStream = new byte[fIn.available()];
-                fIn.read(templateStream);
-                fIn.close(); // do not forget to close the stream
-
-
-                LfsJavaWrapperDefinesMinutiaN[] Probe = new LfsJavaWrapperDefinesMinutiaN[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
-                Probe = getMinutiaeFromDb(templateStream);
-
-
-                // compare
-                boolean found = false;
-//                GB_AcquisitionOptionsGlobals.BOZORTH_Jw
-                GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Load();
-
-//found = .......  //from here
-
-
-                if (found) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
     //-------------------------------------------------------------
     // PNG
@@ -1393,12 +1516,13 @@ public class GbExampleGrayScaleBitmapClass {
 //        }
 //    }
 
-    private byte[] serializeMinutiaeBuffer(LfsJavaWrapperDefinesMinutiaN[] MinutiaeArrayToSerialize) {
-        byte[] serializedMBuffer = new byte[0];
+    private byte[] serializeMinutiaeBuffer(LfsJavaWrapperDefinesMinutia[] MinutiaeArrayToSerialize) {
+        byte[] serializedMBuffer = null;
+        //       byte[] serializedMBuffer = new byte[0]; // what I used during enrollment
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
             ObjectOutputStream out = new ObjectOutputStream(bos);
 
-            for (LfsJavaWrapperDefinesMinutiaN lfsJavaWrapperDefinesMinutia : MinutiaeArrayToSerialize) {
+            for (LfsJavaWrapperDefinesMinutia lfsJavaWrapperDefinesMinutia : MinutiaeArrayToSerialize) {
 
                 out.writeObject(lfsJavaWrapperDefinesMinutia);
             }

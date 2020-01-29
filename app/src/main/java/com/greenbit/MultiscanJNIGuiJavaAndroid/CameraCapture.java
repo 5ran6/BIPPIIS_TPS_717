@@ -195,3 +195,26 @@ public class CameraCapture extends AppCompatActivity {
         storageFile.fingerPrint.allFingerprints.clear();
     }
 }
+
+/*
+*
+*                LfsJavaWrapperDefinesMinutiaN[] Probe = new LfsJavaWrapperDefinesMinutiaN[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+                Probe = getMinutiaeFromDb(templateStream);
+                LfsJavaWrapperDefinesMinutia[] Gallery = new LfsJavaWrapperDefinesMinutia[Probe.length];
+                for (int i = 0; i < Probe.length; i++) {
+                    Gallery[i] = new LfsJavaWrapperDefinesMinutia();
+                    Gallery[i].SetFields(Probe[i].getXCoord(),
+                            Probe[i].getYCoord(),
+                            Probe[i].getDirection(),
+                            Probe[i].getReliability(),
+                            Probe[i].getType());
+                }
+
+                // compare
+                boolean found = false;
+//                GB_AcquisitionOptionsGlobals.BOZORTH_Jw
+
+//found = .......  //from here
+
+*
+* */

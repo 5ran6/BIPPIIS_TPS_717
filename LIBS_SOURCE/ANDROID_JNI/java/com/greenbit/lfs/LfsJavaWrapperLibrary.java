@@ -1,6 +1,5 @@
 package com.greenbit.lfs;
 
-import com.greenbit.utils.GBJavaWrapperUtilIntForJavaToCExchange;
 
 public class LfsJavaWrapperLibrary {
     // Used to load the 'native-lib' library on application startup.
@@ -26,10 +25,10 @@ public class LfsJavaWrapperLibrary {
      * @return
      */
     public native int GetMinutiae(
-            byte [] ImageBuffer,
+            byte[] ImageBuffer,
             int ImageSizeX, int ImageSizeY,
             int BitsPerPixel, int PixelPerMillimeter,
-            LfsJavaWrapperDefinesMinutia [] MinutiaeArray,
+            LfsJavaWrapperDefinesMinutia[] MinutiaeArray,
             GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNum
     );
 }

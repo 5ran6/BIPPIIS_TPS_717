@@ -886,12 +886,12 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
         if (GB_AcquisitionOptionsGlobals.acquiredFrameValid) {
             try {
                 if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SINGLE_FINGER) {
-                    GB_AcquisitionOptionsGlobals.acquiredFrame.EncodeToTemplate(
+                    GB_AcquisitionOptionsGlobals.acquiredFrame.EncodeToLFSMinutiae(
                             GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString()),
                             GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE,
                             this);
                 } else if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_ROLL_SINGLE_FINGER) {
-                    GB_AcquisitionOptionsGlobals.acquiredFrame.EncodeToTemplate(
+                    GB_AcquisitionOptionsGlobals.acquiredFrame.EncodeToLFSMinutiae(
                             GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString()),
                             GbfrswJavaWrapperDefinesImageFlags.GBFRSW_ROLLED_IMAGE,
                             this);
@@ -929,7 +929,7 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
                                 );
                         Log.i("Check img size", "Real SizeX = " + (
                                 bmpCls.sx));
-                        bmpCls.EncodeToTemplate(
+                        bmpCls.EncodeToLFSMinutiae(
                                 GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString() + i),
                                 GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE,
                                 this);
@@ -959,16 +959,21 @@ public class MainActivity extends AppCompatActivity implements IGreenbitLogger, 
                             == 0) {
                         throw new Exception("flat single finger on roll area must be set");
                     }
-                    GB_AcquisitionOptionsGlobals.acquiredFrame.Identify(
-                            GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE,
+                    GB_AcquisitionOptionsGlobals.acquiredFrame.Verify(
                             this);
                 }
                 // 5ran6: this is the block that identifies and what we will be calling
                 // 5ran6: that means that before you identify, you must set the value of GB_AcquisitionOptionsGlobals.ObjTypeToAcquire = GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_ROLL_SINGLE_FINGER
                 else if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_ROLL_SINGLE_FINGER) {
-                    GB_AcquisitionOptionsGlobals.acquiredFrame.Identify(
-                            GbfrswJavaWrapperDefinesImageFlags.GBFRSW_ROLLED_IMAGE,
+                    boolean suc = GB_AcquisitionOptionsGlobals.acquiredFrame.Verify(
                             this);
+                    if (suc) {
+                        LogAsDialog("Identity found: Success");
+                    } else {
+                        LogAsDialog("Identity Not found");
+                    }
+
+
                 } else {
                     throw new Exception("object does not support identify");
                 }
