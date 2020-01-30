@@ -6,6 +6,8 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFile;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.LfsJavaWrapperDefinesMinutiaN;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesANStruct;
@@ -43,15 +45,14 @@ import com.greenbit.utils.GBJavaWrapperUtilIntForJavaToCExchange;
 import com.greenbit.wsq.WsqJavaWrapperDefinesReturnCodes;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.json.JSONArray;
 import org.json.simple.parser.JSONParser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
@@ -806,7 +807,15 @@ public class GbExampleGrayScaleBitmapClass {
                 fileName + ".json");
         try {
             // Serialize Java object into JSON file.
-            mapper.writeValue(file, Probe);
+//            mapper.writeValue(file, Probe);
+            Gson gson = new Gson();
+            String json = gson.toJson(Probe1);
+
+            //           mapper.writeValue(file, json);
+            FileWriter fw = new FileWriter(file.getAbsolutePath());
+            fw.write(json);
+            fw.close();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -877,10 +886,10 @@ public class GbExampleGrayScaleBitmapClass {
                 //                act.LogOnScreen("Storage dir: " + GetGreenbitDirectoryName());
                 File f = new File(GetGreenbitDirectoryName(),
                         fileName);
-                InputStream fIn = null;
-                fIn = new FileInputStream(f);
-                byte[] templateStream = new byte[fIn.available()];
-                fIn.read(templateStream);
+//                InputStream fIn = null;
+//                fIn = new FileInputStream(f);
+//                byte[] templateStream = new byte[fIn.available()];
+//                fIn.read(templateStream);
                 //  Probe = SerializationUtils.deserialize(fIn);
 
 
@@ -893,20 +902,25 @@ public class GbExampleGrayScaleBitmapClass {
 //                } // You are converting an invalid stream to Student
                 JSONParser jsonParser = new JSONParser();
 
-                try (FileReader reader = new FileReader(fname)) {
-                    //Read JSON file
-                    Object obj = jsonParser.parse(reader);
+//                try (FileReader reader = new FileReader(fname)) {
+//                    //Read JSON file
+//                    Object obj = jsonParser.parse(reader);
+//
+//                    JSONArray fingerprint = (JSONArray) obj;
+////                    System.out.println(employeeList);
+//                    Log.d("json", "" + fingerprint);
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
 
-                    JSONArray fingerprint = (JSONArray) obj;
-//                    System.out.println(employeeList);
-                    Log.d("json", "" + fingerprint);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                Gson gson = new Gson();
+                JsonReader reader = new JsonReader(new FileReader(f.getAbsolutePath()));
+                Log.d("path", "" + f.getAbsolutePath());
+                Probe = gson.fromJson(reader, Probe.getClass()); // contains the whole reviews list
 
-                fIn.close(); // do not forget to close the stream
+//                fIn.close(); // do not forget to close the stream
 
 
 //                if (Arrays.equals(templateStream, T)) {
@@ -915,7 +929,7 @@ public class GbExampleGrayScaleBitmapClass {
 //                    act.LogAsDialog("UnEqual");
 //                }
 
-                Log.d("fingerprint", "Template Length = " + templateStream.length);
+//                Log.d("fingerprint", "Template Length = " + templateStream.length);
 //                Probe = SerializationUtils.deserialize(templateStream);
                 Log.d("fingerprint", "Probe Length = " + Probe.length + " , Probe = " + Probe);
                 Log.d("fingerprint", "Probe1 Length = " + Probe1.length);
@@ -958,7 +972,7 @@ public class GbExampleGrayScaleBitmapClass {
                 boolean found = false;
                 GBJavaWrapperUtilIntForJavaToCExchange score = new GBJavaWrapperUtilIntForJavaToCExchange();
                 RetVal = GB_AcquisitionOptionsGlobals.BOZORTH_Jw.bozDirectCall(
-                        200, Gallery, MinutiaeNum.Value, Gallery, MinutiaeNum.Value,
+                        200, Gallery, MinutiaeNum.Value, Probe1, MinutiaeNum.Value,
                         score
                 );
                 if (RetVal != BozorthJavaWrapperLibrary.BOZORTH_NO_ERROR) {
