@@ -19,7 +19,7 @@
     <androidx.appcompat.widget.AppCompatCheckedTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="left"
+        android:gravity="start"
         android:text="Enter BIPPIIS Number" />
 
     <androidx.appcompat.widget.AppCompatEditText
@@ -29,7 +29,6 @@
         android:hint="BIPPIIS Number"
         android:imeOptions="actionDone"
         android:inputType="textCapCharacters"
-
         android:maxLength="25"
         android:maxLines="1"
         android:singleLine="true" />

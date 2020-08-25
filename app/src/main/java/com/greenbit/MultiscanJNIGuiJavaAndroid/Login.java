@@ -1,6 +1,7 @@
 package com.greenbit.MultiscanJNIGuiJavaAndroid;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +20,9 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.transition.Transition;
 import androidx.transition.TransitionValues;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.interfaces.BIPPIIS;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.LoginRequest;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
@@ -48,16 +52,26 @@ public class Login extends AppCompatActivity {
     private String bippiis, getBippiis;
     private ProgressBar progressBar;
     private AppCompatImageView img;
+    String mToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         bip = findViewById(R.id.bippiis_no);
-
 //        //to be removed
 //        bip.setText("O/S 2243");
-
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Login.this, new OnSuccessListener<InstanceIdResult>() {
+            @Override
+            public void onSuccess(InstanceIdResult instanceIdResult) {
+                mToken = instanceIdResult.getToken();
+                Log.e("Token", mToken);
+                SharedPreferences pref = getApplicationContext().getSharedPreferences("bippiis", MODE_PRIVATE);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("firebaseToken", mToken);
+                editor.apply(); //commit changes
+            }
+        });
         progressBar = findViewById(R.id.progress);
         img = findViewById(R.id.img);
         final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
@@ -129,6 +143,7 @@ public class Login extends AppCompatActivity {
 
             LoginRequest loginRequest = new LoginRequest();
             loginRequest.setBippiis_number(Objects.requireNonNull(bip.getText()).toString().trim());
+            loginRequest.setFirebaseToken(mToken);
 
             Call<ResponseBody> ResponseBodyCall = service.getLoginResponse(loginRequest);
             ResponseBodyCall.enqueue(new Callback<ResponseBody>() {

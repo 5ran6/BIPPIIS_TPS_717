@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/AndroidStudioProjects-MultiscanJNIExample_GUI_JavaAndroid.iml" filepath="$PROJECT_DIR$/.idea/modules/AndroidStudioProjects-MultiscanJNIExample_GUI_JavaAndroid.iml" group="MultiscanJNIExample_GUI_JavaAndroid" />
       <module fileurl="file://$PROJECT_DIR$/MultiscanJNIExample_GUI_JavaAndroid.iml" filepath="$PROJECT_DIR$/MultiscanJNIExample_GUI_JavaAndroid.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/MultiscanJNIExample_GUI_JavaAndroid-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/MultiscanJNIExample_GUI_JavaAndroid-app.iml" group="MultiscanJNIExample_GUI_JavaAndroid/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

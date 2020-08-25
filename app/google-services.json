@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "469776812525",
+    "firebase_url": "https://bippiis-39993.firebaseio.com",
+    "project_id": "bippiis-39993",
+    "storage_bucket": "bippiis-39993.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:469776812525:android:0806c0191919ad8b4bbfe4",
+        "android_client_info": {
+          "package_name": "wrappers.greenbit.com.dactymatch_gui_javaandroid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "469776812525-5grj0fr0jg44uj3cuctvt9r4dmnk5bvo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANfvqzcUfPySpkWf9Rz-vJ17oCdJMBmpY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "469776812525-5grj0fr0jg44uj3cuctvt9r4dmnk5bvo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
