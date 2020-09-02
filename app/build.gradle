@@ -99,5 +99,8 @@ dependencies {
 // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.0.1'
     implementation 'com.google.firebase:firebase-analytics:17.5.0'
+    implementation 'com.google.firebase:firebase-iid:20.2.4'
+    implementation 'com.google.firebase:firebase-messaging:20.2.4'
+
 
 }

@@ -6,7 +6,9 @@ package com.greenbit.MultiscanJNIGuiJavaAndroid;
  * */
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -549,6 +551,8 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
         if (sequence == 4) {
 //            text = "LEFT HAND: Place the four fingers on the scanner as shown above";
 //            gifImageView.setImageResource(R.drawable.slap_4_left);
+            SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
+            String mToken = prefs.getString("firebaseToken", null);
 
             report.setText("Uploading.....");
             gifImageView.setImageResource(R.drawable.processing);
@@ -574,7 +578,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             Log.d("fingerprint", "BIPPIIS NUMBER: " + bippiis_number);
             FingerprintRequest fingerprintRequest = new FingerprintRequest();
             fingerprintRequest.setBippiis_number(bippiis_number);
-
+            fingerprintRequest.setFirebaseToken(mToken);
 //            Gson gson = new Gson();
 //            String json = gson.toJson(storageFile.fingerPrint.allFingerprints);
 //            // to reverse it when am getting back from server
