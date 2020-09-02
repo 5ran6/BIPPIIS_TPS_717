@@ -11,6 +11,15 @@ public class FingerprintRequest {
     private ArrayList<String> fingerprints;
     @SerializedName("bippiis_number")
     private String bippiis_number;
+    @SerializedName("firebaseToken")
+    private String firebaseToken;
+    public String getFirebaseToken() {
+        return firebaseToken;
+    }
+
+    public void setFirebaseToken(String firebaseToken) {
+        this.firebaseToken = firebaseToken;
+    }
 
     public ArrayList<String> getFingerprints() {
         return fingerprints;

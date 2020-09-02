@@ -1,6 +1,8 @@
 package com.greenbit.MultiscanJNIGuiJavaAndroid;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -112,7 +114,7 @@ public class CameraCapture extends AppCompatActivity {
                 }
                 Log.d("fingerprint", "Deleted Greenbit folder successfully");
             }
-            startActivity(new Intent(getApplicationContext(), PrinterActivity.class).putExtra("image", byteArray).putExtra("token", token));
+            startActivity(new Intent(getApplicationContext(), Login.class).putExtra("image", byteArray).putExtra("token", token));
 
         } else
             uploadImage();
@@ -130,6 +132,9 @@ public class CameraCapture extends AppCompatActivity {
     }
 
     private void uploadImage() {
+        SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
+        String mToken = prefs.getString("firebaseToken", null);
+
         home.setEnabled(false);
         home.setText("Uploading...");
         progressBar.setVisibility(View.VISIBLE);
@@ -150,7 +155,7 @@ public class CameraCapture extends AppCompatActivity {
 
         PassportRequest passportRequest = new PassportRequest();
         passportRequest.setPassport("data:image/jpeg;base64," + imageString);
-
+passportRequest.setFirebaseToken(mToken);
         Call<PassportResponse> passportResponseCall = service.getPassportResponse(passportRequest);
         passportResponseCall.enqueue(new Callback<PassportResponse>() {
             @Override
