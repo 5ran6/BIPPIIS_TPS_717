@@ -123,7 +123,24 @@ public class Login extends AppCompatActivity {
     }
 
     public void proceed(View view) {
-        login();
+        String flag = Objects.requireNonNull(getIntent().getExtras()).getString("flag");
+        Toast.makeText(getApplicationContext(), flag, Toast.LENGTH_SHORT).show();
+
+        if (flag.equalsIgnoreCase("enroll"))
+            login();
+        else
+            verify();
+
+    }
+
+    private void verify() {
+        //download fingerprint file and run verification activityForResult
+
+
+        //if verified successfully, send to firebase
+
+        //call frank's app
+
     }
 
     private void login() {
@@ -248,20 +265,4 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    private long exitTime = 0;
-
-    public void doExitApp() {
-        if ((System.currentTimeMillis() - exitTime) > 2000) {
-            Tools.toast("Press again to exit app", Login.this);
-            exitTime = System.currentTimeMillis();
-        } else {
-            finishAffinity();
-        }
-    }
-
-
-    @Override
-    public void onBackPressed() {
-        doExitApp();
-    }
-}
+ }

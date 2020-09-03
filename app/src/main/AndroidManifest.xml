@@ -14,10 +14,17 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name=".CameraCapture"/>
+        <activity android:name=".CameraCapture" />
         <activity android:name=".MainActivity" />
         <activity android:name=".PrinterActivity" />
         <activity
@@ -80,6 +87,7 @@
         <activity
             android:name=".EnrollFingerprints"
             android:screenOrientation="landscape" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.greenbit.MultiscanJNIGuiJavaAndroid"
@@ -89,7 +97,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
     </application>
 
 </manifest>
