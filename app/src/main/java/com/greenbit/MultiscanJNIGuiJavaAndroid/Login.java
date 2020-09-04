@@ -123,31 +123,22 @@ public class Login extends AppCompatActivity {
     }
 
     public void proceed(View view) {
-        String flag = Objects.requireNonNull(getIntent().getExtras()).getString("flag");
-        Toast.makeText(getApplicationContext(), flag, Toast.LENGTH_SHORT).show();
-
-        if (flag.equalsIgnoreCase("enroll"))
-            login();
-        else
-            verify();
-
+        login();
     }
 
     private void verify() {
-        //download fingerprint file and run verification activityForResult
 
+        //download fingerprint file and run verification activityForResult
 
         //if verified successfully, send to firebase
 
         //call frank's app
 
-    }
 
-    private void login() {
         SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
         String mToken = prefs.getString("firebaseToken", null);
 
-        bippiis = bip.getText().toString().trim();
+        bippiis = Objects.requireNonNull(bip.getText()).toString().trim();
 
         if (bippiis.isEmpty()) {
             Toast.makeText(getApplicationContext(), "BIPPIIS NO CANNOT BE EMPTY!", Toast.LENGTH_SHORT).show();
@@ -263,6 +254,137 @@ public class Login extends AppCompatActivity {
 
 
         }
+
+
     }
 
- }
+    private void login() {
+        SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
+        String mToken = prefs.getString("firebaseToken", null);
+
+        bippiis = Objects.requireNonNull(bip.getText()).toString().trim();
+
+        if (bippiis.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "BIPPIIS NO CANNOT BE EMPTY!", Toast.LENGTH_SHORT).show();
+        } else {
+            getBippiis = bip.getText().toString().trim();
+
+            //retrofit_auth and get token
+            progressBar.setVisibility(View.VISIBLE);
+
+            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
+                @Override
+                public okhttp3.Response intercept(Chain chain) throws IOException {
+                    Request newRequest = chain.request().newBuilder()
+                            .addHeader("Authorization", "Bearer " + token)
+                            .build();
+                    return chain.proceed(newRequest);
+                }
+            }).build();
+
+            Retrofit retrofit = new Retrofit.Builder().client(client)
+                    .baseUrl(getString(R.string.base_url))
+                    .addConverterFactory(GsonConverterFactory.create()).build();
+            BIPPIIS service = retrofit.create(BIPPIIS.class);
+
+            LoginRequest loginRequest = new LoginRequest();
+            loginRequest.setBippiis_number(Objects.requireNonNull(bip.getText()).toString().trim());
+            loginRequest.setFirebaseToken(mToken);
+
+            Call<ResponseBody> ResponseBodyCall = service.getLoginResponse(loginRequest);
+            ResponseBodyCall.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    // TODO: still need to catch errors properly from accurate response filters
+                    progressBar.setVisibility(View.GONE);
+                    Log.d("fingerprint", "Response Code: " + response.code());
+
+                    //validate response
+                    try {
+                        if (response.code() == 201) {
+                            InputStream inputStr = response.body().byteStream();
+
+                            String jsonResponse = "";
+                            boolean enrolled = false;
+
+                            try {
+                                jsonResponse = IOUtils.toString(inputStr, "UTF-8");
+                                Log.d("fingerprint", "" + jsonResponse);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            if (!jsonResponse.isEmpty()) {
+
+                                JSONParser parse = new JSONParser();
+                                JSONObject jobj = null;
+                                try {
+                                    jobj = (JSONObject) parse.parse(jsonResponse);
+
+                                    JSONObject jsonobj_1 = (JSONObject) jobj.get("data");
+
+                                    String fullname = (String) jsonobj_1.get("fullname");
+
+                                    enrolled = (Boolean) jsonobj_1.get("has_enrolled");
+                                    Log.d("fingerprint", "has enroll: " + enrolled);
+                                    if (!enrolled) {
+                                        bippiis = bippiis.replace("/", "_");
+                                        bippiis = bippiis.replace("-", "_");
+                                        bippiis = bippiis.replace(" ", "_").toUpperCase();
+                                        Log.d("fingerprint", "Coming from Original BIPPIIS : " + getBippiis + " edited BIPPIIS: " + bippiis + " token : " + token);
+//                                        Toast.makeText(getApplicationContext(), "DONE", Toast.LENGTH_LONG).show();
+
+                                        startActivity(new Intent(getApplicationContext(), EnrollFingerprints.class).putExtra("bippiis_number", getBippiis).putExtra("bippiis_number_edited", bippiis).putExtra("token", token).putExtra("fullname", fullname));
+                                    } else {
+                                        // go to login then DASHBOARD
+                                        Toast.makeText(getApplicationContext(), "Has been enrolled", Toast.LENGTH_LONG).show();
+
+                                        //DOWNLOAD fingerprint file
+
+
+
+                                        startActivity(new Intent(getApplicationContext(), LoginWithFingerprint.class));
+
+                                    }
+
+                                } catch (ParseException | NullPointerException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                            } else {
+                                Log.d("fingerprint", "Response RAW: " + response.raw());
+
+                                Toast.makeText(getApplicationContext(), "INVALID BIPPIIS NUMBER", Toast.LENGTH_SHORT).show();
+                            }
+
+
+                        } else {
+                            //something went wrong. Try again.
+                            Toast.makeText(getApplicationContext(), "INVALID BIPPIIS NUMBER. Try again", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (NullPointerException n) {
+                        n.printStackTrace();
+
+                        Toast.makeText(getApplicationContext(), "INVALID BIPPIIS NUMBER", Toast.LENGTH_SHORT).show();
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(getApplicationContext(), "Network Error", Toast.LENGTH_SHORT).show();
+
+                    Log.d("fingerprint", "Failed to Verify: " + t.getLocalizedMessage());
+
+                }
+            });
+
+
+        }
+    }
+
+}
