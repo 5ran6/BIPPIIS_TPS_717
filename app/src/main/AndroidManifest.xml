@@ -78,6 +78,9 @@
         <activity
             android:name=".EnrollFingerprints"
             android:screenOrientation="landscape" />
+        <activity
+            android:name=".LoginWithFingerprint"
+            android:screenOrientation="landscape" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

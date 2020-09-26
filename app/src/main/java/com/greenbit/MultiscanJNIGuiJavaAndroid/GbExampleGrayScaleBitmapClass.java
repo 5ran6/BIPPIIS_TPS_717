@@ -1030,7 +1030,6 @@ public class GbExampleGrayScaleBitmapClass {
 
 
     public LfsJavaWrapperDefinesMinutiaN[] getMinutiaeFromDb(byte[] templateCode) {
-
         return deserialize(templateCode);
     }
 

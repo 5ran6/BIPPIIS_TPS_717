@@ -10,5 +10,4 @@
         layout="@layout/content_login_with_fingerprint"
         android:visibility="visible" />
 
-
 </LinearLayout>

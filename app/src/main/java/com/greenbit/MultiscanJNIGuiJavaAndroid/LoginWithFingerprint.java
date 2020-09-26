@@ -15,7 +15,9 @@ package com.greenbit.MultiscanJNIGuiJavaAndroid;
 
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -75,6 +77,11 @@ import com.greenbit.utils.GBJavaWrapperUtilIntForJavaToCExchange;
 import com.greenbit.wsq.WsqJavaWrapperDefinesReturnCodes;
 import com.greenbit.wsq.WsqJavaWrapperLibrary;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,6 +119,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
     private boolean ChronometerStarted;
     private GifImageView gifImageView;
     private TextView report;
+    private String bippiis_no = "";
 
     public static GbfinimgJavaWrapperDefineSegmentImageDescriptor[] segments;
     private GbExampleGrayScaleBitmapClass gbExampleGrayScaleBitmapClass =
@@ -815,6 +823,14 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                             // 5ran6: then Intent to Main activity and destroy this one by calling finish();
 
                             Toast.makeText(getApplicationContext(), "DONE DONE DONE", Toast.LENGTH_SHORT).show();
+                            SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
+                            String mToken = prefs.getString("firebaseToken", null);
+                            try {
+                                sendToJsonFile(bippiis_no, mToken);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
                             //                           finish();
                         }, 2000);
                     } else {
@@ -872,7 +888,6 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             GB_AcquisitionOptionsGlobals.LFS_Jw = new LfsJavaWrapperLibrary();
             GB_AcquisitionOptionsGlobals.BOZORTH_Jw = new BozorthJavaWrapperLibrary();
             setContentView(R.layout.activity_login_with_fingerprint);
-
             LoggerAcquisitionInfoTv = findViewById(R.id.Acquisition_Info);
             LoggerImageInfoTv = findViewById(R.id.Image_Info);
             LoggerView = findViewById(R.id.FrameView);
@@ -883,6 +898,8 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             LoggerImageInfoList = new ArrayList<String>();
             LoggerPopupList = new ArrayList<String>();
             LoggerBitmapList = new ArrayList<GbExampleGrayScaleBitmapClass>();
+
+            bippiis_no = getIntent().getStringExtra("bippiis_number_edited");
 
             bGetAttDevList = findViewById(R.id.bAttDevList);
             bGetAttDevList.setOnClickListener(new View.OnClickListener() {
@@ -1074,8 +1091,41 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             checkGbmsapi = "onDestroy, Wsq Unload Failure";
             LogAcquisitionInfoOnScreen(checkGbmsapi);
         }
+    }
 
+
+    private void sendToJsonFile(String bippiis, String token) throws JSONException {
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("bipplis_no", bippiis);
+        jsonObject.put("firebaseToken", token);
+        Log.d("jsonFileContents", jsonObject.toString());
+        writeFileOnInternalStorage(getApplicationContext(), "bippiis.json", jsonObject.toString());
+
+        //call bippiis version 2 app explicitly
+        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.biippss");
+        if (launchIntent != null) {
+            startActivity(launchIntent);//null pointer check in case package name was not found
+        } else {
+            Toast.makeText(getApplicationContext(), "This app depends on another app which is not yet installed. Install to proceed", Toast.LENGTH_LONG).show();
+        }
 
     }
 
+    public void writeFileOnInternalStorage(Context mcoContext, String sFileName, String sBody) {
+        File dir = new File(mcoContext.getFilesDir(), "bippiis");
+        if (!dir.exists()) {
+            dir.mkdir();
+        }
+
+        try {
+            File gpxfile = new File(dir, sFileName);
+            FileWriter writer = new FileWriter(gpxfile);
+            writer.append(sBody);
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
