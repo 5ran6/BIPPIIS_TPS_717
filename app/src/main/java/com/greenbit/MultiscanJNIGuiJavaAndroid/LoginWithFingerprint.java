@@ -96,7 +96,6 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
     private EditText tbName;
     private boolean AcquisitionStarted = false, proceed = false;
     public static boolean firstStart = false;
-
     private ArrayList<String> LoggerPopupList;
     private ArrayList<String> LoggerAcqInfoList;
     private TextView LoggerAcquisitionInfoTv;
@@ -935,9 +934,12 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             bIdentify.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    StartStopAcquisition();
                     Identify();
                 }
             });
+            bIdentify.performClick();
+
             bIdentify.setText("Identify");
 
             tbName = findViewById(R.id.tbName);

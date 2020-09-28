@@ -495,7 +495,6 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                 } else {
                     sequence_count = 1;
                     sequence = 1;
-
                 }
             }
 

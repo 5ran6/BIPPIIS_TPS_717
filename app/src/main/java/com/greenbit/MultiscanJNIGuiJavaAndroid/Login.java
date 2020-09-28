@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,21 +23,26 @@ import androidx.transition.Transition;
 import androidx.transition.TransitionValues;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.google.gson.Gson;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.interfaces.BIPPIIS;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.LoginRequest;
-import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.LfsJavaWrapperDefinesMinutiaN;
+import com.greenbit.lfs.LfsJavaWrapperDefinesMinutia;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Objects;
 
 import okhttp3.Interceptor;
@@ -48,6 +54,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.greenbit.MultiscanJNIGuiJavaAndroid.GbExampleGrayScaleBitmapClass.GetBippiisDirectoryName;
 
 public class Login extends AppCompatActivity {
     private AppCompatEditText bip;
@@ -336,16 +344,44 @@ public class Login extends AppCompatActivity {
 
                                         startActivity(new Intent(getApplicationContext(), EnrollFingerprints.class).putExtra("bippiis_number", getBippiis).putExtra("bippiis_number_edited", bippiis).putExtra("token", token).putExtra("fullname", fullname));
                                     } else {
-                                        // go to login then DASHBOARD
                                         Toast.makeText(getApplicationContext(), "Has been enrolled", Toast.LENGTH_LONG).show();
 
-                                        //DOWNLOAD fingerprint file
 
+                                        // store fingerprint in arrayList
+                                        ArrayList<String> fingeprints = new ArrayList<String>();
+                                        org.json.simple.JSONArray biometrics = new org.json.simple.JSONArray();
+                                        biometrics = (org.json.simple.JSONArray) jsonobj_1.get("biometrics");
 
+                                        assert biometrics != null;
+                                        int len = biometrics.size();
 
+                                        for (int j = 0; j < len; j++) {
+                                            JSONObject json = (JSONObject) biometrics.get(j);
+                                            fingeprints.add((String) json.get("fingerprint"));
+                                            //    Log.d("myProbe", fingeprints.get(j));
+//                                            GbExampleGrayScaleBitmapClass gbExampleGrayScaleBitmapClass = new GbExampleGrayScaleBitmapClass();
+                                            byte[] bytes = Base64.decode(fingeprints.get(j), Base64.DEFAULT);
+                                            LfsJavaWrapperDefinesMinutiaN[] Probe = deSerialize(bytes);
+                                            File file = new File(GetBippiisDirectoryName(),
+                                                    "temp_" + j + ".json");
+                                            try {
+                                                // Serialize Java object into JSON file.
+                                                Gson gson = new Gson();
+                                                String json1 = gson.toJson(Probe);
 
+                                                //           mapper.writeValue(file, json);
+                                                FileWriter fw = new FileWriter(file.getAbsolutePath());
+                                                fw.write(json1);
+                                                fw.close();
+
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+
+                                            Log.d("Fingerprint", "Closed " + j + " successfully");
+
+                                        }
                                         startActivity(new Intent(getApplicationContext(), LoginWithFingerprint.class));
-
                                     }
 
                                 } catch (ParseException | NullPointerException e) {
@@ -387,5 +423,10 @@ public class Login extends AppCompatActivity {
 
         }
     }
+
+    private LfsJavaWrapperDefinesMinutiaN[] deSerialize(byte[] templateCode) {
+        return SerializationUtils.deserialize(templateCode);
+    }
+
 
 }

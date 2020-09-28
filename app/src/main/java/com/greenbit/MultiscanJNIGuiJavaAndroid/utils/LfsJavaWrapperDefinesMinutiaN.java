@@ -3,6 +3,7 @@ package com.greenbit.MultiscanJNIGuiJavaAndroid.utils;
 import java.io.Serializable;
 
 public class LfsJavaWrapperDefinesMinutiaN implements Serializable {
+    private static final long serialVersionUID = -8050260658018842919L;
     private int XCoord;
     private int YCoord;
     private int Direction;

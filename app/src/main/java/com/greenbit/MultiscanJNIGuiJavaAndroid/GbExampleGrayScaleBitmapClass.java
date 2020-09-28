@@ -71,9 +71,7 @@ public class GbExampleGrayScaleBitmapClass {
     public int sy;
     public boolean hasToBeSaved;
     public boolean isAcquisitionResult;
-
-
-    byte[] T = null;
+   byte[] T = null;
 
     //-------------------------------------------------------------
     // CONSTRUCTORS
@@ -154,6 +152,15 @@ public class GbExampleGrayScaleBitmapClass {
         boolean success = true;
         if (!file.exists()) {
             success = file.mkdir();
+        }
+        path = file.getPath();
+        return path;
+    }
+    public static String GetBippiisDirectoryName() {
+        String path = Environment.getExternalStorageDirectory().toString();
+        File file = new File(path, "bippiis");
+         if (!file.exists()) {
+             file.mkdir();
         }
         path = file.getPath();
         return path;
@@ -1029,9 +1036,9 @@ public class GbExampleGrayScaleBitmapClass {
     * */
 
 
-    public LfsJavaWrapperDefinesMinutiaN[] getMinutiaeFromDb(byte[] templateCode) {
-        return deserialize(templateCode);
-    }
+//    public LfsJavaWrapperDefinesMinutiaN[] getMinutiaeFromDb(byte[] templateCode) {
+//        return deserialize(templateCode);
+//    }
 
 
     //-------------------------------------------------------------
@@ -1577,7 +1584,7 @@ public class GbExampleGrayScaleBitmapClass {
         return SerializationUtils.serialize(MinutiaeArrayToSerialize);
     }
 
-    private LfsJavaWrapperDefinesMinutiaN[] deserialize(byte[] templateCode) {
-        return SerializationUtils.deserialize(templateCode);
-    }
+//    public LfsJavaWrapperDefinesMinutiaN[] deserialize(byte[] templateCode) {
+//        return SerializationUtils.deserialize(templateCode);
+//    }
 }
