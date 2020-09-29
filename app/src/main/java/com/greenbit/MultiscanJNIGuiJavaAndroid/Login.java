@@ -346,7 +346,6 @@ public class Login extends AppCompatActivity {
                                     } else {
                                         Toast.makeText(getApplicationContext(), "Has been enrolled", Toast.LENGTH_LONG).show();
 
-
                                         // store fingerprint in arrayList
                                         ArrayList<String> fingeprints = new ArrayList<String>();
                                         org.json.simple.JSONArray biometrics = new org.json.simple.JSONArray();
