@@ -33,7 +33,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,13 +43,11 @@ import androidx.core.content.ContextCompat;
 
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesReturnCodes;
-import com.greenbit.ansinistitl.Gban2000JavaWrapperLibrary;
 import com.greenbit.bozorth.BozorthJavaWrapperLibrary;
 import com.greenbit.gbfinimg.GbfinimgJavaWrapperDefineSegmentImageDescriptor;
 import com.greenbit.gbfinimg.GbfinimgJavaWrapperDefinesReturnCodes;
 import com.greenbit.gbfinimg.GbfinimgJavaWrapperLibrary;
 import com.greenbit.gbfir.GbfirJavaWrapperDefinesReturnCodes;
-import com.greenbit.gbfir.GbfirJavaWrapperLibrary;
 import com.greenbit.gbfrsw.GbfrswJavaWrapperDefinesImageFlags;
 import com.greenbit.gbfrsw.GbfrswJavaWrapperDefinesReturnCodes;
 import com.greenbit.gbfrsw.GbfrswJavaWrapperLibrary;
@@ -66,17 +63,11 @@ import com.greenbit.gbmsapi.GBMSAPIJavaWrapperDefinesScannableObjects;
 import com.greenbit.gbmsapi.GBMSAPIJavaWrapperLibrary;
 import com.greenbit.gbmsapi.IGbmsapiAcquisitionManagerCallback;
 import com.greenbit.gbnfiq.GbNfiqJavaWrapperDefineReturnCodes;
-import com.greenbit.gbnfiq.GbNfiqJavaWrapperLibrary;
 import com.greenbit.gbnfiq2.GbNfiq2JavaWrapperDefineReturnCodes;
-import com.greenbit.gbnfiq2.GbNfiq2JavaWrapperLibrary;
-import com.greenbit.jpeg.GbjpegJavaWrapperDefinesReturnCodes;
-import com.greenbit.jpeg.GbjpegJavaWrapperLibrary;
 import com.greenbit.lfs.LfsJavaWrapperLibrary;
 import com.greenbit.usbPermission.IGreenbitLogger;
 import com.greenbit.usbPermission.UsbPermission;
 import com.greenbit.utils.GBJavaWrapperUtilIntForJavaToCExchange;
-import com.greenbit.wsq.WsqJavaWrapperDefinesReturnCodes;
-import com.greenbit.wsq.WsqJavaWrapperLibrary;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -221,18 +212,18 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                             // 5ran6: I am saving all these format just for testing sha.... We sha eventually only save one format (e.g ANSI_Nist)
 
                             GbBmp.SaveIntoAnsiNistFile("Image_" + LoggerBitmapFileSaveCounter, this, 0);
-           //                 GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
-             //               GbBmp.SaveToRaw("Image_" + LoggerBitmapFileSaveCounter, this);
-                       //     GbBmp.SaveToJpeg("Image_" + LoggerBitmapFileSaveCounter, this);
-                  //          GbBmp.SaveToJpeg2("Image_" + LoggerBitmapFileSaveCounter, this);
-                       //     GbBmp.SaveToWsq("Image_" + LoggerBitmapFileSaveCounter, this);
-                         //   GbBmp.SaveToFIR("Image_" + LoggerBitmapFileSaveCounter, this);
-                    //        GbBmp.GetNFIQQuality(this);
-                      //      GbBmp.GetNFIQ2Quality(this);
+                            //                 GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
+                            //               GbBmp.SaveToRaw("Image_" + LoggerBitmapFileSaveCounter, this);
+                            //     GbBmp.SaveToJpeg("Image_" + LoggerBitmapFileSaveCounter, this);
+                            //          GbBmp.SaveToJpeg2("Image_" + LoggerBitmapFileSaveCounter, this);
+                            //     GbBmp.SaveToWsq("Image_" + LoggerBitmapFileSaveCounter, this);
+                            //   GbBmp.SaveToFIR("Image_" + LoggerBitmapFileSaveCounter, this);
+                            //        GbBmp.GetNFIQQuality(this);
+                            //      GbBmp.GetNFIQ2Quality(this);
 
                             try {
                                 GbBmp.TestLfsBozorth(this);
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -256,7 +247,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                                     }
                                 }, 2500);
                             }
-                          //  report.setText("Initializing ");
+                            //  report.setText("Initializing ");
 
                             //               Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_SHORT).show();
 
@@ -904,7 +895,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
         try {
             super.onCreate(savedInstanceState);
             GB_AcquisitionOptionsGlobals.GBMSAPI_Jw = new GBMSAPIJavaWrapperLibrary();
-   //         GB_AcquisitionOptionsGlobals.WSQ_Jw = new WsqJavaWrapperLibrary();
+            //         GB_AcquisitionOptionsGlobals.WSQ_Jw = new WsqJavaWrapperLibrary();
             GB_AcquisitionOptionsGlobals.GBFRSW_Jw = new GbfrswJavaWrapperLibrary();
             GB_AcquisitionOptionsGlobals.GBFINIMG_Jw = new GbfinimgJavaWrapperLibrary();
 //            GB_AcquisitionOptionsGlobals.Jpeg_Jw = new GbjpegJavaWrapperLibrary();
@@ -937,8 +928,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             });
             bGetAttDevList.setText("Refresh");
 
-           // bGetAttDevList.performClick();
-
+            // bGetAttDevList.performClick();
 
 
             bStartStop = findViewById(R.id.bStartStop);
@@ -972,7 +962,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             });
 
             bIdentify.setText("Identify");
-           // bIdentify.performClick();
+            // bIdentify.performClick();
 
             tbName = findViewById(R.id.tbName);
             tbName.setEnabled(true);
@@ -1145,27 +1135,32 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             e.printStackTrace();
         }
     }
-private void next (){
-    report.setText("Login Successful");
 
-    gifImageView.setImageResource(R.drawable.success);
-    new Handler().postDelayed(() -> {
-        // 5ran6: VERIFICATION SUCCESSFUL! Loading screen animation begins
-        // 5ran6: IF you need to call any API, call here
-        // 5ran6: then Intent to Main activity and destroy this one by calling finish();
+    private void next() {
+        report.setText("Login Successful");
+
+        gifImageView.setImageResource(R.drawable.success);
+        new Handler().postDelayed(() -> {
+            // 5ran6: VERIFICATION SUCCESSFUL! Loading screen animation begins
+            // 5ran6: IF you need to call any API, call here
+            // 5ran6: then Intent to Main activity and destroy this one by calling finish();
 
 //        Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT).show();
-        SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
-        String mToken = prefs.getString("firebaseToken", null);
-        try {
-            sendToJsonFile(bippiis_no, mToken);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
+            String mToken = prefs.getString("firebaseToken", null);
+            try {
+                sendToJsonFile(bippiis_no, mToken);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-        //                           finish();
-    }, 2000);
+            //                           finish();
+        }, 2000);
 
-}
+    }
+
+    public void refresh(View view) {
+        bStartStop.performClick();
+    }
 
 }
