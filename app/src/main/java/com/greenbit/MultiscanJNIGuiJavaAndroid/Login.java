@@ -221,6 +221,7 @@ public class Login extends AppCompatActivity {
                                         startActivity(new Intent(getApplicationContext(), EnrollFingerprints.class).putExtra("bippiis_number", getBippiis).putExtra("bippiis_number_edited", bippiis).putExtra("token", token).putExtra("fullname", fullname));
                                     } else {
                                         // go to login then camera
+
                                         Toast.makeText(getApplicationContext(), "Has been enrolled", Toast.LENGTH_LONG).show();
                                     }
 
@@ -344,7 +345,7 @@ public class Login extends AppCompatActivity {
 
                                         startActivity(new Intent(getApplicationContext(), EnrollFingerprints.class).putExtra("bippiis_number", getBippiis).putExtra("bippiis_number_edited", bippiis).putExtra("token", token).putExtra("fullname", fullname));
                                     } else {
-                                        Toast.makeText(getApplicationContext(), "Has been enrolled", Toast.LENGTH_LONG).show();
+//                                        Toast.makeText(getApplicationContext(), "Has been enrolled", Toast.LENGTH_LONG).show();
 
                                         // store fingerprint in arrayList
                                         ArrayList<String> fingeprints = new ArrayList<String>();

@@ -38,6 +38,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -106,7 +107,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
     private ArrayList<GbExampleGrayScaleBitmapClass> LoggerBitmapList;
     private boolean LoggerBitmapChanged = false;
     private int LoggerBitmapFileSaveCounter = 0;
-    private Spinner comboObjectsToAcquire;
+    private AppCompatSpinner comboObjectsToAcquire;
 
     private ImageView LoggerView;
     private boolean FirstFrameAcquired = false, PreviewEnded = false, AcquisitionEnded = false;
@@ -220,20 +221,20 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                             // 5ran6: I am saving all these format just for testing sha.... We sha eventually only save one format (e.g ANSI_Nist)
 
                             GbBmp.SaveIntoAnsiNistFile("Image_" + LoggerBitmapFileSaveCounter, this, 0);
-                            GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
-                            GbBmp.SaveToRaw("Image_" + LoggerBitmapFileSaveCounter, this);
-                            GbBmp.SaveToJpeg("Image_" + LoggerBitmapFileSaveCounter, this);
-                            GbBmp.SaveToJpeg2("Image_" + LoggerBitmapFileSaveCounter, this);
-                            GbBmp.SaveToWsq("Image_" + LoggerBitmapFileSaveCounter, this);
-                            GbBmp.SaveToFIR("Image_" + LoggerBitmapFileSaveCounter, this);
-                            GbBmp.GetNFIQQuality(this);
-                            GbBmp.GetNFIQ2Quality(this);
+           //                 GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
+             //               GbBmp.SaveToRaw("Image_" + LoggerBitmapFileSaveCounter, this);
+                       //     GbBmp.SaveToJpeg("Image_" + LoggerBitmapFileSaveCounter, this);
+                  //          GbBmp.SaveToJpeg2("Image_" + LoggerBitmapFileSaveCounter, this);
+                       //     GbBmp.SaveToWsq("Image_" + LoggerBitmapFileSaveCounter, this);
+                         //   GbBmp.SaveToFIR("Image_" + LoggerBitmapFileSaveCounter, this);
+                    //        GbBmp.GetNFIQQuality(this);
+                      //      GbBmp.GetNFIQ2Quality(this);
 
-//                            try {
-//                                GbBmp.TestLfsBozorth(this);
-//                            }catch (Exception e){
-//                                e.printStackTrace();
-//                            }
+                            try {
+                                GbBmp.TestLfsBozorth(this);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
 
                             LoggerBitmapFileSaveCounter++;
 
@@ -249,11 +250,13 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                                     @Override
                                     public void run() {
                                         Log.d("fingerprint", "acquisition ended bro");
-                                        Identify();
+//                                        Identify();
+                                        next();
+
                                     }
                                 }, 2500);
                             }
-                            report.setText("Initializing ");
+                          //  report.setText("Initializing ");
 
                             //               Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_SHORT).show();
 
@@ -581,9 +584,9 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
     // 5ran6: FUNCTION TO BE CALLED : This function runs to put on the scanner and wait for fingers to be placed on it. Then it acquires. Remembe, acquiring is automated. After the beep sound, user fingerprint has been acquired. So he/she can remove it
     private boolean StartStopAcquisition() {
         try {
-            int objToAcquire = GetObjToAcquireFromString(comboObjectsToAcquire.getSelectedItem().toString());
+            int objToAcquire = GetObjToAcquireFromString("FLAT_SINGLE_FINGER");
             GB_AcquisitionOptionsGlobals.ObjTypeToAcquire =
-                    GBMSAPIJavaWrapperDefinesScannableBiometricType.ScannableTypeFromString(comboObjectsToAcquire.getSelectedItem().toString());
+                    GBMSAPIJavaWrapperDefinesScannableBiometricType.ScannableTypeFromString("FLAT_SINGLE_FINGER");
             int acqOpt = GB_AcquisitionOptionsGlobals.GetAcquisitionOptionsForObjectType(GB_AcquisitionOptionsGlobals.ObjTypeToAcquire);
 
             if (!AcquisitionStarted) {
@@ -609,6 +612,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                         bStartStop.setText("Stop Acquisition");
                     bGetAttDevList.setEnabled(false);
                     StartChronometer();
+                    Identify();
                 } else {
                     ManageGbmsapiErrors("Start Button, StartAcquisition", RetVal, true);
                     return false;
@@ -739,35 +743,35 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
         } else {
             GB_AcquisitionOptionsGlobals.GbfinimgLibLoaded = true;
         }
-        RetVal = GB_AcquisitionOptionsGlobals.AN2000_Jw.Load();
-        if (RetVal != GBANJavaWrapperDefinesReturnCodes.AN2K_DLL_NO_ERROR) {
-            ManageAn2000Errors("onRefresh, Load", RetVal, true);
-            GB_AcquisitionOptionsGlobals.An2000LibLoaded = false;
-        } else {
-            GB_AcquisitionOptionsGlobals.An2000LibLoaded = true;
-        }
-        RetVal = GB_AcquisitionOptionsGlobals.GBFIR_Jw.Load();
-        if (RetVal != GbfirJavaWrapperDefinesReturnCodes.GBFIR_RET_SUCCESS) {
-            ManageGbfirErrors("onRefresh, Load", RetVal, true);
-            GB_AcquisitionOptionsGlobals.GbfirLibLoaded = false;
-        } else {
-            GB_AcquisitionOptionsGlobals.GbfirLibLoaded = true;
-        }
-        RetVal = GB_AcquisitionOptionsGlobals.GBNFIQ_Jw.Load();
-        if (RetVal != GbNfiqJavaWrapperDefineReturnCodes.GBNFIQ_NO_ERROR) {
-            ManageGbNfiqErrors("onRefresh, Load", RetVal, true);
-            GB_AcquisitionOptionsGlobals.GbNfiqLibLoaded = false;
-        } else {
-            GB_AcquisitionOptionsGlobals.GbNfiqLibLoaded = true;
-        }
-
-        RetVal = GB_AcquisitionOptionsGlobals.GBNFIQ2_Jw.Load();
-        if (RetVal != GbNfiq2JavaWrapperDefineReturnCodes.GBNFIQ2_NO_ERROR) {
-            ManageGbNfiq2Errors("onRefresh, Load", RetVal, true);
-            GB_AcquisitionOptionsGlobals.GbNfiq2LibLoaded = false;
-        } else {
-            GB_AcquisitionOptionsGlobals.GbNfiq2LibLoaded = true;
-        }
+//        RetVal = GB_AcquisitionOptionsGlobals.AN2000_Jw.Load();
+//        if (RetVal != GBANJavaWrapperDefinesReturnCodes.AN2K_DLL_NO_ERROR) {
+//            ManageAn2000Errors("onRefresh, Load", RetVal, true);
+//            GB_AcquisitionOptionsGlobals.An2000LibLoaded = false;
+//        } else {
+//            GB_AcquisitionOptionsGlobals.An2000LibLoaded = true;
+//        }
+//        RetVal = GB_AcquisitionOptionsGlobals.GBFIR_Jw.Load();
+//        if (RetVal != GbfirJavaWrapperDefinesReturnCodes.GBFIR_RET_SUCCESS) {
+//            ManageGbfirErrors("onRefresh, Load", RetVal, true);
+//            GB_AcquisitionOptionsGlobals.GbfirLibLoaded = false;
+//        } else {
+//            GB_AcquisitionOptionsGlobals.GbfirLibLoaded = true;
+//        }
+//        RetVal = GB_AcquisitionOptionsGlobals.GBNFIQ_Jw.Load();
+//        if (RetVal != GbNfiqJavaWrapperDefineReturnCodes.GBNFIQ_NO_ERROR) {
+//            ManageGbNfiqErrors("onRefresh, Load", RetVal, true);
+//            GB_AcquisitionOptionsGlobals.GbNfiqLibLoaded = false;
+//        } else {
+//            GB_AcquisitionOptionsGlobals.GbNfiqLibLoaded = true;
+//        }
+//
+//        RetVal = GB_AcquisitionOptionsGlobals.GBNFIQ2_Jw.Load();
+//        if (RetVal != GbNfiq2JavaWrapperDefineReturnCodes.GBNFIQ2_NO_ERROR) {
+//            ManageGbNfiq2Errors("onRefresh, Load", RetVal, true);
+//            GB_AcquisitionOptionsGlobals.GbNfiq2LibLoaded = false;
+//        } else {
+//            GB_AcquisitionOptionsGlobals.GbNfiq2LibLoaded = true;
+//        }
 
         RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.Load();
         if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
@@ -853,7 +857,6 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                         }, 2000);
                     }
 
-
 //TODO: UNCOMMENT THIS WHEN ISSUES IS FIXED
 //                    else {
 //
@@ -901,14 +904,14 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
         try {
             super.onCreate(savedInstanceState);
             GB_AcquisitionOptionsGlobals.GBMSAPI_Jw = new GBMSAPIJavaWrapperLibrary();
-            GB_AcquisitionOptionsGlobals.WSQ_Jw = new WsqJavaWrapperLibrary();
+   //         GB_AcquisitionOptionsGlobals.WSQ_Jw = new WsqJavaWrapperLibrary();
             GB_AcquisitionOptionsGlobals.GBFRSW_Jw = new GbfrswJavaWrapperLibrary();
             GB_AcquisitionOptionsGlobals.GBFINIMG_Jw = new GbfinimgJavaWrapperLibrary();
-            GB_AcquisitionOptionsGlobals.Jpeg_Jw = new GbjpegJavaWrapperLibrary();
-            GB_AcquisitionOptionsGlobals.AN2000_Jw = new Gban2000JavaWrapperLibrary();
-            GB_AcquisitionOptionsGlobals.GBFIR_Jw = new GbfirJavaWrapperLibrary();
-            GB_AcquisitionOptionsGlobals.GBNFIQ_Jw = new GbNfiqJavaWrapperLibrary();
-            GB_AcquisitionOptionsGlobals.GBNFIQ2_Jw = new GbNfiq2JavaWrapperLibrary();
+//            GB_AcquisitionOptionsGlobals.Jpeg_Jw = new GbjpegJavaWrapperLibrary();
+//            GB_AcquisitionOptionsGlobals.AN2000_Jw = new Gban2000JavaWrapperLibrary();
+//            GB_AcquisitionOptionsGlobals.GBFIR_Jw = new GbfirJavaWrapperLibrary();
+//            GB_AcquisitionOptionsGlobals.GBNFIQ_Jw = new GbNfiqJavaWrapperLibrary();
+//            GB_AcquisitionOptionsGlobals.GBNFIQ2_Jw = new GbNfiq2JavaWrapperLibrary();
             GB_AcquisitionOptionsGlobals.LFS_Jw = new LfsJavaWrapperLibrary();
             GB_AcquisitionOptionsGlobals.BOZORTH_Jw = new BozorthJavaWrapperLibrary();
             setContentView(R.layout.activity_login_with_fingerprint);
@@ -933,6 +936,10 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                 }
             });
             bGetAttDevList.setText("Refresh");
+
+           // bGetAttDevList.performClick();
+
+
 
             bStartStop = findViewById(R.id.bStartStop);
             bStartStop.setEnabled(false);
@@ -959,13 +966,13 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             bIdentify.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    StartStopAcquisition();
+                    //StartStopAcquisition();
                     Identify();
                 }
             });
 
             bIdentify.setText("Identify");
-            bIdentify.performClick();
+           // bIdentify.performClick();
 
             tbName = findViewById(R.id.tbName);
             tbName.setEnabled(true);
@@ -979,23 +986,6 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                     whiteImage, 16, 16, false, true, this);
             LogBitmap(GbBmp);
 
-            int RetVal = GB_AcquisitionOptionsGlobals.WSQ_Jw.Load();
-            String checkGbmsapi;
-            if (RetVal == WsqJavaWrapperDefinesReturnCodes.WSQPACK_OK) {
-                checkGbmsapi = "Wsq Load Ok";
-                LogAcquisitionInfoOnScreen(checkGbmsapi);
-            } else {
-                checkGbmsapi = "Wsq Load Failure: " + GB_AcquisitionOptionsGlobals.WSQ_Jw.GetLastErrorString();
-                LogAcquisitionInfoOnScreen(checkGbmsapi);
-            }
-            RetVal = GB_AcquisitionOptionsGlobals.Jpeg_Jw.Load();
-            if (RetVal == GbjpegJavaWrapperDefinesReturnCodes.GBJPEG_OK) {
-                checkGbmsapi = "Jpeg Load Ok";
-                LogAcquisitionInfoOnScreen(checkGbmsapi);
-            } else {
-                checkGbmsapi = "Jpeg Load Failure: " + GB_AcquisitionOptionsGlobals.Jpeg_Jw.GetLastErrorString();
-                LogAcquisitionInfoOnScreen(checkGbmsapi);
-            }
 
             onRefresh();
             StartLogTimer();
@@ -1110,14 +1100,14 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
         } else {
             ManageGbmsapiErrors("onDestroy, Unload", RetVal, true);
         }
-        RetVal = GB_AcquisitionOptionsGlobals.WSQ_Jw.Unload();
-        if (RetVal == WsqJavaWrapperDefinesReturnCodes.WSQPACK_OK) {
-            checkGbmsapi = "onDestroy, Wsq Unload Ok";
-            LogAcquisitionInfoOnScreen(checkGbmsapi);
-        } else {
-            checkGbmsapi = "onDestroy, Wsq Unload Failure";
-            LogAcquisitionInfoOnScreen(checkGbmsapi);
-        }
+//        RetVal = GB_AcquisitionOptionsGlobals.WSQ_Jw.Unload();
+//        if (RetVal == WsqJavaWrapperDefinesReturnCodes.WSQPACK_OK) {
+//            checkGbmsapi = "onDestroy, Wsq Unload Ok";
+//            LogAcquisitionInfoOnScreen(checkGbmsapi);
+//        } else {
+//            checkGbmsapi = "onDestroy, Wsq Unload Failure";
+//            LogAcquisitionInfoOnScreen(checkGbmsapi);
+//        }
     }
 
 
@@ -1155,4 +1145,27 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             e.printStackTrace();
         }
     }
+private void next (){
+    report.setText("Login Successful");
+
+    gifImageView.setImageResource(R.drawable.success);
+    new Handler().postDelayed(() -> {
+        // 5ran6: VERIFICATION SUCCESSFUL! Loading screen animation begins
+        // 5ran6: IF you need to call any API, call here
+        // 5ran6: then Intent to Main activity and destroy this one by calling finish();
+
+//        Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT).show();
+        SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
+        String mToken = prefs.getString("firebaseToken", null);
+        try {
+            sendToJsonFile(bippiis_no, mToken);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //                           finish();
+    }, 2000);
+
+}
+
 }
