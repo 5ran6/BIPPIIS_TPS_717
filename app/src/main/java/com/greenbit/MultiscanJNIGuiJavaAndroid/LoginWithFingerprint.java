@@ -1145,7 +1145,6 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
             // 5ran6: IF you need to call any API, call here
             // 5ran6: then Intent to Main activity and destroy this one by calling finish();
 
-//        Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT).show();
             SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
             String mToken = prefs.getString("firebaseToken", null);
             try {
@@ -1162,5 +1161,4 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
     public void refresh(View view) {
         bStartStop.performClick();
     }
-
 }

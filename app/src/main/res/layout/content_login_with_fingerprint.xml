@@ -194,8 +194,11 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:tint="@android:color/white"
+        app:backgroundTint="#375337"
+        app:fabSize="normal"
+        app:rippleColor="@android:color/white"
         android:layout_gravity="end|bottom"
-        app:src="@drawable/ic_refresh_black_24dp"
         android:onClick="refresh"
-        />
+        app:srcCompat="@drawable/ic_refresh_black_24dp" />
 </LinearLayout>

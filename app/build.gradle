@@ -4,7 +4,7 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 30
     defaultConfig {
-        applicationId "wrappers.greenbit.com.dactymatch_gui_javaandroid"
+        applicationId "com.bippiis.tps717"
         minSdkVersion 19
         targetSdkVersion 30
         multiDexEnabled true
@@ -18,7 +18,7 @@ android {
 //                arguments "-DANDROID_STL=gnustl_shared"
 //            }
             ndk {
-                abiFilters 'armeabi-v7a', 'armeabi'
+                abiFilters 'armeabi-v7a', 'armeabi', 'arm64-v8a', 'x86', 'x86_64'
                 ldLibs "log"
             }
             // end GREENBIT ADDS
