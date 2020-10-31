@@ -71,7 +71,7 @@ public class GbExampleGrayScaleBitmapClass {
     public int sy;
     public boolean hasToBeSaved;
     public boolean isAcquisitionResult;
-   byte[] T = null;
+    byte[] T = null;
 
     //-------------------------------------------------------------
     // CONSTRUCTORS
@@ -156,11 +156,12 @@ public class GbExampleGrayScaleBitmapClass {
         path = file.getPath();
         return path;
     }
+
     public static String GetBippiisDirectoryName() {
         String path = Environment.getExternalStorageDirectory().toString();
         File file = new File(path, "bippiis");
-         if (!file.exists()) {
-             file.mkdir();
+        if (!file.exists()) {
+            file.mkdir();
         }
         path = file.getPath();
         return path;
@@ -745,9 +746,9 @@ public class GbExampleGrayScaleBitmapClass {
         GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Load();
         GBJavaWrapperUtilIntForJavaToCExchange TemplateCodeSize = new GBJavaWrapperUtilIntForJavaToCExchange();
 
-        /******************
+        /******
          Get minutiae
-         *****************/
+         *******/
         LfsJavaWrapperDefinesMinutiaN[] Probe = new LfsJavaWrapperDefinesMinutiaN[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
         LfsJavaWrapperDefinesMinutia[] Probe1 = new LfsJavaWrapperDefinesMinutia[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
 
@@ -756,20 +757,36 @@ public class GbExampleGrayScaleBitmapClass {
             Probe1[i] = new LfsJavaWrapperDefinesMinutia();
         }
 
+
         GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNum = new GBJavaWrapperUtilIntForJavaToCExchange();
 
-        RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe1, MinutiaeNum);
+        try {
+            RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe1, MinutiaeNum);
+            Log.d("bippiis", RetVal + " is return value");
 
-        if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
-            throw new Exception("EncodeToLfsMinutiae" +
-                    ", EncodeToLfsMinutiae: " + GB_AcquisitionOptionsGlobals.LFS_Jw.GetLastErrorString());
+            if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
+                throw new Exception("EncodeToLfsMinutiae" +
+                        ", EncodeToLfsMinutiae: " + GB_AcquisitionOptionsGlobals.LFS_Jw.GetLastErrorString());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        /*******************
+        for (int i = 0; i < BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE; i++) {
+            Probe[i].setXCoord(Probe1[i].getXCoord());
+            Probe[i].setYCoord(Probe1[i].getYCoord());
+            Probe[i].setReliability(Probe1[i].getReliability());
+            Probe[i].setType(Probe1[i].getType());
+            Probe[i].setDirection(Probe1[i].getDirection());
+        }
+
+
+        /*******
          * Perform some operations
-         ******************/
+         ******/
         //storageFile.fingerPrint.allFingerprints.add(Base64.encodeToString(TemplateCode, Base64.DEFAULT));
-        byte[] TemplateCode = new byte[TemplateCodeSize.Get()];
+//        byte[] TemplateCode = new byte[TemplateCodeSize.Get()];
         //String string = Base64.encodeToString(TemplateCode, Base64.DEFAULT);
 //            byte[] Temp = Base64.decode(string, Base64.DEFAULT);  //when I get back from server, I will use this to convert string to byte[]
 
@@ -778,9 +795,9 @@ public class GbExampleGrayScaleBitmapClass {
         storageFile.fingerPrint.addFingerints(string);
         Log.d("fingerprint", "Number of fingerprints: " + storageFile.fingerPrint.getAllFingerprints().size());
 
-        /*******************
+        /*******
          * Save To File
-         ******************/
+         ******/
 ////        act.LogOnScreen("Saving image as LFS template; Storage dir: " + GetGreenbitDirectoryName() +
 ////                ", len = " + bytes.length);
 //        File file = new File(GetGreenbitDirectoryName(),
@@ -807,9 +824,6 @@ public class GbExampleGrayScaleBitmapClass {
 //        fOut.close(); // do not forget to close the stream
 
 
-        ObjectMapper mapper = new ObjectMapper();
-
-
         File file = new File(GetGreenbitDirectoryName(),
                 fileName + ".json");
         try {
@@ -830,6 +844,100 @@ public class GbExampleGrayScaleBitmapClass {
 
         Log.d("Fingerprint", "Closed successfully");
     }
+
+    //before I edited the library
+//    public void EncodeToLFSMinutiae(String fileName, int ImageFlags, IGreenbitLogger act) throws Exception {
+//        int RetVal;
+//        GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Load();
+//        GBJavaWrapperUtilIntForJavaToCExchange TemplateCodeSize = new GBJavaWrapperUtilIntForJavaToCExchange();
+//
+//        /******************
+//         Get minutiae
+//         *****************/
+//        LfsJavaWrapperDefinesMinutiaN[] Probe = new LfsJavaWrapperDefinesMinutiaN[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+//        LfsJavaWrapperDefinesMinutia[] Probe1 = new LfsJavaWrapperDefinesMinutia[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+//
+//        for (int i = 0; i < BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE; i++) {
+//
+//            Probe1[i] = Probe[i];
+////            Probe[i] = new LfsJavaWrapperDefinesMinutiaN();
+////            Probe1[i] = new LfsJavaWrapperDefinesMinutia();
+//        }
+//
+//        GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNum = new GBJavaWrapperUtilIntForJavaToCExchange();
+//
+//        RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe1, MinutiaeNum);
+//
+//        if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
+//            throw new Exception("EncodeToLfsMinutiae" +
+//                    ", EncodeToLfsMinutiae: " + GB_AcquisitionOptionsGlobals.LFS_Jw.GetLastErrorString());
+//        }
+//
+//        /*******************
+//         * Perform some operations
+//         ******************/
+//        //storageFile.fingerPrint.allFingerprints.add(Base64.encodeToString(TemplateCode, Base64.DEFAULT));
+//        byte[] TemplateCode = new byte[TemplateCodeSize.Get()];
+//        //String string = Base64.encodeToString(TemplateCode, Base64.DEFAULT);
+////            byte[] Temp = Base64.decode(string, Base64.DEFAULT);  //when I get back from server, I will use this to convert string to byte[]
+//
+//
+//        String string = Base64.encodeToString(SerializeMinutiaeBuffer(Probe), Base64.DEFAULT);
+//        storageFile.fingerPrint.addFingerints(string);
+//        Log.d("fingerprint", "Number of fingerprints: " + storageFile.fingerPrint.getAllFingerprints().size());
+//
+//        /*******************
+//         * Save To File
+//         ******************/
+//////        act.LogOnScreen("Saving image as LFS template; Storage dir: " + GetGreenbitDirectoryName() +
+//////                ", len = " + bytes.length);
+////        File file = new File(GetGreenbitDirectoryName(),
+////                fileName + ".lfs");
+////        OutputStream fOut = new FileOutputStream(file);
+////        //  Log.d("Fingerprint", "Probe size = " + Probe.length);
+//////        fOut.write(serializeMinutiaeBuffer(Probe)); // check this line out
+////        // used for enrollment //   fOut.write(SerializeMinutiaeBuffer(Probe)); // check this line out
+////
+////        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+////             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+////            oos.writeObject(Probe);
+////            TemplateCode = baos.toByteArray();
+////            T = baos.toByteArray();
+////
+////        } catch (IOException e) {
+////            // Error in serialization
+////            e.printStackTrace();
+////        }
+////
+////        fOut.write(TemplateCode); // check this line out
+////        //   fOut.write(SerializeMinutiaeBuffer(Probe)); // check this line out
+////        //     fOut.flush();
+////        fOut.close(); // do not forget to close the stream
+//
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//
+//
+//        File file = new File(GetGreenbitDirectoryName(),
+//                fileName + ".json");
+//        try {
+//            // Serialize Java object into JSON file.
+////            mapper.writeValue(file, Probe);
+//            Gson gson = new Gson();
+//            String json = gson.toJson(Probe1);
+//
+//            //           mapper.writeValue(file, json);
+//            FileWriter fw = new FileWriter(file.getAbsolutePath());
+//            fw.write(json);
+//            fw.close();
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//        Log.d("Fingerprint", "Closed successfully");
+//    }
 
     public boolean Verify(IGreenbitLogger act) throws Exception {
         int RetVal;
