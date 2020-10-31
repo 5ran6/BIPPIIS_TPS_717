@@ -827,36 +827,37 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
 
                             //                           finish();
                         }, 2000);
-                    } else {
-                        report.setText("Login Successful");
-                        gifImageView.setBackgroundResource(R.drawable.success);
-                        new Handler().postDelayed(() -> {
-                            // 5ran6: VERIFICATION SUCCESSFUL! Loading screen animation begins
-                            // 5ran6: IF you need to call any API, call here
-                            // 5ran6: then Intent to Main activity and destroy this one by calling finish();
-
-                            Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT).show();
-                            SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
-                            String mToken = prefs.getString("firebaseToken", null);
-                            try {
-                                sendToJsonFile(bippiis_no, mToken);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                            //                           finish();
-                        }, 2000);
                     }
-
-//TODO: UNCOMMENT THIS WHEN ISSUES IS FIXED
 //                    else {
+//                        report.setText("Login Successful");
+//                        gifImageView.setBackgroundResource(R.drawable.success);
+//                        new Handler().postDelayed(() -> {
+//                            // 5ran6: VERIFICATION SUCCESSFUL! Loading screen animation begins
+//                            // 5ran6: IF you need to call any API, call here
+//                            // 5ran6: then Intent to Main activity and destroy this one by calling finish();
 //
+//                            Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT).show();
+//                            SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
+//                            String mToken = prefs.getString("firebaseToken", null);
+//                            try {
+//                                sendToJsonFile(bippiis_no, mToken);
+//                            } catch (JSONException e) {
+//                                e.printStackTrace();
+//                            }
 //
-//                        gifImageView.setBackgroundResource(R.drawable.unsuccessful);
-//                        report.setText("Identity Not Found. ");
-//                        StartStopAcquisition();
-//
+//                            //                           finish();
+//                        }, 2000);
 //                    }
+
+// UNCOMMENT THIS WHEN ISSUES IS FIXED
+                    else {
+
+
+                        gifImageView.setBackgroundResource(R.drawable.unsuccessful);
+                        report.setText("Identity Not Found. ");
+                        StartStopAcquisition();
+
+                    }
 
 
                 }
