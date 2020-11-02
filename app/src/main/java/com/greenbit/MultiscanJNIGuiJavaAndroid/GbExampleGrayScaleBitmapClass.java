@@ -996,11 +996,10 @@ public class GbExampleGrayScaleBitmapClass {
                 //from db
 
                 //load file
-                String fileName = fname;
-                Log.d("fingerprint", "Current File: " + fileName);
+                Log.d("fingerprint", "Current File: " + fname);
                 //                act.LogOnScreen("Storage dir: " + GetGreenbitDirectoryName());
                 File f = new File(GetGreenbitDirectoryName(),
-                        fileName);
+                        fname);
 //                InputStream fIn = null;
 //                fIn = new FileInputStream(f);
 //                byte[] templateStream = new byte[fIn.available()];
@@ -1015,7 +1014,7 @@ public class GbExampleGrayScaleBitmapClass {
 //                    // Error in de-serialization
 //                    e.printStackTrace();
 //                } // You are converting an invalid stream to Student
-                JSONParser jsonParser = new JSONParser();
+//                JSONParser jsonParser = new JSONParser();
 
 //                try (FileReader reader = new FileReader(fname)) {
 //                    //Read JSON file
@@ -1051,13 +1050,13 @@ public class GbExampleGrayScaleBitmapClass {
                 // i think this is the problem. You reinitialised it so it is empty
                 LfsJavaWrapperDefinesMinutia[] Gallery = new LfsJavaWrapperDefinesMinutia[Probe.length];
 
-                for (int i = 0; i < Probe.length; i++) {
+                for (int i = 0; i < Probe1.length; i++) {
                     Gallery[i] = new LfsJavaWrapperDefinesMinutia();
-                    Gallery[i].SetFields(Probe[i].getXCoord(),
-                            Probe[i].getYCoord(),
-                            Probe[i].getDirection(),
-                            Probe[i].getReliability(),
-                            Probe[i].getType());
+                    Gallery[i].SetFields(Probe1[i].getXCoord(),
+                            Probe1[i].getYCoord(),
+                            Probe1[i].getDirection(),
+                            Probe1[i].getReliability(),
+                            Probe1[i].getType());
                 }
 
 

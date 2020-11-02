@@ -48,7 +48,6 @@ import com.greenbit.gbfinimg.GbfinimgJavaWrapperDefineSegmentImageDescriptor;
 import com.greenbit.gbfinimg.GbfinimgJavaWrapperDefinesReturnCodes;
 import com.greenbit.gbfinimg.GbfinimgJavaWrapperLibrary;
 import com.greenbit.gbfir.GbfirJavaWrapperDefinesReturnCodes;
-import com.greenbit.gbfrsw.GbfrswJavaWrapperDefinesImageFlags;
 import com.greenbit.gbfrsw.GbfrswJavaWrapperDefinesReturnCodes;
 import com.greenbit.gbfrsw.GbfrswJavaWrapperLibrary;
 import com.greenbit.gbmsapi.GBMSAPIJavaWrapperDefinesAcquisitionEvents;
@@ -211,7 +210,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                             //----------------------------------------
                             // 5ran6: I am saving all these format just for testing sha.... We sha eventually only save one format (e.g ANSI_Nist)
 
-                            GbBmp.SaveIntoAnsiNistFile("Image_" + LoggerBitmapFileSaveCounter, this, 0);
+                            //       GbBmp.SaveIntoAnsiNistFile("Image_" + LoggerBitmapFileSaveCounter, this, 0);
                             //                 GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
                             //               GbBmp.SaveToRaw("Image_" + LoggerBitmapFileSaveCounter, this);
                             //     GbBmp.SaveToJpeg("Image_" + LoggerBitmapFileSaveCounter, this);
@@ -235,14 +234,14 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                             GB_AcquisitionOptionsGlobals.acquiredFrameValid = true;
                             //END OF BEEP: then proceed
                             sequence_count++;
-                            if (sequence_count > 1) {
+                            if (sequence_count >= 1) {
                                 report.setText("Processing! Please Remove your finger. ");
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
                                         Log.d("fingerprint", "acquisition ended bro");
-//                                        Identify();
-                                        next();
+                                        Identify();
+                                        //next();
 
                                     }
                                 }, 2500);
@@ -794,40 +793,58 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
 
     // 5ran6: FUNCTION TO BE CALLED
     public void Identify() {
-        // GB_AcquisitionOptionsGlobals.ObjTypeToAcquire = GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SINGLE_FINGER;
+        GB_AcquisitionOptionsGlobals.ObjTypeToAcquire = GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SINGLE_FINGER;
+        int objToAcquire = GetObjToAcquireFromString("FLAT_SINGLE_FINGER");
+        GB_AcquisitionOptionsGlobals.ObjTypeToAcquire =
+                GBMSAPIJavaWrapperDefinesScannableBiometricType.ScannableTypeFromString("FLAT_SINGLE_FINGER");
+        int acqOpt = GB_AcquisitionOptionsGlobals.GetAcquisitionOptionsForObjectType(GB_AcquisitionOptionsGlobals.ObjTypeToAcquire);
+
+
         if (GB_AcquisitionOptionsGlobals.acquiredFrameValid) {
             try {
-                if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SINGLE_FINGER) {
-                    // 5ran6: I will remove this if statement and test later..but for now just leave it
-                    if (((GB_AcquisitionOptionsGlobals.GetAcquisitionFlatSingleOptionsParameter()) &
-                            GBMSAPIJavaWrapperDefinesAcquisitionOptions.GBMSAPI_AO_FLAT_SINGLE_FINGER_ON_ROLL_AREA)
-                            == 0) {
-                        throw new Exception("flat single finger on roll area must be set");
-                    }
+                // 5ran6: I will remove this if statement and test later..but for now just leave it
+                Log.d("fingerprint", "That VALUE = " + GB_AcquisitionOptionsGlobals.GetAcquisitionFlatSingleOptionsParameter());
+//                int acqOpt = GB_AcquisitionOptionsGlobals.GetAcquisitionRollOptionsParameter();
+                GB_AcquisitionOptionsGlobals.SetAcquisitionFlatSingleOptionsParameter(acqOpt);
 
 
-                    boolean ret = GB_AcquisitionOptionsGlobals.acquiredFrame.Verify(
-                            this);
-                    if (ret) {
-                        report.setText("Login Successful");
-                        gifImageView.setBackgroundResource(R.drawable.success);
-                        new Handler().postDelayed(() -> {
-                            // 5ran6: VERIFICATION SUCCESSFUL! Loading screen animation begins
-                            // 5ran6: IF you need to call any API, call here
-                            // 5ran6: then Intent to Main activity and destroy this one by calling finish();
+                if (((GB_AcquisitionOptionsGlobals.GetAcquisitionFlatSingleOptionsParameter()) &
+                        GBMSAPIJavaWrapperDefinesAcquisitionOptions.GBMSAPI_AO_FLAT_SINGLE_FINGER_ON_ROLL_AREA)
+                        == 0) {
+                    throw new Exception("flat single finger on roll area must be set");
+                }
 
-                            Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT).show();
-                            SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
-                            String mToken = prefs.getString("firebaseToken", null);
-                            try {
-                                sendToJsonFile(bippiis_no, mToken);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                boolean ret = GB_AcquisitionOptionsGlobals.acquiredFrame.Verify(
+                        this);
+                Toast.makeText(this, "RETURN VALUE = " + ret, Toast.LENGTH_LONG).show();
+                Log.d("fingerprint", "RETURN VALUE = " + ret);
+                if (ret) {
+                    report.setText("Login Successful");
+                    gifImageView.setBackgroundResource(R.drawable.success);
+                    new Handler().postDelayed(() -> {
+                        // 5ran6: VERIFICATION SUCCESSFUL! Loading screen animation begins
+                        // 5ran6: IF you need to call any API, call here
+                        // 5ran6: then Intent to Main activity and destroy this one by calling finish();
 
-                            //                           finish();
-                        }, 2000);
-                    }
+                        Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT).show();
+                        SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
+                        String mToken = prefs.getString("firebaseToken", null);
+                        try {
+                            sendToJsonFile(bippiis_no, mToken);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        //                           finish();
+                    }, 2000);
+                } else {
+                    gifImageView.setBackgroundResource(R.drawable.unsuccessful);
+                    report.setText("Identity Not Found. ");
+                    StartStopAcquisition();
+
+                }
+
+
 //                    else {
 //                        report.setText("Login Successful");
 //                        gifImageView.setBackgroundResource(R.drawable.success);
@@ -850,26 +867,8 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
 //                    }
 
 // UNCOMMENT THIS WHEN ISSUES IS FIXED
-                    else {
 
 
-                        gifImageView.setBackgroundResource(R.drawable.unsuccessful);
-                        report.setText("Identity Not Found. ");
-                        StartStopAcquisition();
-
-                    }
-
-
-                }
-                // 5ran6: this is the block that identifies and what we will be calling
-                // 5ran6: that means that before you identify, you must set the value of GB_AcquisitionOptionsGlobals.ObjTypeToAcquire = GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_ROLL_SINGLE_FINGER
-                else if (GB_AcquisitionOptionsGlobals.ObjTypeToAcquire == GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_ROLL_SINGLE_FINGER) {
-                    GB_AcquisitionOptionsGlobals.acquiredFrame.Identify(
-                            GbfrswJavaWrapperDefinesImageFlags.GBFRSW_ROLLED_IMAGE,
-                            this);
-                } else {
-                    throw new Exception("object does not support identify");
-                }
             } catch (Exception ex) {
                 LogAsDialog("Identify: " + ex.getMessage());
             }
