@@ -939,7 +939,7 @@ public class GbExampleGrayScaleBitmapClass {
 
     public boolean Verify(IGreenbitLogger act) throws Exception {
         int RetVal;
-//        GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Load();
+        GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Load();
 
 //        MinutiaeToBeVerified = GetMinutiae(CitizenFingerprint); //done
 //        boolean found = false;
@@ -998,63 +998,21 @@ public class GbExampleGrayScaleBitmapClass {
                 //                act.LogOnScreen("Storage dir: " + GetGreenbitDirectoryName());
                 File f = new File(GetGreenbitDirectoryName(),
                         fname);
-//                InputStream fIn = null;
-//                fIn = new FileInputStream(f);
-//                byte[] templateStream = new byte[fIn.available()];
-//                fIn.read(templateStream);
-                //  Probe = SerializationUtils.deserialize(fIn);
-
-
-//                try (ByteArrayInputStream bais = new ByteArrayInputStream(templateStream);
-//                     ObjectInputStream ois = new ObjectInputStream(bais)) {
-//                    Probe = (LfsJavaWrapperDefinesMinutiaN[]) ois.readObject();
-//                } catch (IOException | ClassNotFoundException e) {
-//                    // Error in de-serialization
-//                    e.printStackTrace();
-//                } // You are converting an invalid stream to Student
-//                JSONParser jsonParser = new JSONParser();
-
-//                try (FileReader reader = new FileReader(fname)) {
-//                    //Read JSON file
-//                    Object obj = jsonParser.parse(reader);
-//
-//                    JSONArray fingerprint = (JSONArray) obj;
-////                    System.out.println(employeeList);
-//                    Log.d("json", "" + fingerprint);
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
 
                 Gson gson = new Gson();
                 JsonReader reader = new JsonReader(new FileReader(f.getAbsolutePath()));
                 Log.d("path", "" + f.getAbsolutePath());
                 Probe = gson.fromJson(reader, Probe.getClass()); // contains the whole reviews list
 
-//                fIn.close(); // do not forget to close the stream
-
-
-//                if (Arrays.equals(templateStream, T)) {
-//                    act.LogAsDialog("The same");
-//                } else {
-//                    act.LogAsDialog("UnEqual");
-//                }
-
-//                Log.d("fingerprint", "Template Length = " + templateStream.length);
-//                Probe = SerializationUtils.deserialize(templateStream);
-//                Log.d("fingerprint", "Probe Length = " + Probe.length + " , Probe = " + Probe);
-//                Log.d("fingerprint", "Probe1 Length = " + Probe1.length);
-                // i think this is the problem. You reinitialised it so it is empty
                 LfsJavaWrapperDefinesMinutia[] Gallery = new LfsJavaWrapperDefinesMinutia[Probe.length];
 
                 for (int i = 0; i < Probe1.length; i++) {
                     Gallery[i] = new LfsJavaWrapperDefinesMinutia();
-                    Gallery[i].SetFields(Probe1[i].getXCoord(),
-                            Probe1[i].getYCoord(),
-                            Probe1[i].getDirection(),
-                            Probe1[i].getReliability(),
-                            Probe1[i].getType());
+                    Gallery[i].SetFields(Probe[i].getXCoord(),
+                            Probe[i].getYCoord(),
+                            Probe[i].getDirection(),
+                            Probe[i].getReliability(),
+                            Probe[i].getType());
                 }
 
 
@@ -1091,7 +1049,8 @@ public class GbExampleGrayScaleBitmapClass {
                     // here error management...
                     throw new Exception("Verify LFS: Bozorth Library Exception");
                 }
-                if (score.Get() >= 14) // decision threshold to say whether the fingerprints match (0-500)
+                Log.d("fingerprint", " Score: " + score.Get());
+                if (score.Get() >= 24) // decision threshold to say whether the fingerprints match (0-500)
                     found = true;
 
                 if (found) {
