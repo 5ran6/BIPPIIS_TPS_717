@@ -65,9 +65,18 @@ public class GB_AcquisitionOptionsGlobals {
         int mask = GBMSAPIJavaWrapperDefinesAcquisitionOptions.GBMSAPI_AO_AUTOCAPTURE|
                 GBMSAPIJavaWrapperDefinesAcquisitionOptions.GBMSAPI_AO_FLAT_SINGLE_FINGER_ON_ROLL_AREA |
                 GBMSAPIJavaWrapperDefinesAcquisitionOptions.GBMSAPI_AO_FULL_RES_PREVIEW;
-        int ValToRet = AcquisitionOptions & mask;
+      //  int ValToRet = AcquisitionOptions & mask;
+        int ValToRet = mask;
         return ValToRet;
     }
+
+//    public static int GetAcquisitionFlatSingleOptionsParameter()
+//    {
+//        int mask = GBMSAPIJavaWrapperDefinesAcquisitionOptions.GBMSAPI_AO_AUTOCAPTURE|
+//                GBMSAPIJavaWrapperDefinesAcquisitionOptions.GBMSAPI_AO_FLAT_SINGLE_FINGER_ON_ROLL_AREA; // change this other line
+//        int ValToRet = mask; // here the line to change
+//        return ValToRet;
+//    }
 
     public static void SetAcquisitionSlapOptionsParameter(int acqOpt)
     {

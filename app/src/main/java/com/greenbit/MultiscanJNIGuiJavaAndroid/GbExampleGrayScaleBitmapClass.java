@@ -5,7 +5,6 @@ import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFile;
@@ -45,7 +44,6 @@ import com.greenbit.utils.GBJavaWrapperUtilIntForJavaToCExchange;
 import com.greenbit.wsq.WsqJavaWrapperDefinesReturnCodes;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.json.simple.parser.JSONParser;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -941,7 +939,7 @@ public class GbExampleGrayScaleBitmapClass {
 
     public boolean Verify(IGreenbitLogger act) throws Exception {
         int RetVal;
-        GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Load();
+//        GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Load();
 
 //        MinutiaeToBeVerified = GetMinutiae(CitizenFingerprint); //done
 //        boolean found = false;
@@ -1045,8 +1043,8 @@ public class GbExampleGrayScaleBitmapClass {
 
 //                Log.d("fingerprint", "Template Length = " + templateStream.length);
 //                Probe = SerializationUtils.deserialize(templateStream);
-                Log.d("fingerprint", "Probe Length = " + Probe.length + " , Probe = " + Probe);
-                Log.d("fingerprint", "Probe1 Length = " + Probe1.length);
+//                Log.d("fingerprint", "Probe Length = " + Probe.length + " , Probe = " + Probe);
+//                Log.d("fingerprint", "Probe1 Length = " + Probe1.length);
                 // i think this is the problem. You reinitialised it so it is empty
                 LfsJavaWrapperDefinesMinutia[] Gallery = new LfsJavaWrapperDefinesMinutia[Probe.length];
 
@@ -1093,9 +1091,12 @@ public class GbExampleGrayScaleBitmapClass {
                     // here error management...
                     throw new Exception("Verify LFS: Bozorth Library Exception");
                 }
-                if (score.Get() >= 24) // decision threshold to say whether the fingerprints match (0-500)
+                if (score.Get() >= 14) // decision threshold to say whether the fingerprints match (0-500)
                     found = true;
+
                 if (found) {
+                    Log.d("fingerprint", "Found: " + found);
+
                     GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Unload();
                     return true;
                 }

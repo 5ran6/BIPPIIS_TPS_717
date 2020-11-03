@@ -240,7 +240,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                                     @Override
                                     public void run() {
                                         Log.d("fingerprint", "acquisition ended bro");
-                                        Identify();
+                                        StartStopAcquisition();
                                         //next();
 
                                     }
@@ -602,7 +602,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                         bStartStop.setText("Stop Acquisition");
                     bGetAttDevList.setEnabled(false);
                     StartChronometer();
-                    Identify();
+                    Verify();
                 } else {
                     ManageGbmsapiErrors("Start Button, StartAcquisition", RetVal, true);
                     return false;
@@ -792,31 +792,46 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
     }
 
     // 5ran6: FUNCTION TO BE CALLED
-    public void Identify() {
-        GB_AcquisitionOptionsGlobals.ObjTypeToAcquire = GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_FLAT_SINGLE_FINGER;
-        int objToAcquire = GetObjToAcquireFromString("FLAT_SINGLE_FINGER");
-        GB_AcquisitionOptionsGlobals.ObjTypeToAcquire =
-                GBMSAPIJavaWrapperDefinesScannableBiometricType.ScannableTypeFromString("FLAT_SINGLE_FINGER");
-        int acqOpt = GB_AcquisitionOptionsGlobals.GetAcquisitionOptionsForObjectType(GB_AcquisitionOptionsGlobals.ObjTypeToAcquire);
+    public void Verify() {
+        GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Load();
 
+//       GB_AcquisitionOptionsGlobals.ObjTypeToAcquire = GBMSAPIJavaWrapperDefinesScannableBiometricType.GBMSAPI_SBT_ROLL_SINGLE_FINGER;
+    //    int objToAcquire = GetObjToAcquireFromString("FLAT_SINGLE_FINGER");
+//        GB_AcquisitionOptionsGlobals.ObjTypeToAcquire =
+//                GBMSAPIJavaWrapperDefinesScannableBiometricType.ScannableTypeFromString("FLAT_SINGLE_FINGER");
+//        int acqOpt = GB_AcquisitionOptionsGlobals.GetAcquisitionOptionsForObjectType(GB_AcquisitionOptionsGlobals.ObjTypeToAcquire);
 
         if (GB_AcquisitionOptionsGlobals.acquiredFrameValid) {
             try {
                 // 5ran6: I will remove this if statement and test later..but for now just leave it
-                Log.d("fingerprint", "That VALUE = " + GB_AcquisitionOptionsGlobals.GetAcquisitionFlatSingleOptionsParameter());
-//                int acqOpt = GB_AcquisitionOptionsGlobals.GetAcquisitionRollOptionsParameter();
-                GB_AcquisitionOptionsGlobals.SetAcquisitionFlatSingleOptionsParameter(acqOpt);
+//                GB_AcquisitionOptionsGlobals.SetAcquisitionFlatSingleOptionsParameter(acqOpt);
+//                Log.d("fingerprint", "That VALUE = " + GB_AcquisitionOptionsGlobals.GetAcquisitionFlatSingleOptionsParameter());
+////                int acqOpt = GB_AcquisitionOptionsGlobals.GetAcquisitionRollOptionsParameter();
+//
+//
+//
+//
+//
+//                if (((GB_AcquisitionOptionsGlobals.GetAcquisitionFlatSingleOptionsParameter()) &
+//                        GBMSAPIJavaWrapperDefinesAcquisitionOptions.GBMSAPI_AO_FLAT_SINGLE_FINGER_ON_ROLL_AREA)
+//                        == 0) {
+//                    throw new Exception("flat single finger on roll area must be set");
+//                }
 
+                GB_AcquisitionOptionsGlobals.ObjTypeToAcquire =
+                        GBMSAPIJavaWrapperDefinesScannableBiometricType.ScannableTypeFromString("FLAT_SINGLE_FINGER");
 
-                if (((GB_AcquisitionOptionsGlobals.GetAcquisitionFlatSingleOptionsParameter()) &
+                int FlatParams = GB_AcquisitionOptionsGlobals.GetAcquisitionFlatSingleOptionsParameter();
+                Log.d("fingerprint", "FlatParams  = " + FlatParams );
+                if (((FlatParams ) &
                         GBMSAPIJavaWrapperDefinesAcquisitionOptions.GBMSAPI_AO_FLAT_SINGLE_FINGER_ON_ROLL_AREA)
                         == 0) {
-                    throw new Exception("flat single finger on roll area must be set");
+                    throw new Exception("FLAT single finger on roll area must be set");
                 }
 
                 boolean ret = GB_AcquisitionOptionsGlobals.acquiredFrame.Verify(
                         this);
-                Toast.makeText(this, "RETURN VALUE = " + ret, Toast.LENGTH_LONG).show();
+               // Toast.makeText(this, "RETURN VALUE = " + ret, Toast.LENGTH_LONG).show();
                 Log.d("fingerprint", "RETURN VALUE = " + ret);
                 if (ret) {
                     report.setText("Login Successful");
@@ -826,7 +841,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                         // 5ran6: IF you need to call any API, call here
                         // 5ran6: then Intent to Main activity and destroy this one by calling finish();
 
-                        Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT).show();
+                      //  Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT).show();
                         SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
                         String mToken = prefs.getString("firebaseToken", null);
                         try {
@@ -839,7 +854,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                     }, 2000);
                 } else {
                     gifImageView.setBackgroundResource(R.drawable.unsuccessful);
-                    report.setText("Identity Not Found. ");
+                    report.setText("Identity Not Found. Try again!");
                     StartStopAcquisition();
 
                 }
@@ -870,10 +885,10 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
 
 
             } catch (Exception ex) {
-                LogAsDialog("Identify: " + ex.getMessage());
+                LogAsDialog("Verify: " + ex.getMessage());
             }
         } else {
-            LogAsDialog("Identify: acquiredFrame not valid");
+            LogAsDialog("Verify: acquiredFrame not valid");
         }
     }
 
@@ -957,7 +972,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                 @Override
                 public void onClick(View view) {
                     //StartStopAcquisition();
-                    Identify();
+                    Verify();
                 }
             });
 
