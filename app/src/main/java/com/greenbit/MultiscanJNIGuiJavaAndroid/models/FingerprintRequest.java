@@ -7,6 +7,10 @@ import java.util.ArrayList;
 
 public class FingerprintRequest {
 
+    //TODO: add array of images
+
+
+
     @SerializedName("fingerprints")
     private ArrayList<String> fingerprints;
     @SerializedName("bippiis_number")

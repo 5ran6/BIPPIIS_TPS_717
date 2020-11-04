@@ -79,6 +79,8 @@ import java.util.List;
 
 import pl.droidsonroids.gif.GifImageView;
 
+import static com.greenbit.MultiscanJNIGuiJavaAndroid.GbExampleGrayScaleBitmapClass.GetGreenbitDirectoryName;
+
 public class LoginWithFingerprint extends AppCompatActivity implements IGreenbitLogger, IGbmsapiAcquisitionManagerCallback {
     private int[] OpenedFD = new int[10];
     private int[] DeviceBus = new int[10];
@@ -212,7 +214,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                             // 5ran6: I am saving all these format just for testing sha.... We sha eventually only save one format (e.g ANSI_Nist)
 
                             //       GbBmp.SaveIntoAnsiNistFile("Image_" + LoggerBitmapFileSaveCounter, this, 0);
-                            GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
+                   //         GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
                             //               GbBmp.SaveToRaw("Image_" + LoggerBitmapFileSaveCounter, this);
                             //     GbBmp.SaveToJpeg("Image_" + LoggerBitmapFileSaveCounter, this);
                             //          GbBmp.SaveToJpeg2("Image_" + LoggerBitmapFileSaveCounter, this);
@@ -1126,17 +1128,15 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
 
 
         if (launchIntent != null) {
-//TODO: Call API to send to server then delete the folder before proceeding.
 
-
-            //            File dir = new File(GetGreenbitDirectoryName());
-//            if (dir.isDirectory()) {
-//                String[] children = dir.list();
-//                for (String child : children) {
-//                    new File(dir, child).delete();
-//                }
-//                Log.d("fingerprint", "Deleted Greenbit folder successfully");
-//            }
+            File dir = new File(GetGreenbitDirectoryName());
+            if (dir.isDirectory()) {
+                String[] children = dir.list();
+                for (String child : children) {
+                    new File(dir, child).delete();
+                }
+                Log.d("fingerprint", "Deleted Greenbit folder successfully");
+            }
 
             startActivity(launchIntent);//null pointer check in case package name was not found
         } else {

@@ -789,6 +789,12 @@ public class GbExampleGrayScaleBitmapClass {
 //            byte[] Temp = Base64.decode(string, Base64.DEFAULT);  //when I get back from server, I will use this to convert string to byte[]
 
 
+
+        //TODO: convert exported images to base64 then save to string array
+
+
+        ////////////////////////////////////////////////////////////////////////////
+
         String string = Base64.encodeToString(SerializeMinutiaeBuffer(Probe), Base64.DEFAULT);
         storageFile.fingerPrint.addFingerints(string);
         Log.d("fingerprint", "Number of fingerprints: " + storageFile.fingerPrint.getAllFingerprints().size());

@@ -589,6 +589,10 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
 //* */
 
             fingerprintRequest.setFingerprints(storageFile.fingerPrint.allFingerprints);
+            //TODO: add images to request
+
+
+
             Log.d("fingerprint", "fingerPrintResponse ArrayListString: " + storageFile.fingerPrint.allFingerprints.toArray().toString());
             Log.d("fingerprint", "fingerPrintResponse Number of fingers: " + storageFile.fingerPrint.allFingerprints.size());
 
@@ -908,7 +912,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                             // 5ran6: I am saving all these format just for testing sha.... We sha eventually only save one format (e.g ANSI_Nist)
 
                             //      GbBmp.SaveIntoAnsiNistFile("Image_" + LoggerBitmapFileSaveCounter, this, 0);
-                            //                GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
+                                            GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
                             //               GbBmp.SaveToRaw("Image_" + LoggerBitmapFileSaveCounter, this);
                             //              GbBmp.SaveToJpeg("Image_" + LoggerBitmapFileSaveCounter, this);
                             //            GbBmp.SaveToJpeg2("Image_" + LoggerBitmapFileSaveCounter, this);

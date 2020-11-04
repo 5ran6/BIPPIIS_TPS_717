@@ -155,7 +155,7 @@ public class CameraCapture extends AppCompatActivity {
 
         PassportRequest passportRequest = new PassportRequest();
         passportRequest.setPassport("data:image/jpeg;base64," + imageString);
-passportRequest.setFirebaseToken(mToken);
+        passportRequest.setFirebaseToken(mToken);
         Call<PassportResponse> passportResponseCall = service.getPassportResponse(passportRequest);
         passportResponseCall.enqueue(new Callback<PassportResponse>() {
             @Override
