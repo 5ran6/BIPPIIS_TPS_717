@@ -212,7 +212,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                             // 5ran6: I am saving all these format just for testing sha.... We sha eventually only save one format (e.g ANSI_Nist)
 
                             //       GbBmp.SaveIntoAnsiNistFile("Image_" + LoggerBitmapFileSaveCounter, this, 0);
-                            //                 GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
+                            GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
                             //               GbBmp.SaveToRaw("Image_" + LoggerBitmapFileSaveCounter, this);
                             //     GbBmp.SaveToJpeg("Image_" + LoggerBitmapFileSaveCounter, this);
                             //          GbBmp.SaveToJpeg2("Image_" + LoggerBitmapFileSaveCounter, this);
@@ -1123,7 +1123,21 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
 
         //call bippiis version 2 app explicitly
         Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.biippss");
+
+
         if (launchIntent != null) {
+//TODO: Call API to send to server then delete the folder before proceeding.
+
+
+            //            File dir = new File(GetGreenbitDirectoryName());
+//            if (dir.isDirectory()) {
+//                String[] children = dir.list();
+//                for (String child : children) {
+//                    new File(dir, child).delete();
+//                }
+//                Log.d("fingerprint", "Deleted Greenbit folder successfully");
+//            }
+
             startActivity(launchIntent);//null pointer check in case package name was not found
         } else {
             Toast.makeText(getApplicationContext(), "This app depends on another app which is not yet installed. Install to proceed", Toast.LENGTH_LONG).show();
@@ -1149,27 +1163,6 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
         }
     }
 
-//    private void next() {
-//        report.setText("Login Successful");
-//
-//        gifImageView.setImageResource(R.drawable.success);
-//        new Handler().postDelayed(() -> {
-//            // 5ran6: VERIFICATION SUCCESSFUL! Loading screen animation begins
-//            // 5ran6: IF you need to call any API, call here
-//            // 5ran6: then Intent to Main activity and destroy this one by calling finish();
-//
-//            SharedPreferences prefs = this.getSharedPreferences("bippiis", Context.MODE_PRIVATE);
-//            String mToken = prefs.getString("firebaseToken", null);
-//            try {
-//                sendToJsonFile(bippiis_no, mToken);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//            //                           finish();
-//        }, 2000);
-//
-//    }
 
     public void refresh(View view) {
         bStartStop.performClick();
