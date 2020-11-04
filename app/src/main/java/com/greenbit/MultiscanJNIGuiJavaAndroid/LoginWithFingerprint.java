@@ -831,7 +831,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                 Log.d("fingerprint", "RETURN VALUE = " + ret);
                 if (ret) {
                     report.setText("Login Successful");
-                    gifImageView.setBackgroundResource(R.drawable.success);
+                    gifImageView.setImageResource(R.drawable.success);
                     new Handler().postDelayed(() -> {
                         // 5ran6: VERIFICATION SUCCESSFUL! Loading screen animation begins
                         // 5ran6: IF you need to call any API, call here
@@ -849,7 +849,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                         //                           finish();
                     }, 2000);
                 } else {
-                    gifImageView.setBackgroundResource(R.drawable.unsuccessful);
+                    gifImageView.setImageResource(R.drawable.unsuccessful);
                     report.setText("Identity Not Found. Try again!");
                     StartStopAcquisition();
 

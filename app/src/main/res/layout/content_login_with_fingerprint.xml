@@ -160,8 +160,6 @@
             android:id="@+id/processing"
             android:layout_width="256dp"
             android:layout_height="256dp"
-            android:background="@color/background"
-
             android:gravity="center"
             android:src="@drawable/preview" />
 
@@ -194,11 +192,11 @@
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:onClick="refresh"
         android:tint="@android:color/white"
         app:backgroundTint="#375337"
         app:fabSize="normal"
         app:rippleColor="@android:color/white"
-        android:layout_gravity="end|bottom"
-        android:onClick="refresh"
         app:srcCompat="@drawable/ic_refresh_black_24dp" />
 </LinearLayout>
