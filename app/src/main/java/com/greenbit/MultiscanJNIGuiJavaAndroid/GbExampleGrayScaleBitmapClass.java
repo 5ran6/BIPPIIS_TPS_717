@@ -791,10 +791,9 @@ public class GbExampleGrayScaleBitmapClass {
 //            byte[] Temp = Base64.decode(string, Base64.DEFAULT);  //when I get back from server, I will use this to convert string to byte[]
 
 
-        //TODO: convert exported images to base64 then save to string array
 
         ////////////////////////////////////////////////////////////////////////////
-SaveToGalleryEnroll(fileName, act);
+        SaveToGalleryEnroll(fileName, act);
 
         ////////////////////////////////////////////////////////////////////////////
 
@@ -1153,12 +1152,12 @@ SaveToGalleryEnroll(fileName, act);
             Log.d("fingerprint", "Number of fingerprints images: " + storageFileImages.fingerPrintImages.getAllFingerprintsImages().size());
 
 
-
         } catch (Exception e) {
             e.printStackTrace();
             act.LogAsDialog("SaveToGallery" + e.getMessage());
         }
     }
+
     public void SaveToGallery(String fileName, IGreenbitLogger act) {
         try {
             // Assume block needs to be inside a Try/Catch block.
@@ -1172,7 +1171,6 @@ SaveToGalleryEnroll(fileName, act);
             pictureBitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
             fOut.flush(); // Not really required
             fOut.close(); // do not forget to close the stream
-
 
 
         } catch (Exception e) {
