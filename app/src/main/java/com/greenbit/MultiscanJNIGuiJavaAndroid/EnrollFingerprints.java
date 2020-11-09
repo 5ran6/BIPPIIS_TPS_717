@@ -36,6 +36,7 @@ import com.greenbit.MultiscanJNIGuiJavaAndroid.interfaces.BIPPIIS;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintRequest;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintResponse;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFile;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFileImages;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.ViewAnimation;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesReturnCodes;
@@ -132,6 +133,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
 
     //    public byte[] fingerprints_array = new byte[20];
     public ArrayList fingerprints_array = new ArrayList();
+    public ArrayList fingerprints_images_array = new ArrayList();
 
 
     public static GbfinimgJavaWrapperDefineSegmentImageDescriptor[] segments;
@@ -556,7 +558,9 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             report.setText("Uploading.....");
             gifImageView.setImageResource(R.drawable.processing);
             fingerprints_array = storageFile.fingerPrint.getAllFingerprints();
+            fingerprints_images_array = storageFileImages.fingerPrintImages.getAllFingerprintsImages();
             Log.d("fingerprint", "Number of fingerprints = " + fingerprints_array.size());
+            Log.d("fingerprint", "Number of fingerprints Images= " + fingerprints_images_array.size());
             //retrofit
 
             OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
@@ -589,12 +593,15 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
 //* */
 
             fingerprintRequest.setFingerprints(storageFile.fingerPrint.allFingerprints);
+            fingerprintRequest.setFingerprintsImages(storageFileImages.fingerPrintImages.allFingerprintsImages);
             //TODO: add images to request
-
 
 
             Log.d("fingerprint", "fingerPrintResponse ArrayListString: " + storageFile.fingerPrint.allFingerprints.toArray().toString());
             Log.d("fingerprint", "fingerPrintResponse Number of fingers: " + storageFile.fingerPrint.allFingerprints.size());
+
+            Log.d("fingerprint", "fingerPrintImagesResponse ArrayListString: " + storageFileImages.fingerPrintImages.allFingerprintsImages.toArray().toString());
+            Log.d("fingerprint", "fingerPrintImagesResponse Number of fingersImages: " + storageFileImages.fingerPrintImages.allFingerprintsImages.size());
 
             Call<FingerprintResponse> fingerprintResponseCall = service.getFingerprintResponse(fingerprintRequest);
             fingerprintResponseCall.enqueue(new Callback<FingerprintResponse>() {
@@ -912,7 +919,8 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                             // 5ran6: I am saving all these format just for testing sha.... We sha eventually only save one format (e.g ANSI_Nist)
 
                             //      GbBmp.SaveIntoAnsiNistFile("Image_" + LoggerBitmapFileSaveCounter, this, 0);
-                                            GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
+                            //    GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
+                        //    GbBmp.SaveToGalleryEnroll(GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString()), this);
                             //               GbBmp.SaveToRaw("Image_" + LoggerBitmapFileSaveCounter, this);
                             //              GbBmp.SaveToJpeg("Image_" + LoggerBitmapFileSaveCounter, this);
                             //            GbBmp.SaveToJpeg2("Image_" + LoggerBitmapFileSaveCounter, this);

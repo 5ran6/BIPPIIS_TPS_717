@@ -7,12 +7,12 @@ import java.util.ArrayList;
 
 public class FingerprintRequest {
 
-    //TODO: add array of images
-
 
 
     @SerializedName("fingerprints")
     private ArrayList<String> fingerprints;
+   @SerializedName("fingerprint_images")
+    private ArrayList<String> fingerprintsImages;
     @SerializedName("bippiis_number")
     private String bippiis_number;
     @SerializedName("firebaseToken")
@@ -39,5 +39,13 @@ public class FingerprintRequest {
 
     public void setBippiis_number(String bippiis_number) {
         this.bippiis_number = bippiis_number;
+    }
+
+    public ArrayList<String> getFingerprintsImages() {
+        return fingerprintsImages;
+    }
+
+    public void setFingerprintsImages(ArrayList<String> fingerprintsImages) {
+        this.fingerprintsImages = fingerprintsImages;
     }
 }

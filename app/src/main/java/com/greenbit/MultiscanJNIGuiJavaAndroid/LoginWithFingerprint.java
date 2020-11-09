@@ -214,7 +214,7 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                             // 5ran6: I am saving all these format just for testing sha.... We sha eventually only save one format (e.g ANSI_Nist)
 
                             //       GbBmp.SaveIntoAnsiNistFile("Image_" + LoggerBitmapFileSaveCounter, this, 0);
-                   //         GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
+                            //         GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
                             //               GbBmp.SaveToRaw("Image_" + LoggerBitmapFileSaveCounter, this);
                             //     GbBmp.SaveToJpeg("Image_" + LoggerBitmapFileSaveCounter, this);
                             //          GbBmp.SaveToJpeg2("Image_" + LoggerBitmapFileSaveCounter, this);
@@ -1124,11 +1124,11 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
         writeFileOnInternalStorage(getApplicationContext(), "bippiis.json", jsonObject.toString());
 
         //call bippiis version 2 app explicitly
-        Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.biippss");
+        Intent launchIntent = null;
+        launchIntent = getPackageManager().getLaunchIntentForPackage("com.biippss");
 
 
         if (launchIntent != null) {
-
             File dir = new File(GetGreenbitDirectoryName());
             if (dir.isDirectory()) {
                 String[] children = dir.list();
@@ -1137,13 +1137,11 @@ public class LoginWithFingerprint extends AppCompatActivity implements IGreenbit
                 }
                 Log.d("fingerprint", "Deleted Greenbit folder successfully");
             }
-
             startActivity(launchIntent);//null pointer check in case package name was not found
         } else {
             Toast.makeText(getApplicationContext(), "This app depends on another app which is not yet installed. Install to proceed", Toast.LENGTH_LONG).show();
             finish();
         }
-
     }
 
     public void writeFileOnInternalStorage(Context mcoContext, String sFileName, String sBody) {

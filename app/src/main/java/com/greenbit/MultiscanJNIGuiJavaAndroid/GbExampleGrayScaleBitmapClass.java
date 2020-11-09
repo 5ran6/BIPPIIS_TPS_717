@@ -1,6 +1,7 @@
 package com.greenbit.MultiscanJNIGuiJavaAndroid;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFile;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFileImages;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.LfsJavaWrapperDefinesMinutiaN;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesANStruct;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesAnsinistVersions;
@@ -789,9 +791,10 @@ public class GbExampleGrayScaleBitmapClass {
 //            byte[] Temp = Base64.decode(string, Base64.DEFAULT);  //when I get back from server, I will use this to convert string to byte[]
 
 
-
         //TODO: convert exported images to base64 then save to string array
 
+        ////////////////////////////////////////////////////////////////////////////
+SaveToGalleryEnroll(fileName, act);
 
         ////////////////////////////////////////////////////////////////////////////
 
@@ -1121,6 +1124,41 @@ public class GbExampleGrayScaleBitmapClass {
     /**
      * @param fileName with no extension
      */
+    public void SaveToGalleryEnroll(String fileName, IGreenbitLogger act) {
+        try {
+            // Assume block needs to be inside a Try/Catch block.
+            act.LogOnScreen("Storage dir: " + GetGreenbitDirectoryName());
+            File file = new File(GetGreenbitDirectoryName(),
+                    fileName + ".png"); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
+            OutputStream fOut = null;
+            fOut = new FileOutputStream(file);
+
+            Bitmap pictureBitmap = this.GetBmp(); // obtaining the Bitmap
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            pictureBitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
+            pictureBitmap.compress(Bitmap.CompressFormat.PNG, 85, baos); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
+
+
+            fOut.flush(); // Not really required
+            fOut.close(); // do not forget to close the stream
+
+//            int imageFile = Integer.parseInt(fileName.substring(fileName.length()-1)) -1;
+//            System.out.println(""+imageFile);
+//            String fileImage = fileName.substring(0, fileName.length()-1) + imageFile;
+
+
+//            String imageString = Base64.encodeToString(serializeImageFile(GetGreenbitDirectoryName() + "/" + fileImage + ".png"), Base64.DEFAULT);
+            String imageString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+            storageFileImages.fingerPrintImages.addFingerintsImages(imageString);
+            Log.d("fingerprint", "Number of fingerprints images: " + storageFileImages.fingerPrintImages.getAllFingerprintsImages().size());
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            act.LogAsDialog("SaveToGallery" + e.getMessage());
+        }
+    }
     public void SaveToGallery(String fileName, IGreenbitLogger act) {
         try {
             // Assume block needs to be inside a Try/Catch block.
@@ -1134,6 +1172,9 @@ public class GbExampleGrayScaleBitmapClass {
             pictureBitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
             fOut.flush(); // Not really required
             fOut.close(); // do not forget to close the stream
+
+
+
         } catch (Exception e) {
             e.printStackTrace();
             act.LogAsDialog("SaveToGallery" + e.getMessage());
@@ -1641,21 +1682,18 @@ public class GbExampleGrayScaleBitmapClass {
     }
 
     private byte[] SerializeMinutiaeBuffer(LfsJavaWrapperDefinesMinutiaN[] MinutiaeArrayToSerialize) {
-
-////        //deserialize
-//        Log.d("Fingerprint", "Starts here");
-//
-//        LfsJavaWrapperDefinesMinutiaN[] minutiaeArrayToSerialize = SerializationUtils.deserialize(SerializationUtils.serialize(MinutiaeArrayToSerialize));
-//        Log.d("Fingerprint", "Reached here");
-////
-////        // compare
-//        if (Arrays.equals(minutiaeArrayToSerialize, MinutiaeArrayToSerialize)) {
-//            Log.d("Fingerprint", "It is the same");
-//        } else {
-//            Log.d("Fingerprint", "NOT the same");
-//        }
         return SerializationUtils.serialize(MinutiaeArrayToSerialize);
     }
+
+    private byte[] serializeImageFile(String path) {
+        //  Bitmap bm = BitmapFactory.decodeFile("/path/to/image.jpg");
+        Bitmap bm = BitmapFactory.decodeFile(path);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.PNG, 85, baos); // bm is the bitmap object
+//        byte[] b = baos.toByteArray();
+        return baos.toByteArray();
+    }
+
 
 //    public LfsJavaWrapperDefinesMinutiaN[] deserialize(byte[] templateCode) {
 //        return SerializationUtils.deserialize(templateCode);
