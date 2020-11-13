@@ -594,7 +594,6 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
 
             fingerprintRequest.setFingerprints(storageFile.fingerPrint.allFingerprints);
             fingerprintRequest.setFingerprintsImages(storageFileImages.fingerPrintImages.allFingerprintsImages);
-            //TODO: add images to request
 
 
             Log.d("fingerprint", "fingerPrintResponse ArrayListString: " + storageFile.fingerPrint.allFingerprints.toArray().toString());
