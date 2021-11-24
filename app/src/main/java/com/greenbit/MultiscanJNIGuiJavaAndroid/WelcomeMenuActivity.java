@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.cardview.widget.CardView;
 
-import com.naic.nigerianarmy.utils.Tools;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
 
 public class WelcomeMenuActivity extends AppCompatActivity {
 
@@ -32,7 +32,7 @@ public class WelcomeMenuActivity extends AppCompatActivity {
         officer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), com.naic.nigerianarmy.MenuOfficers.class);
+                Intent intent = new Intent(getApplicationContext(), MenuOfficers.class);
                 intent.putExtra("flag", "officers");
                 startActivity(intent);
             }
@@ -40,7 +40,7 @@ public class WelcomeMenuActivity extends AppCompatActivity {
         visitor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), com.naic.nigerianarmy.MenuVisitor.class);
+                Intent intent = new Intent(getApplicationContext(), MenuVisitor.class);
                 intent.putExtra("flag", "visitors");
                 startActivity(intent);
             }

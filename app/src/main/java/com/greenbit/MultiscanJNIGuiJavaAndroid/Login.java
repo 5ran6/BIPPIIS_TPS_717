@@ -25,6 +25,7 @@ import androidx.transition.Transition;
 import androidx.transition.TransitionValues;
 
 import com.google.gson.Gson;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.VerifiedUser;
 import com.naic.nigerianarmy.interfaces.NAIC;
 import com.naic.nigerianarmy.models.ArmyUserResponse;
 import com.naic.nigerianarmy.models.LoginRequest;

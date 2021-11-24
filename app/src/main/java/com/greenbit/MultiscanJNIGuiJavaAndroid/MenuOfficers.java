@@ -53,7 +53,7 @@ public class MenuOfficers extends AppCompatActivity {
          mFlowerList.add(md);
 
 
-        com.naic.nigerianarmy.MenuAdapter myAdapter = new com.naic.nigerianarmy.MenuAdapter(MenuOfficers.this, mFlowerList);
+        MenuAdapter myAdapter = new MenuAdapter(MenuOfficers.this, mFlowerList);
         mRecyclerView.setAdapter(myAdapter);
 
     }

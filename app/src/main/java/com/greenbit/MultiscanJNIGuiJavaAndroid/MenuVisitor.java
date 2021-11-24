@@ -8,8 +8,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.naic.nigerianarmy.services.MyService;
-import com.naic.nigerianarmy.utils.Tools;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.services.MyService;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class MenuVisitor extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         GridLayout mainGrid;
-        com.naic.nigerianarmy.MenuData md;
+        MenuData md;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
         startService(new Intent(this, MyService.class));
@@ -27,33 +27,33 @@ public class MenuVisitor extends AppCompatActivity {
         RecyclerView mRecyclerView = findViewById(R.id.recyclerview);
         GridLayoutManager mGridLayoutManager = new GridLayoutManager(MenuVisitor.this, 3);
         mRecyclerView.setLayoutManager(mGridLayoutManager);
-        List<com.naic.nigerianarmy.MenuData> mFlowerList = new ArrayList<>();
+        List<MenuData> mFlowerList = new ArrayList<>();
 
 
-        md = new com.naic.nigerianarmy.MenuData("Enroll Visitor",R.drawable.enroll);
+        md = new MenuData("Enroll Visitor",R.drawable.enroll);
         mFlowerList.add(md);
 
-        md = new com.naic.nigerianarmy.MenuData("Verify",R.drawable.ver2);
+        md = new MenuData("Verify",R.drawable.ver2);
         mFlowerList.add(md);
-        md = new com.naic.nigerianarmy.MenuData("Profile",R.drawable.profile);
+        md = new MenuData("Profile",R.drawable.profile);
         mFlowerList.add(md);
-        md = new com.naic.nigerianarmy.MenuData("About NAIC",R.drawable.globe);
+        md = new MenuData("About NAIC",R.drawable.globe);
         mFlowerList.add(md);
-        md = new com.naic.nigerianarmy.MenuData("Home Menu",R.drawable.home_menu);
+        md = new MenuData("Home Menu",R.drawable.home_menu);
         mFlowerList.add(md);
-        md = new com.naic.nigerianarmy.MenuData("Captured Data",R.drawable.view);
-        mFlowerList.add(md);
-
-        md = new com.naic.nigerianarmy.MenuData("Set Ip Address",R.drawable.settings);
-        mFlowerList.add(md);
-        md = new com.naic.nigerianarmy.MenuData("About GAMINT",R.drawable.gamint);
+        md = new MenuData("Captured Data",R.drawable.view);
         mFlowerList.add(md);
 
-         md = new com.naic.nigerianarmy.MenuData("Exit",R.drawable.logout);
+        md = new MenuData("Set Ip Address",R.drawable.settings);
+        mFlowerList.add(md);
+        md = new MenuData("About GAMINT",R.drawable.gamint);
+        mFlowerList.add(md);
+
+         md = new MenuData("Exit",R.drawable.logout);
          mFlowerList.add(md);
 
 
-        com.naic.nigerianarmy.MenuAdapter myAdapter = new com.naic.nigerianarmy.MenuAdapter(MenuVisitor.this, mFlowerList);
+        MenuAdapter myAdapter = new MenuAdapter(MenuVisitor.this, mFlowerList);
         mRecyclerView.setAdapter(myAdapter);
 
     }

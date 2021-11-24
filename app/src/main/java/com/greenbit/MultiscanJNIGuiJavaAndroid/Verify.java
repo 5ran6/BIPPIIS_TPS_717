@@ -1,6 +1,6 @@
 package com.greenbit.MultiscanJNIGuiJavaAndroid;
 
-import static com.naic.nigerianarmy.GbExampleGrayScaleBitmapClass.GetBippiisDirectoryName;
+import static com.greenbit.MultiscanJNIGuiJavaAndroid.GbExampleGrayScaleBitmapClass.GetBippiisDirectoryName;
 
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
@@ -48,12 +48,12 @@ import com.greenbit.jpeg.GbjpegJavaWrapperLibrary;
 import com.greenbit.lfs.LfsJavaWrapperLibrary;
 import com.greenbit.usbPermission.IGreenbitLogger;
 import com.greenbit.wsq.WsqJavaWrapperLibrary;
-import com.naic.nigerianarmy.interfaces.NAIC;
-import com.naic.nigerianarmy.models.FingerprintRequest;
-import com.naic.nigerianarmy.models.FingerprintResponse;
-import com.naic.nigerianarmy.models.storageFile;
-import com.naic.nigerianarmy.models.storageFileImages;
-import com.naic.nigerianarmy.utils.Tools;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.interfaces.NAIC;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintRequest;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintResponse;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFile;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFileImages;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
 import com.suprema.BioMiniFactory;
 import com.suprema.CaptureResponder;
 import com.suprema.IBioMiniDevice;

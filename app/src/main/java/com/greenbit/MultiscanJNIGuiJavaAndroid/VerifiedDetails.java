@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.naic.nigerianarmy.models.VerifiedUser;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.VerifiedUser;
 
 public class VerifiedDetails extends AppCompatActivity {
     TextView name,phone,idnumber,email,age,height,weight,eye_colour,hair_colour,tatoo,gender,marital,
@@ -59,7 +59,7 @@ public class VerifiedDetails extends AppCompatActivity {
 
         image=(ImageView)findViewById(R.id.enrollee);
         email=findViewById(R.id.email);
-        VerifiedUser enrollee= com.naic.nigerianarmy.Login.verifiedUser;
+        VerifiedUser enrollee= Login.verifiedUser;
         String imageBase64=enrollee.getPassport();
         imageBase64=imageBase64.replace("data:image/jpeg;base64,","");
         // Toast.makeText(BioDetails.this,enrollee.left_thumb,Toast.LENGTH_SHORT).show();

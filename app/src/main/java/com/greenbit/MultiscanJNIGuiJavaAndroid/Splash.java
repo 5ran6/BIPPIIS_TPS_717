@@ -14,8 +14,8 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.transition.Transition;
 import androidx.transition.TransitionValues;
 
-import com.naic.nigerianarmy.utils.LfsJavaWrapperDefinesMinutiaN;
-import com.naic.nigerianarmy.utils.Tools;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.LfsJavaWrapperDefinesMinutiaN;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
 
 import org.apache.commons.lang3.SerializationUtils;
 
