@@ -1,141 +1,81 @@
 package com.greenbit.MultiscanJNIGuiJavaAndroid;
 
-import android.os.Bundle;
-import android.app.Activity;
 import android.content.Intent;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.View;
-import android.view.View.OnClickListener;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.view.animation.AnimationUtils;
-import android.view.animation.TranslateAnimation;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.view.animation.LinearInterpolator;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.cardview.widget.CardView;
+import androidx.transition.Transition;
+import androidx.transition.TransitionValues;
 
-import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
+import com.naic.nigerianarmy.utils.LfsJavaWrapperDefinesMinutiaN;
+import com.naic.nigerianarmy.utils.Tools;
 
-public class Splash extends Activity {
+import org.apache.commons.lang3.SerializationUtils;
 
-    CardView enroll, verify;
-    AppCompatImageView rl_footer;
-    LinearLayout linearLayout;
-    boolean isBottom = true;
+
+public class Splash extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
-        linearLayout = findViewById(R.id.ll_main);
-        rl_footer = findViewById(R.id.rl_footer);
-        enroll = findViewById(R.id.enroll);
-        verify = findViewById(R.id.verify);
+        setContentView(R.layout.activity_login);
 
-enroll.setOnClickListener(new OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        Intent intent = new Intent(getApplicationContext(), Login.class);
-        intent.putExtra("flag", "enroll");
-        startActivity(intent);
-    }
-});
-verify.setOnClickListener(new OnClickListener() {
-    @Override
-    public void onClick(View view) {
-        Intent intent = new Intent(getApplicationContext(), Login.class);
-        intent.putExtra("flag", "verify");
-        startActivity(intent);
-    }
-});
 
-    }
+//        //to be removed
+//        bip.setText("O/S 2243");
+//        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(Login.this, new OnSuccessListener<InstanceIdResult>() {
+//            @Override
+//            public void onSuccess(InstanceIdResult instanceIdResult) {
+//                mToken = instanceIdResult.getToken();
+//                Log.e("Token", mToken);
+//                SharedPreferences pref = getApplicationContext().getSharedPreferences("bippiis", MODE_PRIVATE);
+//                SharedPreferences.Editor editor = pref.edit();
+//                editor.putString("firebaseToken", mToken);
+//                editor.apply(); //commit changes
+//            }
+//        });
 
-    public void SlideToAbove() {
-        Animation slide = null;
-        slide = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                0.0f, Animation.RELATIVE_TO_SELF, -5.0f);
+        AppCompatImageView img = findViewById(R.id.img);
 
-        slide.setDuration(400);
-        slide.setFillAfter(true);
-        slide.setFillEnabled(true);
-        rl_footer.startAnimation(slide);
 
-        slide.setAnimationListener(new AnimationListener() {
-
+        final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+        new Transition() {
             @Override
-            public void onAnimationStart(Animation animation) {
+            public void captureEndValues(@NonNull TransitionValues transitionValues) {
 
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
+            public void captureStartValues(@NonNull TransitionValues transitionValues) {
 
+            }
+        };
+        animation.setDuration(3000); // duration - 3 seconds
+        animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+        animation.setRepeatCount(3); // Repeat animation infinitely
+        animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
+        img.startAnimation(animation);
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void onAnimationEnd(Animation animation) {
-
-                rl_footer.clearAnimation();
-
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        rl_footer.getWidth(), rl_footer.getHeight());
-                LinearLayout.LayoutParams ll = new LinearLayout.LayoutParams(
-                        linearLayout.getWidth(), linearLayout.getHeight());
-                // lp.setMargins(0, 0, 0, 0);
-                ll.gravity = Gravity.CENTER_HORIZONTAL;
-                lp.gravity = Gravity.CENTER_HORIZONTAL;
-
-                rl_footer.setLayoutParams(lp);
-                linearLayout.setLayoutParams(ll);
-
+            public void run() {
+                startActivity(new Intent(getApplicationContext(), WelcomeMenuActivity.class));
             }
-
-        });
+        }, 3000);
 
     }
 
-    public void SlideToDown() {
-        Animation slide = null;
-        slide = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
-                0.0f, Animation.RELATIVE_TO_SELF, 5.2f);
-
-        slide.setDuration(400);
-        slide.setFillAfter(true);
-        slide.setFillEnabled(true);
-        rl_footer.startAnimation(slide);
-
-        slide.setAnimationListener(new AnimationListener() {
-
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-
-                rl_footer.clearAnimation();
-
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        rl_footer.getWidth(), rl_footer.getHeight());
-                lp.setMargins(0, rl_footer.getWidth(), 0, 0);
-                rl_footer.setLayoutParams(lp);
-
-            }
-
-        });
-
+    //DONE
+    public void hideSoftKeyboard() {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
+
     private long exitTime = 0;
 
     public void doExitApp() {
@@ -153,4 +93,7 @@ verify.setOnClickListener(new OnClickListener() {
         doExitApp();
     }
 
+    private LfsJavaWrapperDefinesMinutiaN[] deSerialize(byte[] templateCode) {
+        return SerializationUtils.deserialize(templateCode);
+    }
 }

@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/spacing_middle"
-          android:id="@+id/enroll"  android:layout_marginTop="@dimen/spacing_medium"
+          android:id="@+id/officer"  android:layout_marginTop="@dimen/spacing_medium"
             android:layout_marginRight="@dimen/spacing_middle"
             android:layout_marginBottom="@dimen/spacing_medium"
             android:clickable="true"
@@ -56,7 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="ENROLL"
+                    android:text="OFFICERS"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     android:textStyle="bold" />
 
@@ -73,7 +73,7 @@
             android:layout_marginBottom="@dimen/spacing_medium"
             android:clickable="true"
             android:focusable="true"
-            android:id="@+id/verify"  android:foreground="?android:attr/selectableItemBackground"
+            android:id="@+id/visitor"  android:foreground="?android:attr/selectableItemBackground"
             android:visibility="visible"
             app:cardCornerRadius="15sp"
             app:cardElevation="5sp">
@@ -95,7 +95,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:text="VERIFY"
+                    android:text="VISITORS"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     android:textStyle="bold" />
 

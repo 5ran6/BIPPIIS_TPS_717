@@ -17,9 +17,6 @@ public class PassportResponse {
     @Expose
     private String status_code;
 
-    @SerializedName("code")
-    @Expose
-    private String code;
 
     @SerializedName("message")
     @Expose
@@ -47,14 +44,6 @@ public class PassportResponse {
 
     public void setStatus_code(String status_code) {
         this.status_code = status_code;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getMessage() {

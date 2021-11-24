@@ -21,6 +21,7 @@ public class storageFile implements Serializable {
     public static class fingerPrint {
         public static ArrayList<String> allFingerprints = new ArrayList<String>();
 
+
         public static void addFingerints(String imageFile) {
             allFingerprints.add(imageFile);
         }

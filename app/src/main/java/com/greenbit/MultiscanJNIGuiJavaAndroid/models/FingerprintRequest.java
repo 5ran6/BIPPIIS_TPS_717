@@ -4,26 +4,17 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-
 public class FingerprintRequest {
 
-
-
+    @SerializedName("type")
+    private String type;
     @SerializedName("fingerprints")
     private ArrayList<String> fingerprints;
-   @SerializedName("fingerprint_images")
+    @SerializedName("fingerprint_images")
     private ArrayList<String> fingerprintsImages;
-    @SerializedName("bippiis_number")
-    private String bippiis_number;
-    @SerializedName("firebaseToken")
-    private String firebaseToken;
-    public String getFirebaseToken() {
-        return firebaseToken;
-    }
 
-    public void setFirebaseToken(String firebaseToken) {
-        this.firebaseToken = firebaseToken;
-    }
+   public  String phone;
+    public  String token;
 
     public ArrayList<String> getFingerprints() {
         return fingerprints;
@@ -33,14 +24,6 @@ public class FingerprintRequest {
         this.fingerprints = fingerprints;
     }
 
-    public String getBippiis_number() {
-        return bippiis_number;
-    }
-
-    public void setBippiis_number(String bippiis_number) {
-        this.bippiis_number = bippiis_number;
-    }
-
     public ArrayList<String> getFingerprintsImages() {
         return fingerprintsImages;
     }
@@ -48,4 +31,13 @@ public class FingerprintRequest {
     public void setFingerprintsImages(ArrayList<String> fingerprintsImages) {
         this.fingerprintsImages = fingerprintsImages;
     }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
+    }
+
 }

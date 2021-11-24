@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class LGApensionser {
 
-    //    private String[] titles1 = {"FILE NUMBER", "BIPPIIS NUMBER", "FULL NAME", "GENDER", "DATE OF BIRTH",
+    //    private String[] titles1 = {"FILE NUMBER", "NAIC NUMBER", "FULL NAME", "GENDER", "DATE OF BIRTH",
 //            "PHONE NUMBER", "PENSIONER CATEGORY", "PAYROLL STATUS", "PERMANENT ADDRESS", "LOCAL GOVERNMENT OF ORIGIN"
 //    };
 //    private String[] titles2 = {"NEXT OF KIN'S NAME",
