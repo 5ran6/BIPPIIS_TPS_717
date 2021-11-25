@@ -851,6 +851,137 @@ public class GbExampleGrayScaleBitmapClass {
         Log.d("Fingerprint", "Closed successfully");
     }
 
+    public EnrollDetailsString EncodeToLFSMinutiaeString(String fileName, int ImageFlags, IGreenbitLogger act) throws Exception {
+        int RetVal;
+        GB_AcquisitionOptionsGlobals.BOZORTH_Jw.Load();
+        GB_AcquisitionOptionsGlobals.LFS_Jw.Load();
+
+        GBJavaWrapperUtilIntForJavaToCExchange TemplateCodeSize = new GBJavaWrapperUtilIntForJavaToCExchange();
+
+        /******
+         Get minutiae
+         *******/
+        LfsJavaWrapperDefinesMinutiaN[] Probe = new LfsJavaWrapperDefinesMinutiaN[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+        LfsJavaWrapperDefinesMinutia[] Probe1 = new LfsJavaWrapperDefinesMinutia[BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE];
+
+        for (int i = 0; i < BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE; i++) {
+            Probe[i] = new LfsJavaWrapperDefinesMinutiaN();
+            Probe1[i] = new LfsJavaWrapperDefinesMinutia();
+        }
+
+
+        GBJavaWrapperUtilIntForJavaToCExchange MinutiaeNum = new GBJavaWrapperUtilIntForJavaToCExchange();
+
+        try {
+            RetVal = GB_AcquisitionOptionsGlobals.LFS_Jw.GetMinutiae(bytes, sx, sy, 8, 19.68, Probe1, MinutiaeNum);
+            Log.d("bippiis", RetVal + " is return value");
+
+            if (RetVal != LfsJavaWrapperLibrary.LFS_SUCCESS) {
+                throw new Exception("EncodeToLfsMinutiae" +
+                        ", EncodeToLfsMinutiae: " + GB_AcquisitionOptionsGlobals.LFS_Jw.GetLastErrorString());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        for (int i = 0; i < BozorthJavaWrapperLibrary.BOZORTH_MAX_MINUTIAE; i++) {
+            Probe[i].setXCoord(Probe1[i].getXCoord());
+            Probe[i].setYCoord(Probe1[i].getYCoord());
+            Probe[i].setReliability(Probe1[i].getReliability());
+            Probe[i].setType(Probe1[i].getType());
+            Probe[i].setDirection(Probe1[i].getDirection());
+        }
+
+
+        /*******
+         * Perform some operations
+         ******/
+        //storageFile.fingerPrint.allFingerprints.add(Base64.encodeToString(TemplateCode, Base64.DEFAULT));
+//        byte[] TemplateCode = new byte[TemplateCodeSize.Get()];
+        //String string = Base64.encodeToString(TemplateCode, Base64.DEFAULT);
+//            byte[] Temp = Base64.decode(string, Base64.DEFAULT);  //when I get back from server, I will use this to convert string to byte[]
+
+
+
+        ////////////////////////////////////////////////////////////////////////////
+        /*******
+         * Save FINGERPRINT IMAGE To STORAGE File
+         ******/
+
+        String fingerString=SaveToGalleryEnrollBase64(fileName, act);
+
+
+        ////////////////////////////////////////////////////////////////////////////
+
+        /*******
+         * Save FINGERPRINT TEMPLATE To STORAGE File
+         ******/
+
+
+        String templateString = Base64.encodeToString(SerializeMinutiaeBuffer(Probe), Base64.DEFAULT);
+
+        EnrollDetailsString eds=new EnrollDetailsString();
+        eds.FingerPrintImage=fingerString;
+        eds.FingerPrintTemplate=templateString;
+        return eds;
+
+       /* storageFile.fingerPrint.addFingerints(string);
+        Log.d("fingerprint", "Number of fingerprints: " + storageFile.fingerPrint.getAllFingerprints().size());
+
+        /*******
+         * Save To File
+         ******/
+////        act.LogOnScreen("Saving image as LFS template; Storage dir: " + GetGreenbitDirectoryName() +
+////                ", len = " + bytes.length);
+//        File file = new File(GetGreenbitDirectoryName(),
+//                fileName + ".lfs");
+//        OutputStream fOut = new FileOutputStream(file);
+//        //  Log.d("Fingerprint", "Probe size = " + Probe.length);
+////        fOut.write(serializeMinutiaeBuffer(Probe)); // check this line out
+//        // used for enrollment //   fOut.write(SerializeMinutiaeBuffer(Probe)); // check this line out
+//
+//        try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+//            oos.writeObject(Probe);
+//            TemplateCode = baos.toByteArray();
+//            T = baos.toByteArray();
+//
+//        } catch (IOException e) {
+//            // Error in serialization
+//            e.printStackTrace();
+//        }
+//
+//        fOut.write(TemplateCode); // check this line out
+//        //   fOut.write(SerializeMinutiaeBuffer(Probe)); // check this line out
+//        //     fOut.flush();
+//        fOut.close(); // do not forget to close the stream
+/*
+
+        File file = new File(GetGreenbitDirectoryName(),
+                fileName + ".json");
+        try {
+            // Serialize Java object into JSON file.
+//            mapper.writeValue(file, Probe);
+            Gson gson = new Gson();
+            String json = gson.toJson(Probe1);
+
+            //           mapper.writeValue(file, json);
+            FileWriter fw = new FileWriter(file.getAbsolutePath());
+            fw.write(json);
+            fw.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        Log.d("Fingerprint", "Closed successfully");
+
+ */
+    }
+
+
     //before I edited the library
 //    public void EncodeToLFSMinutiae(String fileName, int ImageFlags, IGreenbitLogger act) throws Exception {
 //        int RetVal;
@@ -944,6 +1075,51 @@ public class GbExampleGrayScaleBitmapClass {
 //
 //        Log.d("Fingerprint", "Closed successfully");
 //    }
+
+
+    public String SaveToGalleryEnrollBase64(String fileName, IGreenbitLogger act) {
+        String imageString="";
+        try {
+            // Assume block needs to be inside a Try/Catch block.
+            act.LogOnScreen("Storage dir: " + GetGreenbitDirectoryName());
+            File file = new File(GetGreenbitDirectoryName(),
+                    fileName + ".png"); // the File to save , append increasing numeric counter to prevent files from getting overwritten.
+            OutputStream fOut = null;
+            fOut = new FileOutputStream(file);
+
+            Bitmap pictureBitmap = this.GetBmp(); // obtaining the Bitmap
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            pictureBitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
+            pictureBitmap.compress(Bitmap.CompressFormat.PNG, 85, baos); // saving the Bitmap to a file compressed as a JPEG with 85% compression rate
+
+
+            fOut.flush(); // Not really required
+            fOut.close(); // do not forget to close the stream
+
+//            int imageFile = Integer.parseInt(fileName.substring(fileName.length()-1)) -1;
+//            System.out.println(""+imageFile);
+//            String fileImage = fileName.substring(0, fileName.length()-1) + imageFile;
+
+
+//            String imageString = Base64.encodeToString(serializeImageFile(GetGreenbitDirectoryName() + "/" + fileImage + ".png"), Base64.DEFAULT);
+            imageString = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
+
+            // storageFileImages.fingerPrintImages.addFingerintsImages(imageString);
+            // Log.d("fingerprint", "Number of fingerprints images: " + storageFileImages.fingerPrintImages.getAllFingerprintsImages().size());
+
+
+        }
+
+
+        catch (Exception e) {
+            e.printStackTrace();
+            act.LogAsDialog("SaveToGallery" + e.getMessage());
+        }
+
+        return imageString;
+    }
+
+
 
     public boolean Verify(IGreenbitLogger act) throws Exception {
         int RetVal;

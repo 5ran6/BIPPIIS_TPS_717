@@ -688,7 +688,7 @@ public class BioData extends AppCompatActivity {
 
         //Toast.makeText(getApplicationContext(), "Something", Toast.LENGTH_SHORT).show();
 
-        startActivity(new Intent(getApplicationContext(), Enroll.class)
+        startActivity(new Intent(getApplicationContext(), EnrollFingerprints.class)
                 .putExtra("extra", "extra")
                 .putExtra("phone", phone.getText().toString())
                 .putExtra("fullname", fullname.getText().toString()));

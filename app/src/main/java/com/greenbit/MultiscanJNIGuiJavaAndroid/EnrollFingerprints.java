@@ -33,10 +33,12 @@ import androidx.core.content.ContextCompat;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.interfaces.BIPPIIS;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerKey;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintRequest;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.FingerprintResponse;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFile;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.models.storageFileImages;
+import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.DatabaseAccess;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.Tools;
 import com.greenbit.MultiscanJNIGuiJavaAndroid.utils.ViewAnimation;
 import com.greenbit.ansinistitl.GBANJavaWrapperDefinesReturnCodes;
@@ -117,9 +119,10 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     private int LoggerBitmapFileSaveCounter = 0;
     private Spinner comboObjectsToAcquire;
     private String token = "", fullname = "";
+    private String phone = "";
 
-    private String bippiis_number = "";
-    private String bippiis_number_edited = "";
+//    private String bippiis_number = "";
+//    private String bippiis_number_edited = "";
     private ImageView LoggerView;
     private boolean FirstFrameAcquired = false, PreviewEnded = false, AcquisitionEnded = false, isFirstStart = true;
 
@@ -129,6 +132,11 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
     private long ChronometerMillisecs;
     private boolean ChronometerStarted;
     private GifImageView gifImageView;
+    DatabaseAccess db;
+    private  String mode = "";
+    int fingers=0;
+    ArrayList<FingerKey> fingersvals;
+    private int i = 0;
 
 
     //    public byte[] fingerprints_array = new byte[20];
@@ -339,6 +347,24 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
                                 GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString() + i),
                                 GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE,
                                 this);
+                        EnrollDetailsString eds=bmpCls.EncodeToLFSMinutiaeString(
+                                GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString() + i++), GbfrswJavaWrapperDefinesImageFlags.GBFRSW_FLAT_IMAGE, EnrollFingerprints.this);
+
+                        if (hand_number == 1 ){
+                            db.UpdateFingerPrintEnroll(phone,fingersvals.get(i++),eds);
+                        }
+                        if (hand_number == 2){
+                            db.UpdateFingerPrintEnroll(phone,fingersvals.get(5 + i++),eds);
+                        }
+                        if(hand_number ==3){
+                            if (i == 1){
+                                db.UpdateFingerPrintEnroll(phone,fingersvals.get(5),eds);
+                            }
+                            else
+                                db.UpdateFingerPrintEnroll(phone,fingersvals.get(i),eds);
+                        }
+
+
                     }
                     if (!ret) {
                         throw new Exception("ProcessSlapImage error");
@@ -388,12 +414,11 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             GB_AcquisitionOptionsGlobals.BOZORTH_Jw = new BozorthJavaWrapperLibrary();
             setContentView(R.layout.activity_enroll_fingerprints);
 
-            bippiis_number = getIntent().getStringExtra("bippiis_number");
-            bippiis_number_edited = getIntent().getStringExtra("bippiis_number_edited");
+            phone = getIntent().getStringExtra("phone");
+//            bippiis_number_edited = getIntent().getStringExtra("bippiis_number_edited");
             token = getIntent().getStringExtra("token");
-            fullname = getIntent().getStringExtra("fullname");
 
-            Log.d("fingerprint", "Original BIPPIIS + " + bippiis_number + " edited BIPPIIS: " + bippiis_number_edited);
+            fullname = getIntent().getStringExtra("fullname");
 
             LoggerAcquisitionInfoTv = findViewById(R.id.Acquisition_Info);
             LoggerImageInfoTv = findViewById(R.id.Image_Info);
@@ -438,17 +463,87 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             bIdentify.setText("Identify");
 
             tbName = findViewById(R.id.tbName);
-            tbName.setText(bippiis_number_edited);
+            tbName.setText(fullname);
             tbName.setEnabled(true);
 
             GB_AcquisitionOptionsGlobals.acquiredFrameValid = false;
             LogAcquisitionInfoOnScreen("");
             LogImageInfoOnScreen("Image Info");
 
+            db = DatabaseAccess.getInstance(getApplicationContext());
+            db.open();
+
             byte[] whiteImage = CreateMonochromeImage(256, (byte) 255);
             GbExampleGrayScaleBitmapClass GbBmp = new GbExampleGrayScaleBitmapClass(
                     whiteImage, 16, 16, false, true, this);
             LogBitmap(GbBmp);
+
+            fingersvals=new ArrayList<>();
+            //Setting up auto prompt for fingers
+            FingerKey fi=new  FingerKey();
+            fi.finger_label="Place Left Thumb";
+            fi.column_label="left_thumb";
+
+            fingersvals.add(fi);
+
+            FingerKey fi2=new  FingerKey();
+            fi2.finger_label="Place Left Index Finger";
+            fi2.column_label="left_index";
+
+            fingersvals.add(fi2);
+
+
+            FingerKey fi3=new  FingerKey();
+            fi3.finger_label="Place Left Middle Finger";
+            fi3.column_label="left_middle";
+
+            fingersvals.add(fi3);
+
+            FingerKey fi4=new  FingerKey();
+            fi4.finger_label="Place Left Ring Finger";
+            fi4.column_label="left_ring";
+
+            fingersvals.add(fi4);
+
+            FingerKey fi5=new  FingerKey();
+            fi5.finger_label="Place Left Little Finger";
+            fi5.column_label="left_little";
+
+            fingersvals.add(fi5);
+
+
+            FingerKey fi6=new  FingerKey();
+            fi6.finger_label="Place Right Thumb";
+            fi6.column_label="right_thumb";
+
+            fingersvals.add(fi6);
+
+            FingerKey fi7=new  FingerKey();
+            fi7.finger_label="Place Right Index Finger";
+            fi7.column_label="right_index";
+
+            fingersvals.add(fi7);
+
+
+            FingerKey fi8=new  FingerKey();
+            fi8.finger_label="Place Right Middle Finger";
+            fi8.column_label="right_middle";
+
+            fingersvals.add(fi8);
+
+            FingerKey fi9=new  FingerKey();
+            fi9.finger_label="Place Right Ring Finger";
+            fi9.column_label="right_ring";
+
+            fingersvals.add(fi9);
+
+            FingerKey fi10=new  FingerKey();
+            fi10.finger_label="Place Right Little Finger";
+            fi10.column_label="right_little";
+
+            fingersvals.add(fi10);
+
+
 
             onRefresh();
             StartLogTimer();
@@ -561,120 +656,8 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
             fingerprints_images_array = storageFileImages.fingerPrintImages.getAllFingerprintsImages();
             Log.d("fingerprint", "Number of fingerprints = " + fingerprints_array.size());
             Log.d("fingerprint", "Number of fingerprints Images= " + fingerprints_images_array.size());
-            //retrofit
-
-            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
-                @Override
-                public okhttp3.Response intercept(Chain chain) throws IOException {
-                    Request newRequest = chain.request().newBuilder()
-                            .addHeader("Authorization", "Bearer " + token)
-                            .build();
-                    return chain.proceed(newRequest);
-                }
-            }).build();
-
-            Retrofit retrofit = new Retrofit.Builder().client(client)
-                    .baseUrl(getString(R.string.base_url))
-                    .addConverterFactory(GsonConverterFactory.create()).build();
-            BIPPIIS service = retrofit.create(BIPPIIS.class);
-
-            Log.d("fingerprint", "BIPPIIS NUMBER: " + bippiis_number);
-            FingerprintRequest fingerprintRequest = new FingerprintRequest();
-            fingerprintRequest.setBippiis_number(bippiis_number);
-            fingerprintRequest.setFirebaseToken(mToken);
-//            Gson gson = new Gson();
-//            String json = gson.toJson(storageFile.fingerPrint.allFingerprints);
-//            // to reverse it when am getting back from server
-///*
-//*           Gson gson = new Gson();
-//
-//            ArrayList<String> allFingerPrints = gson.fromJson(json, ArrayList.class); //json is string from server
-//
-//* */
-
-            fingerprintRequest.setFingerprints(storageFile.fingerPrint.allFingerprints);
-            fingerprintRequest.setFingerprintsImages(storageFileImages.fingerPrintImages.allFingerprintsImages);
-
-
-            Log.d("fingerprint", "fingerPrintResponse ArrayListString: " + storageFile.fingerPrint.allFingerprints.toArray().toString());
-            Log.d("fingerprint", "fingerPrintResponse Number of fingers: " + storageFile.fingerPrint.allFingerprints.size());
-
-            Log.d("fingerprint", "fingerPrintImagesResponse ArrayListString: " + storageFileImages.fingerPrintImages.allFingerprintsImages.toArray().toString());
-            Log.d("fingerprint", "fingerPrintImagesResponse Number of fingersImages: " + storageFileImages.fingerPrintImages.allFingerprintsImages.size());
-
-            Call<FingerprintResponse> fingerprintResponseCall = service.getFingerprintResponse(fingerprintRequest);
-            fingerprintResponseCall.enqueue(new Callback<FingerprintResponse>() {
-                @Override
-                public void onResponse(Call<FingerprintResponse> call, Response<FingerprintResponse> response) {
-                    // TODO: still need to catch errors properly from accurate response filters
-
-                    FingerprintResponse fingerPrintResponse = response.body();
-                    try {
-                        Log.d("fingerprint", "fingerPrintResponse success: " + response.isSuccessful());
-                        Log.d("fingerprint", "fingerPrintResponse RESPONSE: " + response.toString());
-                        Log.d("fingerprint", "fingerPrintResponse TOKEN: " + response.body().getToken());
-                        Log.d("fingerprint", "fingerPrintResponse BODY: " + response.body().toString());
-//                        Log.d("fingerprint", "fingerPrintResponse RESPONSE Error Body: " + response.errorBody().toString());
-                        //           Log.d("fingerprint", "fingerPrintResponse RESPONSE Error Body: " + response.errorBody().source().readUtf8());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-//                    try {
-//                        Log.d("fingerprint", "fingerPrintResponse RESPONSE Error Body: " + Arrays.toString(response.errorBody().bytes()));
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    Log.d("fingerprint", "fingerPrintResponse RESPONSE Error Body: " + response.errorBody().toString());
-//                    Log.d("fingerprint", "fingerPrintResponse HEADER: " + response.headers());
-//                    Log.d("fingerprint", "fingerPrintResponse RAW: " + response.raw());
-//                    Log.d("fingerprint", "fingerPrintResponse RESPONSE BODY: " + response.body());
-//                    Log.d("fingerprint", "fingerPrintResponse RESPONSE MESSAGE: " + response.message());
-
-
-                    //validate response
-                    try {
-                        if (fingerPrintResponse.getStatus().equalsIgnoreCase("success")) {
-                            //    uploaded = true; //end of retrofit
-                            report.setText("All Done.");
-
-
-                            Log.d("fingerprint", "Uploaded successfully " + response);
-
-                            Log.d("fingerprint", "Response: " + response.body().getData().toString());
-                            String access_token = "";
-
-                            access_token = fingerPrintResponse.getToken();
-
-                            Log.d("fingerprint", "Response: token " + access_token);
-
-                            token = access_token;
-                            uploaded = true;
-                            startActivity(new Intent(getApplicationContext(), CameraCapture.class).putExtra("token", token));
-                        } else {
-                            // go to login then camera
-                            gifImageView.setImageResource(R.drawable.unsuccessful);
-                            report.setTextColor(getResources().getColor(R.color.colorAccent));
-                            report.setText("Something went wrong. Click on retry");
-                        }
-                    } catch (NullPointerException n) {
-                        n.printStackTrace();
-                        gifImageView.setImageResource(R.drawable.unsuccessful);
-                        report.setTextColor(getResources().getColor(R.color.colorAccent));
-                        report.setText("Upload Failed. Click on retry");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<FingerprintResponse> call, Throwable t) {
-                    report.setTextColor(getResources().getColor(R.color.colorAccent));
-                    report.setText("Upload Failed. Click on retry");
-                    gifImageView.setImageResource(R.drawable.unsuccessful);
-                    uploaded = false;
-                    Log.d("fingerprint", "Failed to Upload");
-                }
-            });
+            //saved offline to sync later
+            startActivity(new Intent(getApplicationContext(), CameraCaptureNewer.class).putExtra("phone", phone));
         }
         if (sequence == 5) {
             text = "LEFT HAND: Place the four fingers on the scanner as shown above";
@@ -797,16 +780,6 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
         } else {
             ManageGbmsapiErrors("onDestroy, Unload", RetVal, true);
         }
-//        RetVal = GB_AcquisitionOptionsGlobals.WSQ_Jw.Unload();
-//        if (RetVal == WsqJavaWrapperDefinesReturnCodes.WSQPACK_OK) {
-//            checkGbmsapi = "onDestroy, Wsq Unload Ok";
-//            LogAcquisitionInfoOnScreen(checkGbmsapi);
-//        } else {
-//            checkGbmsapi = "onDestroy, Wsq Unload Failure";
-//            LogAcquisitionInfoOnScreen(checkGbmsapi);
-//        }
-
-
     }
 
     public void slap4Sequence(View view) {
@@ -919,7 +892,7 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
 
                             //      GbBmp.SaveIntoAnsiNistFile("Image_" + LoggerBitmapFileSaveCounter, this, 0);
                             //    GbBmp.SaveToGallery("Image_" + LoggerBitmapFileSaveCounter, this);
-                        //    GbBmp.SaveToGalleryEnroll(GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString()), this);
+                            //    GbBmp.SaveToGalleryEnroll(GB_AcquisitionOptionsGlobals.GetTemplateFileName(tbName.getText().toString()), this);
                             //               GbBmp.SaveToRaw("Image_" + LoggerBitmapFileSaveCounter, this);
                             //              GbBmp.SaveToJpeg("Image_" + LoggerBitmapFileSaveCounter, this);
                             //            GbBmp.SaveToJpeg2("Image_" + LoggerBitmapFileSaveCounter, this);
@@ -1501,15 +1474,5 @@ public class EnrollFingerprints extends AppCompatActivity implements IGreenbitLo
         super.onResume();
         // storageFile.fingerPrint.allFingerprints = null;
 
-    }
-
-    class MyAsyncTask extends android.os.AsyncTask {
-        @Override
-        protected Object doInBackground(Object[] objects) {
-            // Do something asynchronously
-
-
-            return null;
-        }
     }
 }

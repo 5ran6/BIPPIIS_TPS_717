@@ -56,7 +56,7 @@ public class CameraCaptureNewer extends AppCompatActivity implements View.OnClic
 
             Toast.makeText(CameraCaptureNewer.this,response,Toast.LENGTH_SHORT).show();
            if(response.contains("Successfully")) {
-               Intent intent = new Intent(CameraCaptureNewer.this, MenuOfficers.class);
+               Intent intent = new Intent(CameraCaptureNewer.this, WelcomeMenuActivity.class);
                intent.putExtra("extra", "enroll");
                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                startActivity(intent);
