@@ -1,92 +1,33 @@
 {
   "project_info": {
-    "project_number": "469776812525",
-    "firebase_url": "https://bippiis-39993.firebaseio.com",
-    "project_id": "bippiis-39993",
-    "storage_bucket": "bippiis-39993.appspot.com"
+    "project_number": "346276054782",
+    "project_id": "naic-701f9",
+    "storage_bucket": "naic-701f9.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:469776812525:android:5d684cdd5297c5f84bbfe4",
+        "mobilesdk_app_id": "1:346276054782:android:a43179173fc4a99d9587af",
         "android_client_info": {
-          "package_name": "com.bippiis.tps717"
+          "package_name": "com.naic.tps717"
         }
       },
       "oauth_client": [
         {
-          "client_id": "469776812525-5grj0fr0jg44uj3cuctvt9r4dmnk5bvo.apps.googleusercontent.com",
+          "client_id": "346276054782-7dd2h06gmkfpuobn7gjhju6m73j8gt9e.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyANfvqzcUfPySpkWf9Rz-vJ17oCdJMBmpY"
+          "current_key": "AIzaSyDjp3grC978NtbXvePr_42P8rysWFEQ0OE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "469776812525-5grj0fr0jg44uj3cuctvt9r4dmnk5bvo.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:469776812525:android:3849012dfde345924bbfe4",
-        "android_client_info": {
-          "package_name": "gamint.com.bippiistps470"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "469776812525-5grj0fr0jg44uj3cuctvt9r4dmnk5bvo.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyANfvqzcUfPySpkWf9Rz-vJ17oCdJMBmpY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "469776812525-5grj0fr0jg44uj3cuctvt9r4dmnk5bvo.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:469776812525:android:0806c0191919ad8b4bbfe4",
-        "android_client_info": {
-          "package_name": "wrappers.greenbit.com.dactymatch_gui_javaandroid"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "469776812525-5grj0fr0jg44uj3cuctvt9r4dmnk5bvo.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyANfvqzcUfPySpkWf9Rz-vJ17oCdJMBmpY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "469776812525-5grj0fr0jg44uj3cuctvt9r4dmnk5bvo.apps.googleusercontent.com",
+              "client_id": "346276054782-7dd2h06gmkfpuobn7gjhju6m73j8gt9e.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
